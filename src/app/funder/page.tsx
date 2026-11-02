@@ -1,10 +1,29 @@
 "use client";
 
-import React, { useState } from "react";
-import { WalletFolder } from "../../types";
+import React, { useEffect, useState } from "react";
+import { PublicKey } from "@solana/web3.js";
+import type { GhostFunderConfig } from "../../types";
+import { GhostFunder } from "../../lib/wallets/ghostFunder";
+import { useLaunchStore } from "../../lib/stores/useLaunchStore";
 
 export default function FunderPage() {
-  const [funderBalance, setFunderBalance] = useState(14.85);
+  const connectedWallet = useLaunchStore((state) => state.connectedWallet);
+  const masterBalanceSol = useLaunchStore((state) => state.masterBalanceSol);
+  const subWallets = useLaunchStore((state) => state.subWallets);
+  const folders = useLaunchStore((state) => state.folders);
+  const reclaimedRentSol = useLaunchStore((state) => state.reclaimedRentSol);
+  const lastActionMessage = useLaunchStore((state) => state.lastActionMessage);
+  const activeLaunchConfig = useLaunchStore((state) => state.activeLaunchConfig);
+  const setConnectedWallet = useLaunchStore((state) => state.setConnectedWallet);
+  const updateLaunchConfig = useLaunchStore((state) => state.updateLaunchConfig);
+  const addWalletsToFolder = useLaunchStore((state) => state.addWalletsToFolder);
+  const executeAtaRentReclaim = useLaunchStore((state) => state.executeAtaRentReclaim);
+  const startSlotFeed = useLaunchStore((state) => state.startSlotFeed);
+  const refreshWalletBalances = useLaunchStore((state) => state.refreshWalletBalances);
+
+  const [walletInput, setWalletInput] = useState("");
+  const [activeFolderId, setActiveFolderId] = useState("box1");
+  const [pageMessage, setPageMessage] = useState<string | null>(null);
   const [fundingMode, setFundingMode] = useState<"CEX_API_DIRECT" | "RELAY_MERKLE_TREE" | "CLASSIC">(
     "RELAY_MERKLE_TREE"
   );
@@ -16,12 +35,74 @@ export default function FunderPage() {
   const [subWalletMinSol, setSubWalletMinSol] = useState(0.01);
   const [autoReclaimRent, setAutoReclaimRent] = useState(true);
 
-  // Folder cohorts
-  const [folders] = useState<WalletFolder[]>([
-    { id: "box1", name: "box1 (Active Launch)", walletCount: 24, totalBalanceSol: 2.14 },
-    { id: "mev-front", name: "mev-front (Block-0)", walletCount: 6, totalBalanceSol: 1.25 },
-    { id: "holders", name: "holders (Long Term)", walletCount: 50, totalBalanceSol: 4.8 },
-  ]);
+  useEffect(() => {
+    startSlotFeed();
+    void refreshWalletBalances();
+  }, [refreshWalletBalances, startSlotFeed]);
+
+  const ghostConfig = (): GhostFunderConfig => ({
+    fundingMode: fundingMode === "CLASSIC" ? "CLASSIC_DISPERSION" : fundingMode,
+    cexExchange: selectedExchange,
+    fundingGapSeconds: fundingGapMin * 60,
+    randomDeviationPercent: randomDeviation,
+  });
+
+  const connectMaster = () => {
+    try {
+      const pubkey = new PublicKey(walletInput.trim());
+      setPageMessage(null);
+      void setConnectedWallet(pubkey);
+    } catch {
+      setPageMessage("Enter a valid master wallet public key.");
+    }
+  };
+
+  const disperseFunds = () => {
+    const config = ghostConfig();
+    const targets = subWallets.filter((wallet) => wallet.folderId === activeFolderId);
+    const prepared = (targets.length > 0 ? targets : subWallets).map((wallet) => ({
+      ...wallet,
+      folderId: wallet.folderId ?? activeFolderId,
+      allocatedBuySol: Math.max(wallet.allocatedBuySol, subWalletMinSol),
+    }));
+
+    updateLaunchConfig({
+      ghostFunder: config,
+      devBuySol: Math.max(activeLaunchConfig.devBuySol, subWalletMinSol),
+    });
+
+    if (!connectedWallet) {
+      setPageMessage("Connect the master wallet before dispersing funds.");
+      void addWalletsToFolder(activeFolderId, prepared);
+      return;
+    }
+
+    const plan = GhostFunder.planGhostDispersal({
+      masterPayer: connectedWallet,
+      subWallets: prepared,
+      config,
+    });
+    setPageMessage(
+      `Planned ${plan.relays.length} relays and ${plan.instructions.length} funding transfers (${plan.totalSolRequired} SOL). Master signer required to broadcast.`
+    );
+    void addWalletsToFolder(activeFolderId, prepared);
+  };
+
+  const sweepEmptyAtas = () => {
+    if (!autoReclaimRent) {
+      setPageMessage("Enable automated rent reclamation before sweeping.");
+      return;
+    }
+    if (!connectedWallet) {
+      setPageMessage("Connect the master wallet that should receive reclaimed rent.");
+      return;
+    }
+    setPageMessage(null);
+    void executeAtaRentReclaim(connectedWallet);
+  };
+
+  const shortenKey = (value: string) =>
+    value.length > 12 ? `${value.slice(0, 4)}...${value.slice(-4)}` : value;
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8 font-mono text-xs space-y-6">
@@ -34,9 +115,27 @@ export default function FunderPage() {
             Ghost Funder dispersal, 0.01 SOL micro-funding, and automated ATA rent recovery.
           </p>
         </div>
-        <div className="text-right">
+        <div className="text-right space-y-1">
           <div className="text-[10px] text-scram-titanium uppercase">Master Funder Balance</div>
-          <div className="text-base font-bold text-emerald-400">{funderBalance} SOL</div>
+          <div className="text-base font-bold text-emerald-400">{masterBalanceSol.toFixed(4)} SOL</div>
+          <div className="text-[10px] text-scram-titanium">
+            {connectedWallet ? shortenKey(connectedWallet.toBase58()) : "No wallet connected"}
+          </div>
+          <div className="flex items-center justify-end gap-1">
+            <input
+              type="text"
+              value={walletInput}
+              onChange={(event) => setWalletInput(event.target.value)}
+              placeholder="Master public key"
+              className="w-44 bg-scram-void border border-scram-border p-1.5 rounded text-scram-stark font-mono text-[10px]"
+            />
+            <button
+              onClick={connectMaster}
+              className="text-[10px] bg-scram-plasma/10 text-scram-plasma border border-scram-plasma/30 px-2 py-1 rounded font-bold"
+            >
+              Connect
+            </button>
+          </div>
         </div>
       </div>
 
@@ -49,7 +148,11 @@ export default function FunderPage() {
                 Wallet Folders
               </span>
               <button
-                onClick={() => alert("Creating new wallet folder")}
+                onClick={() => {
+                  const id = `box${folders.length + 1}`;
+                  setActiveFolderId(id);
+                  void addWalletsToFolder(id, []);
+                }}
                 className="text-[10px] bg-scram-plasma/10 text-scram-plasma border border-scram-plasma/30 px-2 py-0.5 rounded font-bold"
               >
                 + New Folder
@@ -58,9 +161,13 @@ export default function FunderPage() {
 
             <div className="space-y-2">
               {folders.map((f) => (
-                <div
+                <button
                   key={f.id}
-                  className="p-3 bg-scram-card border border-scram-border hover:border-scram-hover rounded space-y-1 transition-all"
+                  type="button"
+                  onClick={() => setActiveFolderId(f.id)}
+                  className={`w-full text-left p-3 bg-scram-card border hover:border-scram-hover rounded space-y-1 transition-all ${
+                    activeFolderId === f.id ? "border-scram-plasma" : "border-scram-border"
+                  }`}
                 >
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-scram-stark text-xs">{f.name}</span>
@@ -69,10 +176,10 @@ export default function FunderPage() {
                     </span>
                   </div>
                   <div className="flex justify-between text-[10px] text-scram-titanium">
-                    <span>Balance: {f.totalBalanceSol} SOL</span>
-                    <span>Ready</span>
+                    <span>Balance: {f.totalBalanceSol.toFixed(4)} SOL</span>
+                    <span>{activeFolderId === f.id ? "Selected" : "Ready"}</span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -81,9 +188,15 @@ export default function FunderPage() {
           <div className="bg-scram-surface border border-emerald-500/30 p-4 rounded space-y-2 bg-emerald-500/5">
             <div className="flex justify-between items-center">
               <span className="font-bold text-emerald-400 text-xs">Automated Rent Reclamation</span>
-              <span className="text-[9px] bg-emerald-500 text-black px-1.5 py-0.5 rounded font-bold">
-                ACTIVE
-              </span>
+              <label className="flex items-center gap-1 text-[9px] text-scram-stark">
+                <input
+                  type="checkbox"
+                  checked={autoReclaimRent}
+                  onChange={(event) => setAutoReclaimRent(event.target.checked)}
+                  className="accent-emerald-400"
+                />
+                {autoReclaimRent ? "ACTIVE" : "PAUSED"}
+              </label>
             </div>
             <p className="text-[10px] text-scram-titanium leading-relaxed">
               When sub-wallets sell out, SCRAMJET automatically closes empty token accounts (ATAs),
@@ -91,10 +204,10 @@ export default function FunderPage() {
             </p>
             <div className="flex justify-between items-center pt-2 border-t border-emerald-500/20 text-[11px]">
               <span className="text-scram-stark">Reclaimed Today:</span>
-              <span className="text-emerald-400 font-bold font-mono">+0.1632 SOL</span>
+              <span className="text-emerald-400 font-bold font-mono">+{reclaimedRentSol.toFixed(4)} SOL</span>
             </div>
             <button
-              onClick={() => alert("Scanned and reclaimed 8 empty ATAs across sub-wallets!")}
+              onClick={sweepEmptyAtas}
               className="w-full mt-2 py-2 rounded bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-[11px] uppercase tracking-wider"
             >
               Sweep Empty ATAs Now
@@ -225,17 +338,22 @@ export default function FunderPage() {
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-emerald-400 font-bold text-sm">0.010 SOL</span>
+                <span className="text-emerald-400 font-bold text-sm">{subWalletMinSol.toFixed(3)} SOL</span>
                 <div className="text-[9px] text-scram-titanium">+0.001 SOL fee</div>
               </div>
             </div>
 
             <button
-              onClick={() => alert(`Executed Ghost Funder Dispersal via ${fundingMode}!`)}
+              onClick={disperseFunds}
               className="w-full bg-scram-plasma hover:bg-scram-flare text-black font-bold py-3 rounded uppercase tracking-wider text-xs shadow-plasma transition-all"
             >
               Disperse Funds Across Wallets →
             </button>
+            {(pageMessage || lastActionMessage) && (
+              <p className="text-[10px] text-scram-titanium leading-relaxed break-all">
+                {pageMessage ?? lastActionMessage}
+              </p>
+            )}
           </div>
         </div>
       </div>

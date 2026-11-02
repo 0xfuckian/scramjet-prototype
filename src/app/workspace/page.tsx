@@ -1,20 +1,31 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { PublicKey } from "@solana/web3.js";
 import { TradingChart } from "../../components/workspace/TradingChart";
 import {
-  SubWallet,
-  MultiWalletTradeConfig,
   MultiWalletBuyOrderType,
   WalletSelectionStrategy,
   AmountDistributionStrategy,
 } from "../../types";
+import { useLaunchStore } from "../../lib/stores/useLaunchStore";
 
 export default function WorkspacePage() {
-  const [currentSlot, setCurrentSlot] = useState(318942150);
-  const [top10Percent, setTop10Percent] = useState(12.4); // Turns red at >= 15%
-  const [marketCapUsd, setMarketCapUsd] = useState(84250);
-  const [volumeSol, setVolumeSol] = useState(312.5);
+  const currentSlot = useLaunchStore((state) => state.currentSlot);
+  const subWallets = useLaunchStore((state) => state.subWallets);
+  const activeLaunchConfig = useLaunchStore((state) => state.activeLaunchConfig);
+  const activeAutomations = useLaunchStore((state) => state.activeAutomations);
+  const lastActionMessage = useLaunchStore((state) => state.lastActionMessage);
+  const pendingAction = useLaunchStore((state) => state.pendingAction);
+  const updateLaunchConfig = useLaunchStore((state) => state.updateLaunchConfig);
+  const triggerBumpBot = useLaunchStore((state) => state.triggerBumpBot);
+  const executeMultiWalletTrade = useLaunchStore((state) => state.executeMultiWalletTrade);
+  const startSlotFeed = useLaunchStore((state) => state.startSlotFeed);
+  const refreshWalletBalances = useLaunchStore((state) => state.refreshWalletBalances);
+
+  const [top10Percent] = useState(12.4); // Turns red at >= 15%
+  const [marketCapUsd] = useState(84250);
+  const [volumeSol] = useState(312.5);
 
   // Instant Trade Panel Hotkey State
   const [isArmed, setIsArmed] = useState(false);
@@ -26,69 +37,18 @@ export default function WorkspacePage() {
   const [staggerDelay, setStaggerDelay] = useState(2);
 
   // AMM Automations
-  const [bumpBotActive, setBumpBotActive] = useState(false);
-  const [bumpIntervalSec, setBumpIntervalSec] = useState(15);
-  const [greenTwapActive, setGreenTwapActive] = useState(false);
-  const [twapSlicePercent, setTwapSlicePercent] = useState(10);
+  const [bumpIntervalSec] = useState(activeLaunchConfig.marketMaker.bumpIntervalSeconds);
+  const [twapSlicePercent] = useState(activeLaunchConfig.marketMaker.twapMaxSellPercentPerSlice);
+  const [tokenMint, setTokenMint] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
 
   // Post-Launch Token Actions
   const [burnPercent, setBurnPercent] = useState(5);
   const [lockPercent, setLockPercent] = useState(25);
   const [lockDurationDays, setLockDurationDays] = useState(90);
 
-  // Simulated Sub-Wallets
-  const [wallets] = useState<SubWallet[]>([
-    {
-      id: "w-1",
-      publicKey: "9xQeW...kP8a",
-      role: "DEPLOYER",
-      balanceSol: 4.82,
-      tokenBalance: 150000000,
-      allocatedBuySol: 2.5,
-      buyDelaySeconds: 0,
-      status: "EXECUTED",
-    },
-    {
-      id: "w-2",
-      publicKey: "3mK2f...7tL9",
-      role: "FRONT_MEV",
-      balanceSol: 0.85,
-      tokenBalance: 42000000,
-      allocatedBuySol: 1.0,
-      buyDelaySeconds: 0,
-      status: "EXECUTED",
-    },
-    {
-      id: "w-3",
-      publicKey: "7hV9b...1xR4",
-      role: "FRONT_MEV",
-      balanceSol: 0.92,
-      tokenBalance: 39000000,
-      allocatedBuySol: 1.0,
-      buyDelaySeconds: 0,
-      status: "EXECUTED",
-    },
-    {
-      id: "w-4",
-      publicKey: "5tP4n...9qY2",
-      role: "BACK_MEV",
-      balanceSol: 0.44,
-      tokenBalance: 21000000,
-      allocatedBuySol: 0.5,
-      buyDelaySeconds: 2,
-      status: "EXECUTED",
-    },
-    {
-      id: "w-5",
-      publicKey: "8wR6m...3zC1",
-      role: "FINAL_HOLDER",
-      balanceSol: 0.12,
-      tokenBalance: 12500000,
-      allocatedBuySol: 0.25,
-      buyDelaySeconds: 5,
-      status: "EXECUTED",
-    },
-  ]);
+  const bumpBotActive = activeAutomations.bumpBot.running;
+  const greenTwapActive = activeAutomations.greenTwap.running;
 
   // Space-bar hotkey arming
   useEffect(() => {
@@ -102,13 +62,54 @@ export default function WorkspacePage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Slot ticker simulation
+  // Live slot feed and on-chain wallet balances
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlot((s) => s + 1);
-    }, 400);
-    return () => clearInterval(interval);
-  }, []);
+    startSlotFeed();
+    void refreshWalletBalances();
+  }, [refreshWalletBalances, startSlotFeed]);
+
+  const formatTokens = (amount: number) => {
+    if (amount >= 1_000_000) return `${(amount / 1_000_000).toFixed(1)}M`;
+    if (amount >= 1_000) return `${(amount / 1_000).toFixed(1)}K`;
+    return amount.toLocaleString(undefined, { maximumFractionDigits: 4 });
+  };
+
+  const shortenKey = (value: string) =>
+    value.length > 12 ? `${value.slice(0, 4)}...${value.slice(-4)}` : value;
+
+  const parseMint = (): PublicKey | null => {
+    try {
+      const mint = new PublicKey(tokenMint.trim());
+      setFormError(null);
+      return mint;
+    } catch {
+      setFormError("Enter a valid token mint before running this action.");
+      return null;
+    }
+  };
+
+  const runMultiWalletTrade = () => {
+    const mint = parseMint();
+    if (!mint) return;
+
+    const prepared = subWallets.map((wallet) => ({
+      ...wallet,
+      allocatedBuySol: quickAmountSol,
+    }));
+    updateLaunchConfig({ subWallets: prepared });
+    void executeMultiWalletTrade(
+      {
+        orderType,
+        slippagePercent: 15,
+        dispersionPercent: 100,
+        selectionStrategy,
+        amountDistribution,
+        staggerDelaySeconds: staggerDelay,
+      },
+      mint,
+      tradeMode
+    );
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8 space-y-6 font-mono text-xs">
@@ -123,8 +124,10 @@ export default function WorkspacePage() {
         </div>
         <div>
           <div className="text-[10px] text-scram-titanium uppercase">Current Slot</div>
-          <div className="text-base font-bold text-scram-plasma">{currentSlot}</div>
-          <div className="text-[9px] text-scram-titanium">~400ms BLOCK TIME</div>
+          <div className="text-base font-bold text-scram-plasma">
+            {currentSlot > 0 ? currentSlot.toLocaleString() : "SYNCING"}
+          </div>
+          <div className="text-[9px] text-scram-titanium">CONFIRMED SLOT FEED</div>
         </div>
         <div>
           <div className="text-[10px] text-scram-titanium uppercase">24H Volume</div>
@@ -228,6 +231,17 @@ export default function WorkspacePage() {
             </div>
 
             <div className="space-y-1">
+              <label className="text-[10px] text-scram-titanium block">Token Mint</label>
+              <input
+                type="text"
+                value={tokenMint}
+                onChange={(event) => setTokenMint(event.target.value)}
+                placeholder="Mint address"
+                className="w-full bg-scram-void border border-scram-border p-2 rounded text-scram-stark font-mono text-[11px]"
+              />
+            </div>
+
+            <div className="space-y-1">
               <label className="text-[10px] text-scram-titanium block">Quick Presets (SOL)</label>
               <div className="grid grid-cols-4 gap-1.5">
                 {[0.1, 0.5, 1.0, 2.0].map((amt) => (
@@ -247,12 +261,9 @@ export default function WorkspacePage() {
             </div>
 
             <button
-              onClick={() =>
-                alert(
-                  `Dispatched ${tradeMode} order of ${quickAmountSol} SOL across sub-wallets (${orderType})`
-                )
-              }
-              className={`w-full py-2.5 rounded font-bold uppercase tracking-wider text-xs shadow-plasma transition-all ${
+              onClick={runMultiWalletTrade}
+              disabled={pendingAction === "multi-wallet-trade"}
+              className={`w-full py-2.5 rounded font-bold uppercase tracking-wider text-xs shadow-plasma transition-all disabled:opacity-50 ${
                 tradeMode === "BUY"
                   ? "bg-emerald-500 hover:bg-emerald-400 text-black"
                   : "bg-red-500 hover:bg-red-400 text-white"
@@ -260,6 +271,11 @@ export default function WorkspacePage() {
             >
               Execute Multi-Wallet {tradeMode}
             </button>
+            {(formError || lastActionMessage) && (
+              <p className="text-[10px] text-scram-titanium leading-relaxed break-all">
+                {formError ?? lastActionMessage}
+              </p>
+            )}
           </div>
 
           {/* AMM Automations Panel */}
@@ -278,7 +294,17 @@ export default function WorkspacePage() {
               <input
                 type="checkbox"
                 checked={bumpBotActive}
-                onChange={(e) => setBumpBotActive(e.target.checked)}
+                onChange={(event) => {
+                  const mint = parseMint();
+                  if (!mint) return;
+                  void triggerBumpBot(mint, {
+                    ...activeLaunchConfig.marketMaker,
+                    enableBumpBot: event.target.checked,
+                    bumpIntervalSeconds: bumpIntervalSec,
+                    enableGreenCandleTwap: greenTwapActive,
+                    twapMaxSellPercentPerSlice: twapSlicePercent,
+                  });
+                }}
                 className="accent-scram-plasma"
               />
             </div>
@@ -293,10 +319,30 @@ export default function WorkspacePage() {
               <input
                 type="checkbox"
                 checked={greenTwapActive}
-                onChange={(e) => setGreenTwapActive(e.target.checked)}
+                onChange={(event) => {
+                  updateLaunchConfig({
+                    marketMaker: {
+                      ...activeLaunchConfig.marketMaker,
+                      enableBumpBot: bumpBotActive,
+                      bumpIntervalSeconds: bumpIntervalSec,
+                      enableGreenCandleTwap: event.target.checked,
+                      twapMaxSellPercentPerSlice: twapSlicePercent,
+                    },
+                  });
+                }}
                 className="accent-scram-plasma"
               />
             </div>
+            {activeAutomations.bumpBot.lastError && (
+              <p className="text-[10px] text-scram-titanium leading-relaxed break-all">
+                {activeAutomations.bumpBot.lastError}
+              </p>
+            )}
+            {activeAutomations.greenTwap.running && (
+              <p className="text-[10px] text-emerald-400">
+                TWAP slices ready: {activeAutomations.greenTwap.slicesReady}
+              </p>
+            )}
           </div>
         </div>
 
@@ -358,7 +404,9 @@ export default function WorkspacePage() {
               <span className="font-bold uppercase tracking-wider text-scram-stark text-xs">
                 Active Sub-Wallets (Cohort 1)
               </span>
-              <span className="text-[10px] text-scram-titanium">5 Wallets Active</span>
+              <span className="text-[10px] text-scram-titanium">
+                {subWallets.length} Wallets Active
+              </span>
             </div>
 
             <div className="overflow-x-auto">
@@ -374,16 +422,18 @@ export default function WorkspacePage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {wallets.map((w) => (
+                  {subWallets.map((w) => (
                     <tr
                       key={w.id}
                       className="border-b border-scram-border/50 hover:bg-scram-card/50 text-[11px]"
                     >
                       <td className="py-2.5 px-2 font-semibold text-scram-plasma">{w.role}</td>
-                      <td className="py-2.5 px-2 font-mono text-scram-stark">{w.publicKey}</td>
-                      <td className="py-2.5 px-2 font-bold">{w.balanceSol.toFixed(2)} SOL</td>
+                      <td className="py-2.5 px-2 font-mono text-scram-stark" title={w.publicKey}>
+                        {shortenKey(w.publicKey)}
+                      </td>
+                      <td className="py-2.5 px-2 font-bold">{w.balanceSol.toFixed(4)} SOL</td>
                       <td className="py-2.5 px-2 text-scram-titanium">
-                        {(w.tokenBalance / 1e6).toFixed(1)}M
+                        {formatTokens(w.tokenBalance)}
                       </td>
                       <td className="py-2.5 px-2 text-scram-titanium">{w.buyDelaySeconds}s</td>
                       <td className="py-2.5 px-2">
