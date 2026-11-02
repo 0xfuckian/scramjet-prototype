@@ -1,4 +1,4 @@
-import { TurnkeyClient } from "@turnkey/http";
+import { TurnkeyClient, getSignedTransactionFromActivity } from "@turnkey/http";
 import { ApiKeyStamper } from "@turnkey/api-key-stamper";
 import { PublicKey, VersionedTransaction } from "@solana/web3.js";
 import { SubWallet } from "../../types";
@@ -45,23 +45,25 @@ export class TurnkeyManager {
     if (this.client && this.organizationId) {
       try {
         const response = await this.client.createWalletAccounts({
+          type: "ACTIVITY_TYPE_CREATE_WALLET_ACCOUNTS",
+          timestampMs: Date.now().toString(),
           organizationId: this.organizationId,
           parameters: {
             walletId: this.organizationId,
             accounts: Array.from({ length: count }, (_, i) => ({
-              curve: "CURVE_ED25519",
-              pathFormat: "PATH_FORMAT_BIP32",
+              curve: "CURVE_ED25519" as const,
+              pathFormat: "PATH_FORMAT_BIP32" as const,
               path: `m/44'/501'/${i}'/0'`,
-              addressFormat: "ADDRESS_FORMAT_SOLANA",
+              addressFormat: "ADDRESS_FORMAT_SOLANA" as const,
             })),
           },
         });
 
-        // Map enclave accounts to SubWallet models
-        response.accountIds.forEach((id, idx) => {
+        const addresses = response.activity.result?.createWalletAccountsResult?.addresses ?? [];
+        addresses.forEach((address, idx) => {
           subWallets.push({
-            id: `tw-${id.slice(0, 8)}`,
-            publicKey: id, // In production, resolved Solana public address
+            id: `tw-${address.slice(0, 8)}`,
+            publicKey: address,
             balanceSol: 0,
             tokenBalance: 0,
             role: idx === 0 ? "DEPLOYER" : idx < 3 ? "FRONT_MEV" : "FINAL_HOLDER",
@@ -110,6 +112,8 @@ export class TurnkeyManager {
     const unsignedHex = Buffer.from(transaction.serialize()).toString("hex");
 
     const response = await this.client.signTransaction({
+      type: "ACTIVITY_TYPE_SIGN_TRANSACTION_V2",
+      timestampMs: Date.now().toString(),
       organizationId: this.organizationId,
       parameters: {
         signWith: signWithAddress,
@@ -118,7 +122,8 @@ export class TurnkeyManager {
       },
     });
 
-    const signedBuffer = Buffer.from(response.signedTransaction, "hex");
+    const signedHex = getSignedTransactionFromActivity(response.activity).replace(/^0x/, "");
+    const signedBuffer = Buffer.from(signedHex, "hex");
     return VersionedTransaction.deserialize(signedBuffer);
   }
 }
