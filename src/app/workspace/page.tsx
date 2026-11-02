@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { TradingChart } from "../../components/workspace/TradingChart";
 import {
   SubWallet,
   MultiWalletTradeConfig,
@@ -301,6 +302,9 @@ export default function WorkspacePage() {
 
         {/* Right Columns: Sub-Wallets Table & Post-Launch Ops */}
         <div className="lg:col-span-2 space-y-4">
+          {/* Live DexScreener Bonding Curve Chart */}
+          <TradingChart />
+
           {/* Post-Launch Operations Bar */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-scram-surface border border-scram-border p-4 rounded">
             {/* Streamflow Lock */}
