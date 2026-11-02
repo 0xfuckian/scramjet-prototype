@@ -1,0 +1,12 @@
+<svg width="360" height="80" viewBox="0 0 360 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(10, 8) scale(0.533)">
+    <rect width="120" height="120" rx="16" fill="#0F131A" stroke="#1E2734" stroke-width="1.5"/>
+    <polygon points="30,88 42,32 54,32 42,88" fill="#1A222E" stroke="#8E9AA8" stroke-width="1.5"/>
+    <polygon points="50,88 62,22 74,22 62,88" fill="#283547" stroke="#CBD5E1" stroke-width="1.5"/>
+    <polygon points="70,88 82,12 94,12 82,88" fill="#FF3E00" stroke="#FF3E00" stroke-width="1.5"/>
+    <line x1="18" y1="66" x2="102" y2="66" stroke="#FF7700" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="84" cy="66" r="4" fill="#FFFFFF"/>
+  </g>
+  <text x="88" y="46" font-family="'Ioskeley Mono Term Heavy', 'Cabinet Grotesk', -apple-system, monospace" font-weight="900" font-size="32" letter-spacing="-0.03em" fill="#F8FAFC">SCRAMJET</text>
+  <text x="89" y="62" font-family="'Anonymous', monospace" font-weight="700" font-size="9" letter-spacing="0.22em" fill="#FF3E00">HYPERSONIC PROTOCOL</text>
+</svg>
