@@ -9,6 +9,9 @@ import {
   SniperGuardAction,
   NukeWalletScope,
 } from "../../types";
+import { calculateUpfrontLaunchFee } from "../../lib/feeRouter";
+import { useLaunchStore } from "../../lib/stores/useLaunchStore";
+import { DEFAULT_PLATFORM_FEE_VAULT } from "../../lib/constants";
 
 export default function LaunchPage() {
   const [activeTab, setActiveTab] = useState<"chain" | "token" | "settings">("chain");
@@ -60,6 +63,9 @@ export default function LaunchPage() {
   const [holderCount, setHolderCount] = useState<number>(24);
   const [backMevTuning, setBackMevTuning] = useState<number>(40);
   const [jitoTipSol, setJitoTipSol] = useState<number>(0.015);
+
+  // Dynamic Launch Fee (Base 0.15 SOL + 0.005 SOL per wallet)
+  const upfrontFee = calculateUpfrontLaunchFee(holderCount);
 
   // Sniper Guard
   const [sniperGuardEnabled, setSniperGuardEnabled] = useState(true);
@@ -1082,13 +1088,49 @@ export default function LaunchPage() {
               </div>
             </div>
 
-            {/* Launch Action Button */}
-            <div className="flex justify-center pt-6">
+            {/* Final Launch Fee & Execution Summary */}
+            <div className="p-5 rounded-xl border border-[#FF3E00]/40 bg-[#0E0F14] space-y-3 font-mono text-xs shadow-[0_0_20px_rgba(255,62,0,0.1)]">
+              <div className="flex justify-between items-center border-b border-[#1A1C25] pb-2">
+                <span className="font-bold text-[#F8FAFC]">FINAL STEP: LAUNCH FEE &amp; DISPATCH SUMMARY</span>
+                <span className="text-[10px] text-[#31E3AC]">SOLANA MAINNET</span>
+              </div>
+
+              <div className="space-y-1.5 text-[11px]">
+                  <div className="flex justify-between text-[#8E9AA8]">
+                  <span>Base Deployment Fee:</span>
+                  <span className="font-bold text-[#F8FAFC]">{upfrontFee.baseFeeSol.toFixed(3)} SOL</span>
+                </div>
+                <div className="flex justify-between text-[#8E9AA8]">
+                  <span>Sub-Wallet Coordination ({holderCount} wallets × 0.005 SOL):</span>
+                  <span className="font-bold text-[#F8FAFC]">+{upfrontFee.walletExecutionFeeSol.toFixed(3)} SOL</span>
+                </div>
+                {devBuyPercent > 0 && (
+                  <div className="flex justify-between text-[#8E9AA8]">
+                    <span>Developer Buy Allocation ({devBuyPercent}%):</span>
+                    <span className="font-bold text-[#F8FAFC]">{((devBuyPercent / 100) * 10).toFixed(3)} SOL</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-[#8E9AA8]">
+                  <span>Jito Priority Leader Bribe:</span>
+                  <span className="font-bold text-[#F8FAFC]">{jitoTipSol.toFixed(3)} SOL</span>
+                </div>
+                <div className="flex justify-between text-[12px] pt-2 border-t border-[#1C202B] font-bold">
+                  <span className="text-[#FF3E00]">Total Launch Fee:</span>
+                  <span className="text-[#31E3AC]">{upfrontFee.totalLaunchFeeSol.toFixed(3)} SOL</span>
+                </div>
+                <div className="text-[10px] text-[#717686] pt-1">
+                  Fee recipient: {DEFAULT_PLATFORM_FEE_VAULT.toBase58().slice(0, 4)}...{DEFAULT_PLATFORM_FEE_VAULT.toBase58().slice(-4)}
+                </div>
+              </div>
+            </div>
+
+            {/* Pay Launch Fee & Dispatch Button */}
+            <div className="flex justify-center pt-4">
               <button
-                onClick={() => alert(`Launching ${tokenSymbol || "Token"} on ${launchpad} via Block-0 bundle!`)}
-                className="w-full max-w-[280px] h-[44px] rounded-lg bg-[#FF3E00] hover:bg-[#FF5500] text-black font-extrabold text-xs uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(255,62,0,0.4)]"
+                onClick={() => alert(`Paid ${upfrontFee.totalLaunchFeeSol} SOL launch fee to ${DEFAULT_PLATFORM_FEE_VAULT.toBase58()}! Atomically triggered ${tokenSymbol || "Token"} deploy + dev buy + ${holderCount} sub-wallet Block-0 bundle on ${launchpad}!`)}
+                className="w-full max-w-[340px] h-[48px] rounded-lg bg-[#FF3E00] hover:bg-[#FF5500] text-black font-extrabold text-xs uppercase tracking-wider transition-all shadow-[0_0_25px_rgba(255,62,0,0.45)] hover:scale-[1.02] flex items-center justify-center gap-2"
               >
-                Dispatch Block-0 Bundle →
+                <span>Pay Launch Fee &amp; Dispatch ({upfrontFee.totalLaunchFeeSol} SOL) →</span>
               </button>
             </div>
           </div>
