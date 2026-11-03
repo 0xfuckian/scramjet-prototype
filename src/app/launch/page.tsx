@@ -12,6 +12,9 @@ import {
 import { calculateUpfrontLaunchFee, isExemptFromFees } from "../../lib/feeRouter";
 import { useLaunchStore } from "../../lib/stores/useLaunchStore";
 import { DEFAULT_PLATFORM_FEE_VAULT } from "../../lib/constants";
+import { LaunchOrchestrator, LaunchOrchestrationResult } from "../../lib/pipeline/launchOrchestrator";
+import { getSolanaConnection } from "../../lib/solana/connection";
+import { PublicKey } from "@solana/web3.js";
 
 export default function LaunchPage() {
   const [activeTab, setActiveTab] = useState<"chain" | "token" | "settings">("chain");
@@ -75,6 +78,95 @@ export default function LaunchPage() {
   const [sniperTriggerSol, setSniperTriggerSol] = useState(5.0);
   const [sniperAction, setSniperAction] = useState<SniperGuardAction>("NUKE");
   const [nukeScope, setNukeScope] = useState<NukeWalletScope>("HOLDERS_ONLY");
+
+  // Launch Dispatch State
+  const [isDispatching, setIsDispatching] = useState(false);
+  const [dispatchStep, setDispatchStep] = useState<string>("");
+  const [dispatchResult, setDispatchResult] = useState<LaunchOrchestrationResult | null>(null);
+  const [dispatchError, setDispatchError] = useState<string | null>(null);
+
+  const handleDispatchBundle = async () => {
+    try {
+      setIsDispatching(true);
+      setDispatchError(null);
+      setDispatchStep("1/4 Generating sub-wallets via Turnkey enclave...");
+
+      const connection = getSolanaConnection();
+      const masterPayer =
+        connectedWallet || new PublicKey("CcwpTCpWMtKGo1fqnZuH4Psdj6yugbmSrAPaeTdEy6Qq");
+
+      setDispatchStep("2/4 Planning Ghost Funder Merkle relay tree...");
+      await new Promise((r) => setTimeout(r, 400));
+
+      setDispatchStep("3/4 Assembling atomic Jito Block-0 bundle...");
+      const result = await LaunchOrchestrator.executeLaunch({
+        config: {
+          tokenName: tokenName.trim() || "SCRAMJET",
+          tokenSymbol: tokenSymbol.trim() || "SCRAM",
+          tokenDescription: tokenDescription.trim() || "Hypersonic Solana Launch",
+          imageUrl: imagePreview || "https://scramjet.tools/logo.png",
+          network: "SOLANA",
+          launchpad,
+          launchMode: "BLOCK_0",
+          block0Config: {
+            preset,
+            frontMevCount: 2,
+            backMevCount: 4,
+            backMevTuning,
+            tempHolderCount: 0,
+            holderCount,
+            frontToBackDelayMs: 400,
+            mevToTempDelayMs: 800,
+            holderBuyDelaySeconds: 2,
+            enableDynamicJitoTip: true,
+            jitoTipPercentile: "P75",
+            customJitoTipSol: jitoTipSol,
+          },
+          sniperGuard: {
+            enabled: sniperGuardEnabled,
+            triggerExternalBuySol: sniperTriggerSol,
+            action: sniperAction,
+            nukeScope,
+          },
+          ghostFunder: {
+            fundingMode: "RELAY_MERKLE_TREE",
+            fundingGapSeconds: 1800,
+            randomDeviationPercent: 5,
+          },
+          marketMaker: {
+            enableBumpBot: false,
+            bumpIntervalSeconds: 15,
+            bumpMinSol: 0.05,
+            bumpMaxSol: 0.2,
+            enableGreenCandleTwap: false,
+            twapMaxSellPercentPerSlice: 10,
+            targetTrendingBoard: "PHOTON",
+          },
+          feeStrategy: {
+            harvestIntervalMinutes: 10,
+            autoHarvest: true,
+            feeAllocation: {
+              creatorSolPercent: 50,
+              buybackAndBurnPercent: 50,
+              stablecoinSwapUsdcPercent: 0,
+            },
+          },
+          devBuySol: devBuyPercent > 0 ? (devBuyPercent / 100) * 10 : 0,
+          subWallets: [],
+        },
+        connection,
+        masterPayer,
+      });
+
+      setDispatchStep("4/4 Dispatched to 5 regional Jito block engines!");
+      setDispatchResult(result);
+    } catch (err: any) {
+      console.error("Launch dispatch error:", err);
+      setDispatchError(err.message || "Failed to dispatch launch bundle");
+    } finally {
+      setIsDispatching(false);
+    }
+  };
 
   // Chains array (Solana active, others darkened with COMING SOON)
   const chains = [
@@ -1138,14 +1230,75 @@ export default function LaunchPage() {
             </div>
 
             {/* Pay Launch Fee & Dispatch Button */}
-            <div className="flex justify-center pt-4">
+            <div className="flex flex-col items-center gap-3 pt-4">
+              {dispatchError && (
+                <div className="p-3 rounded-lg bg-[#FF2A55]/10 border border-[#FF2A55]/30 text-[#FF2A55] text-xs font-mono max-w-md text-center">
+                    {dispatchError}
+                  </div>
+                )}
+
+                {isDispatching && (
+                  <div className="p-3 rounded-lg bg-[#14151C] border border-[#FF3E00]/40 text-[#FF3E00] text-xs font-mono max-w-md text-center animate-pulse flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#FF3E00] animate-ping" />
+                  <span>{dispatchStep}</span>
+                </div>
+              )}
+
               <button
-                onClick={() => alert(`Paid ${upfrontFee.totalLaunchFeeSol} SOL launch fee to ${DEFAULT_PLATFORM_FEE_VAULT.toBase58()}! Atomically triggered ${tokenSymbol || "Token"} deploy + dev buy + ${holderCount} sub-wallet Block-0 bundle on ${launchpad}!`)}
-                className="w-full max-w-[340px] h-[48px] rounded-lg bg-[#FF3E00] hover:bg-[#FF5500] text-black font-extrabold text-xs uppercase tracking-wider transition-all shadow-[0_0_25px_rgba(255,62,0,0.45)] hover:scale-[1.02] flex items-center justify-center gap-2"
+                onClick={handleDispatchBundle}
+                disabled={isDispatching}
+                className="w-full max-w-[340px] h-[48px] rounded-lg bg-[#FF3E00] hover:bg-[#FF5500] disabled:opacity-50 text-black font-extrabold text-xs uppercase tracking-wider transition-all shadow-[0_0_25px_rgba(255,62,0,0.45)] hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>Pay Launch Fee &amp; Dispatch ({upfrontFee.totalLaunchFeeSol} SOL) →</span>
+                <span>
+                  {isDispatching
+                    ? "Dispatching Block-0..."
+                    : `Pay Launch Fee & Dispatch (${upfrontFee.totalLaunchFeeSol} SOL) →`}
+                </span>
               </button>
             </div>
+
+            {/* Dispatch Success Modal / Card */}
+            {dispatchResult && (
+              <div className="mt-6 p-5 rounded-xl border border-[#31E3AC]/50 bg-[#0E1F1D] space-y-3 font-mono text-xs animate-fadeIn">
+                <div className="flex justify-between items-center pb-2 border-b border-[#1C5449]">
+                  <span className="text-[#31E3AC] font-bold text-sm">✓ BLOCK-0 BUNDLE SUBMITTED</span>
+                  <span className="text-[10px] text-[#8E9AA8]">CONFIRMING ON-CHAIN</span>
+                </div>
+                <div className="space-y-1.5 text-[11px]">
+                  <div className="flex justify-between">
+                    <span className="text-[#8E9AA8]">Token Mint:</span>
+                    <span className="font-bold text-[#F8FAFC]">{dispatchResult.mintPublicKey}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#8E9AA8]">Jito Bundle ID:</span>
+                    <span className="font-bold text-[#38BDF8] truncate max-w-xs">{dispatchResult.bundleId}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#8E9AA8]">Sub-Wallets Seeded:</span>
+                    <span className="font-bold text-[#31E3AC]">{dispatchResult.subWalletsCount} Wallets</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#8E9AA8]">Solana Explorer:</span>
+                    <a
+                      href={`https://explorer.solana.com/address/${dispatchResult.mintPublicKey}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[#60A5FA] underline hover:text-white"
+                    >
+                      View Mint on Explorer ↗
+                    </a>
+                  </div>
+                </div>
+                <div className="pt-3 border-t border-[#1C5449] flex justify-end">
+                  <Link
+                    href={`/workspace?mint=${dispatchResult.mintPublicKey}`}
+                    className="px-5 py-2 rounded-lg bg-[#31E3AC] hover:bg-[#34D399] text-black font-bold text-xs uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(49,227,172,0.3)]"
+                  >
+                    Open Live Trading Cockpit →
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
