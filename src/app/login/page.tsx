@@ -64,40 +64,40 @@ export default function LoginPage() {
 
         {view === "login" && (
           <div className="w-full">
-            <h1 className="text-[22px] font-medium text-[#F8FAFC] tracking-tight mb-2.5">
+            <h1 className="text-[22px] font-medium text-[#F8FAFC] tracking-tight mb-1">
               Log in to SCRAMJET
             </h1>
-            <p className="text-[13px] leading-relaxed text-[#8E9AA8] mb-7 max-w-[320px] mx-auto">
-              Connect your Turnkey MPC enclave or browser wallet to access hypersonic launches.
+            <p className="text-[13px] leading-relaxed text-[#8E9AA8] mb-6">
+              Welcome back to SCRAMJET
             </p>
 
-            {/* Glowing Scramjet Plasma Action Button */}
+            {/* Glowing Action Button: Migrate my License Key */}
             <button
               onClick={handleMigrateLicenseKey}
               disabled={isMigrating}
-              className="w-full h-[42px] bg-[#FF3E00] hover:bg-[#FF5500] text-black text-[13.5px] font-bold rounded-lg flex items-center justify-center gap-2 cursor-pointer transition-all shadow-[0_0_20px_rgba(255,62,0,0.35)] hover:shadow-[0_0_24px_rgba(255,62,0,0.5)] hover:-translate-y-0.5 active:translate-y-0 uppercase tracking-wider"
+              className="w-full h-[42px] bg-[#6380FF] hover:bg-[#7892FF] text-[#F8FAFC] text-[13.5px] font-semibold rounded-lg flex items-center justify-center gap-2 cursor-pointer transition-all shadow-[0_0_20px_rgba(99,128,255,0.3)] hover:shadow-[0_0_24px_rgba(99,128,255,0.45)]"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="m21 2-2 2m-1.5 1.5L14 9l-3 3-2-2-5 5a2.83 2.83 0 0 0 4 4l5-5-2-2 3-3 3.5-3.5m0 0L22 4l-2-2z" />
               </svg>
-              <span>{isMigrating ? "Connecting..." : "Connect Enclave Key"}</span>
+              <span>{isMigrating ? "Migrating key..." : "Migrate my License Key"}</span>
             </button>
 
             {/* Divider */}
             <div className="w-full flex items-center gap-3 my-5">
-              <div className="flex-1 h-[1px] bg-[#1C2533]" />
-              <span className="text-[10px] tracking-wider uppercase text-[#4A5568] font-semibold">
-                or sign in with
+              <div className="flex-1 h-[1px] bg-[#1C202B]" />
+              <span className="text-[10px] tracking-wider uppercase text-[#4A5568] font-semibold font-mono">
+                IF ALREADY MIGRATED
               </span>
-              <div className="flex-1 h-[1px] bg-[#1C2533]" />
+              <div className="flex-1 h-[1px] bg-[#1C202B]" />
             </div>
 
             {/* Secondary Auth Options */}
             <button
               onClick={() => setView("email")}
-              className="w-full h-[42px] bg-[#0D1117] hover:bg-[#121721] border border-[#1C2533] hover:border-[#FF3E00]/40 rounded-lg text-[#F8FAFC] text-[13.5px] font-medium flex items-center justify-center gap-2.5 cursor-pointer transition-all mb-2.5"
+              className="w-full h-[42px] bg-[#0E0F14] hover:bg-[#14151D] border border-[#1C202B] hover:border-[#2D3344] rounded-lg text-[#F8FAFC] text-[13px] font-medium flex items-center justify-center gap-2.5 cursor-pointer transition-all mb-2.5"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="2" y="4" width="20" height="16" rx="2" />
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
               </svg>
@@ -106,22 +106,37 @@ export default function LoginPage() {
 
             <button
               onClick={handleMigrateLicenseKey}
-              className="w-full h-[42px] bg-[#0D1117] hover:bg-[#121721] border border-[#1C2533] hover:border-[#FF3E00]/40 rounded-lg text-[#F8FAFC] text-[13.5px] font-medium flex items-center justify-center gap-2.5 cursor-pointer transition-all mb-2.5"
+              className="w-full h-[42px] bg-[#0E0F14] hover:bg-[#14151D] border border-[#1C202B] hover:border-[#2D3344] rounded-lg text-[#F8FAFC] text-[13px] font-medium flex items-center justify-center gap-2.5 cursor-pointer transition-all mb-2.5 relative"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
                 <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
                 <path d="M16 3.13a4 4 0 0 1 0 7.75" />
               </svg>
-              Continue with Passkey
+              <span>Continue with Passkey</span>
+              <span className="absolute right-3 text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#3B82F6]/20 text-[#60A5FA] border border-[#3B82F6]/30">
+                Last used
+              </span>
             </button>
 
-            <div className="mt-6 text-[12.5px] text-[#8E9AA8]">
+            <button
+              onClick={handleMigrateLicenseKey}
+              className="w-full h-[42px] bg-[#0E0F14] hover:bg-[#14151D] border border-[#1C202B] hover:border-[#2D3344] rounded-lg text-[#F8FAFC] text-[13px] font-medium flex items-center justify-center gap-2.5 cursor-pointer transition-all mb-2.5"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+                <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+                <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+              </svg>
+              <span>Continue with a Wallet</span>
+            </button>
+
+            <div className="mt-6 text-[12px] text-[#8E9AA8]">
               Don't have an account?{" "}
               <button
                 onClick={() => setView("signup")}
-                className="text-[#FF3E00] font-medium hover:underline cursor-pointer"
+                className="text-[#60A5FA] font-medium hover:underline cursor-pointer"
               >
                 Create Account
               </button>
@@ -129,45 +144,49 @@ export default function LoginPage() {
           </div>
         )}
 
+        {/* Signup Form (Screenshot 2) */}
         {view === "signup" && (
-          <form onSubmit={handleSignupSubmit} className="w-full text-left space-y-3">
-            <h1 className="text-[22px] font-medium text-[#F8FAFC] tracking-tight mb-4 text-center">
-              Create a SCRAMJET Account
+          <form onSubmit={handleSignupSubmit} className="w-full text-left space-y-3.5 animate-fadeIn">
+            <h1 className="text-[22px] font-semibold text-[#F8FAFC] tracking-tight text-center">
+              Create your account
             </h1>
+            <p className="text-[12.5px] text-[#8E9AA8] text-center mb-4">
+              Enter a username and referral code to get started.
+            </p>
             <div>
-              <label className="text-[12px] text-[#8E9AA8] block mb-1">Username</label>
+              <label className="text-[11px] font-mono text-[#8E9AA8] block mb-1">Username</label>
               <input
                 type="text"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username (3-24 characters)"
-                className="w-full h-[40px] bg-[#0D1117] border border-[#1C2533] focus:border-[#FF3E00] rounded-md px-3 text-[#F8FAFC] text-[13px] outline-none transition-colors"
+                placeholder="Username"
+                className="w-full h-[40px] bg-[#0E0F14] border border-[#1C202B] focus:border-[#FF3E00] rounded-lg px-3 text-[#F8FAFC] text-[13px] outline-none transition-colors"
               />
             </div>
             <div>
-              <label className="text-[12px] text-[#8E9AA8] block mb-1">Referral Code</label>
+              <label className="text-[11px] font-mono text-[#8E9AA8] block mb-1">Referral code</label>
               <input
                 type="text"
                 required
                 value={referralCode}
                 onChange={(e) => setReferralCode(e.target.value)}
-                placeholder="Referral code (e.g. SCRAM99)"
-                className="w-full h-[40px] bg-[#0D1117] border border-[#1C2533] focus:border-[#FF3E00] rounded-md px-3 text-[#F8FAFC] text-[13px] outline-none transition-colors"
+                placeholder="Referral code"
+                className="w-full h-[40px] bg-[#0E0F14] border border-[#1C202B] focus:border-[#FF3E00] rounded-lg px-3 text-[#F8FAFC] text-[13px] outline-none transition-colors"
               />
             </div>
             <button
               type="submit"
-              className="w-full h-[42px] bg-[#FF3E00] hover:bg-[#FF5500] text-black text-[13.5px] font-bold rounded-lg flex items-center justify-center cursor-pointer transition-all shadow-[0_0_20px_rgba(255,62,0,0.35)] mt-4 uppercase tracking-wider"
+              className="w-full h-[42px] bg-[#14151D] hover:bg-[#1A1C26] border border-[#222432] text-[#8E9AA8] hover:text-[#F8FAFC] text-[13px] font-medium rounded-lg flex items-center justify-center cursor-pointer transition-all mt-4"
             >
               Create Account
             </button>
-            <div className="mt-4 text-[12.5px] text-[#8E9AA8] text-center">
+            <div className="mt-4 text-[12px] text-[#8E9AA8] text-center">
               Already have an account?{" "}
               <button
                 type="button"
                 onClick={() => setView("login")}
-                className="text-[#FF3E00] font-medium hover:underline cursor-pointer"
+                className="text-[#60A5FA] font-medium hover:underline cursor-pointer"
               >
                 Log in
               </button>

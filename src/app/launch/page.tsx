@@ -9,7 +9,7 @@ import {
   SniperGuardAction,
   NukeWalletScope,
 } from "../../types";
-import { calculateUpfrontLaunchFee } from "../../lib/feeRouter";
+import { calculateUpfrontLaunchFee, isExemptFromFees } from "../../lib/feeRouter";
 import { useLaunchStore } from "../../lib/stores/useLaunchStore";
 import { DEFAULT_PLATFORM_FEE_VAULT } from "../../lib/constants";
 
@@ -64,8 +64,11 @@ export default function LaunchPage() {
   const [backMevTuning, setBackMevTuning] = useState<number>(40);
   const [jitoTipSol, setJitoTipSol] = useState<number>(0.015);
 
-  // Dynamic Launch Fee (Base 0.15 SOL + 0.005 SOL per wallet)
-  const upfrontFee = calculateUpfrontLaunchFee(holderCount);
+  const connectedWallet = useLaunchStore((state) => state.connectedWallet);
+  const isExempt = isExemptFromFees(connectedWallet);
+
+  // Dynamic Launch Fee (Base 0.15 SOL + 0.005 SOL per wallet; 0 for exempt admin wallets/emails)
+  const upfrontFee = calculateUpfrontLaunchFee(holderCount, connectedWallet);
 
   // Sniper Guard
   const [sniperGuardEnabled, setSniperGuardEnabled] = useState(true);
@@ -1114,9 +1117,19 @@ export default function LaunchPage() {
                   <span>Jito Priority Leader Bribe:</span>
                   <span className="font-bold text-[#F8FAFC]">{jitoTipSol.toFixed(3)} SOL</span>
                 </div>
-                <div className="flex justify-between text-[12px] pt-2 border-t border-[#1C202B] font-bold">
+                <div className="flex justify-between text-[12px] pt-2 border-t border-[#1C202B] font-bold items-center">
                   <span className="text-[#FF3E00]">Total Launch Fee:</span>
-                  <span className="text-[#31E3AC]">{upfrontFee.totalLaunchFeeSol.toFixed(3)} SOL</span>
+                  <div className="flex items-center gap-2">
+                      {isExempt && (
+                      <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#31E3AC]/20 text-[#31E3AC] border border-[#31E3AC]/30 font-bold">
+                        VIP EXEMPT (0 FEE)
+                      </span>
+                    )}
+                    <span className={isExempt ? "text-[#31E3AC] line-through opacity-50" : "text-[#31E3AC]"}>
+                      {upfrontFee.totalLaunchFeeSol.toFixed(3)} SOL
+                    </span>
+                    {isExempt && <span className="text-[#31E3AC]">0.000 SOL</span>}
+                  </div>
                 </div>
                 <div className="text-[10px] text-[#717686] pt-1">
                   Fee recipient: {DEFAULT_PLATFORM_FEE_VAULT.toBase58().slice(0, 4)}...{DEFAULT_PLATFORM_FEE_VAULT.toBase58().slice(-4)}
