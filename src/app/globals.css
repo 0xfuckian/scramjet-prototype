@@ -39,3 +39,61 @@ body {
 }
 
 
+
+/* Core Button & Layout Utility Classes */
+.px-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+}
+.px-btn:active {
+  transform: scale(0.97);
+}
+.px-btn-primary {
+  border-color: #1C2533;
+  background: transparent;
+  color: #F8FAFC;
+}
+.px-btn-primary:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.px-btn-plasma {
+  background: #FF3E00;
+  color: #000;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 0 18px rgba(255, 62, 0, 0.35);
+}
+.px-btn-plasma:hover {
+  background: #FF5500;
+  box-shadow: 0 0 24px rgba(255, 62, 0, 0.5);
+  transform: translateY(-1px);
+}
+.px-btn-plasma:active {
+  transform: translateY(0);
+}
+
+.px-panel {
+  background: #0D1117;
+  border: 1px solid #1C2533;
+  border-radius: 8px;
+}
+.px-card {
+  background: #121721;
+  border: 1px solid #1C2533;
+  border-radius: 6px;
+}

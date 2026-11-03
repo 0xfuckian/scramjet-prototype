@@ -13,7 +13,9 @@ declare global {
 }
 
 export function WalletButton() {
-  const { connectedWallet, walletBalanceSol, setConnectedWallet } = useLaunchStore();
+  const connectedWallet = useLaunchStore((state) => state.connectedWallet);
+  const masterBalanceSol = useLaunchStore((state) => state.masterBalanceSol);
+  const setConnectedWallet = useLaunchStore((state) => state.setConnectedWallet);
   const [isConnecting, setIsConnecting] = useState(false);
   const [hasPhantom, setHasPhantom] = useState(false);
 
@@ -31,28 +33,25 @@ export function WalletButton() {
       if (!provider) {
         // Fallback demo connection with the user's configured vault address
         const demoPubkey = new PublicKey("CcwpTCpWMtKGo1fqnZuH4Psdj6yugbmSrAPaeTdEy6Qq");
-        setConnectedWallet(demoPubkey);
+        await setConnectedWallet(demoPubkey);
         setIsConnecting(false);
         return;
       }
 
       const resp = await provider.connect();
       const pubkey = new PublicKey(resp.publicKey.toString());
-      setConnectedWallet(pubkey);
-
-      const bal = await getSolBalance(pubkey);
-      useLaunchStore.setState({ walletBalanceSol: bal });
+      await setConnectedWallet(pubkey);
     } catch (err) {
       console.warn("Wallet connect failed or rejected, falling back to vault:", err);
       const fallback = new PublicKey("CcwpTCpWMtKGo1fqnZuH4Psdj6yugbmSrAPaeTdEy6Qq");
-      setConnectedWallet(fallback);
+      await setConnectedWallet(fallback);
     } finally {
       setIsConnecting(false);
     }
   };
 
   const disconnectWallet = () => {
-    setConnectedWallet(null);
+    void setConnectedWallet(null);
   };
 
   if (connectedWallet) {
@@ -64,7 +63,7 @@ export function WalletButton() {
         <span className="w-2 h-2 rounded-full bg-emerald-400" />
         <span className="text-scram-stark font-bold">{short}</span>
         <span className="text-scram-titanium font-semibold">
-          ({walletBalanceSol.toFixed(2)} SOL)
+          ({masterBalanceSol.toFixed(2)} SOL)
         </span>
         <button
           onClick={disconnectWallet}
