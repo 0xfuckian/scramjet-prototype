@@ -52,7 +52,7 @@ export default function LaunchPage() {
   const [creatorSolPercent, setCreatorSolPercent] = useState(50);
   const [buybackBurnPercent, setBuybackBurnPercent] = useState(50);
 
-  // Real Chain Definitions matching 1:1 Proxima screenshot
+  // Real Chain Definitions (Solana active, other chains coming soon)
   const chains = [
     {
       id: "solana",
@@ -61,55 +61,62 @@ export default function LaunchPage() {
       badgeColor: "bg-[#103833] text-[#31E3AC] border-[#1C5449]",
       icon: "/icons/chains/sol.webp",
       subIcons: ["/icons/dex/pumpfun.webp", "/icons/dex/raydium.webp"],
+      isAvailable: true,
     },
     {
       id: "robinhood",
       name: "Robinhood",
-      badge: "18 LAUNCHPADS",
-      badgeColor: "bg-[#181920] text-[#8E9AA8] border-[#22242F]",
+      badge: "COMING SOON",
+      badgeColor: "bg-[#14151C] text-[#636879] border-[#1C1E28]",
       icon: "/icons/chains/robinhood.webp",
       subIcons: ["/icons/dex/pangea.webp"],
+      isAvailable: false,
     },
     {
       id: "bsc",
       name: "BNB Smart Chain",
-      badge: "6 LAUNCHPADS",
-      badgeColor: "bg-[#181920] text-[#8E9AA8] border-[#22242F]",
+      badge: "COMING SOON",
+      badgeColor: "bg-[#14151C] text-[#636879] border-[#1C1E28]",
       icon: "/icons/chains/bsc.webp",
       subIcons: ["/icons/dex/fourmeme.webp"],
+      isAvailable: false,
     },
     {
       id: "arc",
       name: "Arc",
-      badge: "5 LAUNCHPADS",
+      badge: "COMING SOON",
       tag: "NEW",
-      badgeColor: "bg-[#181920] text-[#8E9AA8] border-[#22242F]",
+      badgeColor: "bg-[#14151C] text-[#636879] border-[#1C1E28]",
       icon: "/icons/chains/arc.webp",
       subIcons: ["/icons/dex/pangea.webp"],
+      isAvailable: false,
     },
     {
       id: "eth",
       name: "Ethereum",
-      badge: "2 LAUNCHPADS",
-      badgeColor: "bg-[#181920] text-[#8E9AA8] border-[#22242F]",
+      badge: "COMING SOON",
+      badgeColor: "bg-[#14151C] text-[#636879] border-[#1C1E28]",
       icon: "/icons/chains/eth.webp",
       subIcons: ["/icons/dex/flap.webp"],
+      isAvailable: false,
     },
     {
       id: "base",
       name: "Base",
-      badge: "5 LAUNCHPADS",
-      badgeColor: "bg-[#181920] text-[#8E9AA8] border-[#22242F]",
+      badge: "COMING SOON",
+      badgeColor: "bg-[#14151C] text-[#636879] border-[#1C1E28]",
       icon: "/icons/chains/base.webp",
       subIcons: ["/icons/dex/clanker.webp"],
+      isAvailable: false,
     },
     {
       id: "xlayer",
       name: "X Layer",
-      badge: "1 LAUNCHPADS",
-      badgeColor: "bg-[#181920] text-[#8E9AA8] border-[#22242F]",
+      badge: "COMING SOON",
+      badgeColor: "bg-[#14151C] text-[#636879] border-[#1C1E28]",
       icon: "/icons/chains/xlayer.webp",
       subIcons: [],
+      isAvailable: false,
     },
   ];
 
@@ -188,43 +195,54 @@ export default function LaunchPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {chains.map((c) => {
                   const isSelected = selectedChain === c.id;
-                  return (
-                    <button
-                      key={c.id}
-                      onClick={() => setSelectedChain(c.id as any)}
-                      className={`p-3 rounded-lg border text-left transition-all relative ${
-                        isSelected
-                          ? "border-[#31E3AC]/60 bg-[#102422]/70 shadow-[0_0_15px_rgba(49,227,172,0.15)] ring-1 ring-[#31E3AC]/40"
-                          : "border-[#1C202B] bg-[#111218] hover:border-[#2D3344] hover:bg-[#14161E]"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={c.icon}
-                            alt={c.name}
-                            className="w-4 h-4 object-contain rounded"
-                          />
-                          <span className="font-semibold text-xs text-[#F8FAFC]">{c.name}</span>
-                        </div>
-                        {c.tag && (
-                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#3B82F6]/20 text-[#60A5FA] border border-[#3B82F6]/30">
-                            {c.tag}
-                          </span>
-                        )}
-                      </div>
+                  const isAvailable = c.isAvailable;
 
-                      <div className="flex items-center gap-1.5">
-                        <div className="flex -space-x-1">
-                          {c.subIcons.map((sub, i) => (
+                    return (
+                      <button
+                      key={c.id}
+                        disabled={!isAvailable}
+                        onClick={() => {
+                          if (isAvailable) setSelectedChain(c.id as any);
+                      }}
+                        className={`p-3 rounded-lg border text-left transition-all relative ${
+                          isSelected
+                            ? "border-[#31E3AC]/60 bg-[#102422]/70 shadow-[0_0_15px_rgba(49,227,172,0.15)] ring-1 ring-[#31E3AC]/40"
+                          : !isAvailable
+                            ? "border-[#151720] bg-[#0A0B0F]/60 opacity-40 grayscale cursor-not-allowed"
+                            : "border-[#1C202B] bg-[#111218] hover:border-[#2D3344] hover:bg-[#14161E]"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
                             <img
-                              key={i}
-                              src={sub}
-                              alt=""
-                              className="w-3.5 h-3.5 rounded-full border border-[#111218] object-cover"
+                              src={c.icon}
+                            alt={c.name}
+                              className={`w-4 h-4 object-contain rounded ${!isAvailable ? "opacity-50" : ""}`}
                             />
-                          ))}
+                            <span className={`font-semibold text-xs ${isAvailable ? "text-[#F8FAFC]" : "text-[#636879]"}`}>
+                            {c.name}
+                            </span>
                         </div>
+                          {c.tag && (
+                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#3B82F6]/20 text-[#60A5FA] border border-[#3B82F6]/30">
+                              {c.tag}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-1.5">
+                        {c.subIcons.length > 0 && (
+                            <div className="flex -space-x-1">
+                              {c.subIcons.map((sub, i) => (
+                                <img
+                                  key={i}
+                                  src={sub}
+                                  alt=""
+                                  className="w-3.5 h-3.5 rounded-full border border-[#111218] object-cover opacity-60"
+                                />
+                            ))}
+                          </div>
+                        )}
                         <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${c.badgeColor}`}>
                           {c.badge}
                         </span>
