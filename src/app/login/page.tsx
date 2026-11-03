@@ -64,11 +64,14 @@ export default function LoginPage() {
 
         {view === "login" && (
           <div className="w-full">
-            <h1 className="text-[22px] font-medium text-[#F8FAFC] tracking-tight mb-1">
-              Log in to SCRAMJET
+            <h1 className="text-[22px] font-medium text-[#F8FAFC] tracking-tight mb-1 flex items-center justify-center gap-2">
+              <span>Log in to SCRAMJET</span>
+              <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-[#FF3E00]/20 text-[#FF3E00] border border-[#FF3E00]/30">
+                BETA
+              </span>
             </h1>
             <p className="text-[13px] leading-relaxed text-[#8E9AA8] mb-6">
-              Welcome back to SCRAMJET
+              Welcome back to SCRAMJET (Mainnet Beta)
             </p>
 
             {/* Glowing Action Button: Migrate my License Key */}

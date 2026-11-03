@@ -25,7 +25,7 @@ export default function HomePage() {
       {/* ================= 1. HERO SECTION ================= */}
       <section className="pt-20 pb-16 px-6 text-center max-w-5xl mx-auto space-y-6">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF3E00]/10 border border-[#FF3E00]/30 text-[#FF3E00] text-xs font-mono font-bold tracking-wider uppercase">
-          <span>HYPERSONIC SOLANA LAUNCHPAD // 3.5% PROTOCOL FEE</span>
+          <span>SOLANA MAINNET BETA // 3.5% PROTOCOL FEE</span>
         </div>
 
         <h1 className="text-5xl sm:text-7xl font-bold tracking-tight text-[#F8FAFC] leading-[1.06]">

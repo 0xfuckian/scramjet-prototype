@@ -18,8 +18,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-50 h-[56px] px-6 md:px-12 bg-[#07080B]/90 backdrop-blur-md border-b border-[#14161F] flex items-center justify-between text-xs">
           <Link href="/" className="flex items-center gap-2.5 group">
             <ScramjetLogo size={26} />
-              <span className="font-bold text-sm tracking-tight text-[#F8FAFC] group-hover:text-[#FF3E00] transition-colors">
-                SCRAMJET
+              <span className="font-bold text-sm tracking-tight text-[#F8FAFC] group-hover:text-[#FF3E00] transition-colors flex items-center gap-1.5">
+                <span>SCRAMJET</span>
+                <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-[#FF3E00]/20 text-[#FF3E00] border border-[#FF3E00]/30">
+                  BETA
+                </span>
               </span>
             </Link>
 
@@ -116,8 +119,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="flex items-center justify-between px-1">
               <Link href="/" className="flex items-center gap-2 group">
                 <ScramjetLogo size={24} />
-                  <span className="font-bold text-xs tracking-tight text-[#F8FAFC] group-hover:text-[#FF3E00] transition-colors">
-                    SCRAMJET <span className="text-[10px] text-[#636879] font-normal font-mono">v1.0</span>
+                  <span className="font-bold text-xs tracking-tight text-[#F8FAFC] group-hover:text-[#FF3E00] transition-colors flex items-center gap-1.5">
+                    <span>SCRAMJET</span>
+                    <span className="text-[9px] text-[#FF3E00] font-bold font-mono px-1.5 py-0.2 rounded bg-[#FF3E00]/20 border border-[#FF3E00]/30">
+                      BETA
+                    </span>
                   </span>
                 </Link>
               <button className="text-[#636879] hover:text-[#F8FAFC] p-1">
@@ -371,7 +377,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5 text-[#31E3AC]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#31E3AC] animate-pulse" />
-            <span>All Services are Live · 396ms</span>
+            <span>SCRAMJET MAINNET BETA · All Services Live · 396ms</span>
           </span>
           <span className="text-[#8E9AA8] hover:text-[#F8FAFC] cursor-pointer">Help</span>
         </div>

@@ -4,7 +4,7 @@ export const SCRAMJET_BRAND = {
   name: "SCRAMJET",
   codename: "MACH CASCADE",
   tagline: "Hypersonic Solana Token Launchpad & Creator Fee Protocol",
-  version: "1.0.0-PROXIMA-KILLER",
+  version: "1.0.0-MAINNET-BETA",
   feePercent: 3.5, // 3.5% platform fee (undercutting Proxima's 5.0% by 30%)
 };
 

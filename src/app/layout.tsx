@@ -3,7 +3,7 @@ import { AppShell } from "../components/layout/AppShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SCRAMJET // One platform. Every token operation.",
+  title: "SCRAMJET // Mainnet Beta - One platform. Every token operation.",
   description: "Launch across 12 launchpads. Manage wallets, trade, automate and monitor execution from one place.",
 };
 
