@@ -5,17 +5,17 @@
 @tailwind utilities;
 
 :root {
-  --bg-canvas: #0e0f13;
-  --bg-panel: #16171f;
-  --bg-input: #1a1b24;
-  --border-stroke: #22242f;
-  --accent-lavender: #7892ff;
-  --accent-peach: #fdba74;
-  --neon-mint: #31e3ac;
-  --crimson-pink: #ed3a7a;
-  --text-pure: #fcfcfc;
-  --text-muted: #8b8e9d;
-  --text-subtle: #565969;
+  --bg-canvas: #08090C;
+  --bg-panel: #0D1117;
+  --bg-input: #121721;
+  --border-stroke: #1C2533;
+  --accent-plasma: #FF3E00;
+  --accent-flare: #FF7700;
+  --neon-mint: #31E3AC;
+  --crimson-pink: #FF2A55;
+  --text-pure: #F8FAFC;
+  --text-muted: #8E9AA8;
+  --text-subtle: #4A5568;
 }
 
 body {
@@ -26,22 +26,16 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Proxima Constellation 5-dot mark */
-.proxima-constellation {
-  width: 26px;
-  height: 26px;
-  position: relative;
+/* Scramjet Mach Mark */
+.scramjet-mark {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FF3E00 0%, #FF7700 100%);
+  border-radius: 6px;
+  box-shadow: 0 0 16px rgba(255, 62, 0, 0.4);
 }
-.constellation-dot {
-  width: 5px;
-  height: 5px;
-  background-color: #fcfcfc;
-  border-radius: 50%;
-  position: absolute;
-}
-.dot-top { top: 0; left: 10.5px; }
-.dot-bottom { bottom: 0; left: 10.5px; }
-.dot-left { left: 0; top: 10.5px; }
-.dot-right { right: 0; top: 10.5px; }
-.dot-center { top: 10.5px; left: 10.5px; }
+
 

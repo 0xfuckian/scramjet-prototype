@@ -18,14 +18,12 @@ export default function LoginPage() {
   const handleMigrateLicenseKey = async () => {
     setIsMigrating(true);
     try {
-      // Check Phantom or connect via Turnkey vault
       if (typeof window !== "undefined" && (window.phantom?.solana || window.solana)) {
         const provider = window.phantom?.solana || window.solana;
         const resp = await provider.connect();
         const pk = new PublicKey(resp.publicKey.toString());
         setConnectedWallet(pk);
       } else {
-        // Vault fallback
         const defaultVault = new PublicKey("CcwpTCpWMtKGo1fqnZuH4Psdj6yugbmSrAPaeTdEy6Qq");
         setConnectedWallet(defaultVault);
       }
@@ -55,52 +53,50 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-60px)] flex flex-col items-center justify-center px-4 py-12 bg-[#0e0f13] text-[#fcfcfc]">
+    <div className="min-h-[calc(100vh-60px)] flex flex-col items-center justify-center px-4 py-12 bg-[#08090C] text-[#F8FAFC]">
       <div className="w-full max-w-[380px] flex flex-col items-center text-center">
         
-        {/* 5-Dot Constellation Logo Mark (1:1 Proxima) */}
-        <div className="proxima-constellation mb-6">
-          <div className="constellation-dot dot-top" />
-          <div className="constellation-dot dot-bottom" />
-          <div className="constellation-dot dot-left" />
-          <div className="constellation-dot dot-right" />
-          <div className="constellation-dot dot-center" />
+        {/* Scramjet Mark */}
+        <div className="scramjet-mark mb-6">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
         </div>
 
         {view === "login" && (
           <div className="w-full">
-            <h1 className="text-[22px] font-medium text-[#fcfcfc] tracking-tight mb-2.5">
-              Log in to Proxima
+            <h1 className="text-[22px] font-medium text-[#F8FAFC] tracking-tight mb-2.5">
+              Log in to SCRAMJET
             </h1>
-            <p className="text-[13px] leading-relaxed text-[#8b8e9d] mb-7 max-w-[320px] mx-auto">
-              We're migrating license keys to new login methods. If you haven't migrated yet, start migrating now.
+            <p className="text-[13px] leading-relaxed text-[#8E9AA8] mb-7 max-w-[320px] mx-auto">
+              Connect your Turnkey MPC enclave or browser wallet to access hypersonic launches.
             </p>
 
-            {/* Glowing Lavender Action Button */}
+            {/* Glowing Scramjet Plasma Action Button */}
             <button
               onClick={handleMigrateLicenseKey}
               disabled={isMigrating}
-              className="w-full h-[42px] bg-[#7892ff] hover:bg-[#8fa6ff] text-[#0a0b0e] text-[13.5px] font-semibold rounded-lg flex items-center justify-center gap-2 cursor-pointer transition-all shadow-[0_0_20px_rgba(120,146,255,0.25)] hover:shadow-[0_0_24px_rgba(120,146,255,0.4)] hover:-translate-y-0.5 active:translate-y-0"
+              className="w-full h-[42px] bg-[#FF3E00] hover:bg-[#FF5500] text-black text-[13.5px] font-bold rounded-lg flex items-center justify-center gap-2 cursor-pointer transition-all shadow-[0_0_20px_rgba(255,62,0,0.35)] hover:shadow-[0_0_24px_rgba(255,62,0,0.5)] hover:-translate-y-0.5 active:translate-y-0 uppercase tracking-wider"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                <path d="m21 2-2 2m-1.5 1.5L14 9l-3 3-2-2-5 5a2.83 2.83 0 0 0 4 4l5-5-2-2 3-3 3.5-3.5m0 0L22 4l-2-2z" />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
               </svg>
-              <span>{isMigrating ? "Migrating key..." : "Migrate my License Key"}</span>
+              <span>{isMigrating ? "Connecting..." : "Connect Enclave Key"}</span>
             </button>
 
             {/* Divider */}
             <div className="w-full flex items-center gap-3 my-5">
-              <div className="flex-1 h-[1px] bg-[#1e2029]" />
-              <span className="text-[10px] tracking-wider uppercase text-[#565969] font-semibold">
-                if already migrated
+              <div className="flex-1 h-[1px] bg-[#1C2533]" />
+              <span className="text-[10px] tracking-wider uppercase text-[#4A5568] font-semibold">
+                or sign in with
               </span>
-              <div className="flex-1 h-[1px] bg-[#1e2029]" />
+              <div className="flex-1 h-[1px] bg-[#1C2533]" />
             </div>
 
             {/* Secondary Auth Options */}
             <button
               onClick={() => setView("email")}
-              className="w-full h-[42px] bg-[#16171f] hover:bg-[#1d1e28] border border-[#232530] hover:border-[#323545] rounded-lg text-[#fcfcfc] text-[13.5px] font-medium flex items-center justify-center gap-2.5 cursor-pointer transition-all mb-2.5"
+              className="w-full h-[42px] bg-[#0D1117] hover:bg-[#121721] border border-[#1C2533] hover:border-[#FF3E00]/40 rounded-lg text-[#F8FAFC] text-[13.5px] font-medium flex items-center justify-center gap-2.5 cursor-pointer transition-all mb-2.5"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -111,7 +107,7 @@ export default function LoginPage() {
 
             <button
               onClick={handleMigrateLicenseKey}
-              className="w-full h-[42px] bg-[#16171f] hover:bg-[#1d1e28] border border-[#232530] hover:border-[#323545] rounded-lg text-[#fcfcfc] text-[13.5px] font-medium flex items-center justify-center gap-2.5 cursor-pointer transition-all mb-2.5"
+              className="w-full h-[42px] bg-[#0D1117] hover:bg-[#121721] border border-[#1C2533] hover:border-[#FF3E00]/40 rounded-lg text-[#F8FAFC] text-[13.5px] font-medium flex items-center justify-center gap-2.5 cursor-pointer transition-all mb-2.5"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -122,11 +118,11 @@ export default function LoginPage() {
               Continue with Passkey
             </button>
 
-            <div className="mt-6 text-[12.5px] text-[#8b8e9d]">
+            <div className="mt-6 text-[12.5px] text-[#8E9AA8]">
               Don't have an account?{" "}
               <button
                 onClick={() => setView("signup")}
-                className="text-[#7892ff] font-medium hover:underline cursor-pointer"
+                className="text-[#FF3E00] font-medium hover:underline cursor-pointer"
               >
                 Create Account
               </button>
@@ -136,43 +132,43 @@ export default function LoginPage() {
 
         {view === "signup" && (
           <form onSubmit={handleSignupSubmit} className="w-full text-left space-y-3">
-            <h1 className="text-[22px] font-medium text-[#fcfcfc] tracking-tight mb-4 text-center">
-              Create an account
+            <h1 className="text-[22px] font-medium text-[#F8FAFC] tracking-tight mb-4 text-center">
+              Create a SCRAMJET Account
             </h1>
             <div>
-              <label className="text-[12px] text-[#8b8e9d] block mb-1">Username</label>
+              <label className="text-[12px] text-[#8E9AA8] block mb-1">Username</label>
               <input
                 type="text"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username (3-24 characters)"
-                className="w-full h-[40px] bg-[#14151c] border border-[#232530] focus:border-[#7892ff] rounded-md px-3 text-[#fcfcfc] text-[13px] outline-none transition-colors"
+                className="w-full h-[40px] bg-[#0D1117] border border-[#1C2533] focus:border-[#FF3E00] rounded-md px-3 text-[#F8FAFC] text-[13px] outline-none transition-colors"
               />
             </div>
             <div>
-              <label className="text-[12px] text-[#8b8e9d] block mb-1">Referral code</label>
+              <label className="text-[12px] text-[#8E9AA8] block mb-1">Referral Code</label>
               <input
                 type="text"
                 required
                 value={referralCode}
                 onChange={(e) => setReferralCode(e.target.value)}
-                placeholder="Referral code (required, e.g. Q1WS64)"
-                className="w-full h-[40px] bg-[#14151c] border border-[#232530] focus:border-[#7892ff] rounded-md px-3 text-[#fcfcfc] text-[13px] outline-none transition-colors"
+                placeholder="Referral code (e.g. SCRAM99)"
+                className="w-full h-[40px] bg-[#0D1117] border border-[#1C2533] focus:border-[#FF3E00] rounded-md px-3 text-[#F8FAFC] text-[13px] outline-none transition-colors"
               />
             </div>
             <button
               type="submit"
-              className="w-full h-[42px] bg-[#7892ff] hover:bg-[#8fa6ff] text-[#0a0b0e] text-[13.5px] font-semibold rounded-lg flex items-center justify-center cursor-pointer transition-all shadow-[0_0_20px_rgba(120,146,255,0.25)] mt-4"
+              className="w-full h-[42px] bg-[#FF3E00] hover:bg-[#FF5500] text-black text-[13.5px] font-bold rounded-lg flex items-center justify-center cursor-pointer transition-all shadow-[0_0_20px_rgba(255,62,0,0.35)] mt-4 uppercase tracking-wider"
             >
               Create Account
             </button>
-            <div className="mt-4 text-[12.5px] text-[#8b8e9d] text-center">
+            <div className="mt-4 text-[12.5px] text-[#8E9AA8] text-center">
               Already have an account?{" "}
               <button
                 type="button"
                 onClick={() => setView("login")}
-                className="text-[#7892ff] font-medium hover:underline cursor-pointer"
+                className="text-[#FF3E00] font-medium hover:underline cursor-pointer"
               >
                 Log in
               </button>
@@ -182,31 +178,31 @@ export default function LoginPage() {
 
         {view === "email" && (
           <form onSubmit={handleEmailSubmit} className="w-full text-left space-y-3">
-            <h1 className="text-[22px] font-medium text-[#fcfcfc] tracking-tight mb-4 text-center">
+            <h1 className="text-[22px] font-medium text-[#F8FAFC] tracking-tight mb-4 text-center">
               Sign in with Email
             </h1>
             <div>
-              <label className="text-[12px] text-[#8b8e9d] block mb-1">Email address</label>
+              <label className="text-[12px] text-[#8E9AA8] block mb-1">Email Address</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="developer@domain.com"
-                className="w-full h-[40px] bg-[#14151c] border border-[#232530] focus:border-[#7892ff] rounded-md px-3 text-[#fcfcfc] text-[13px] outline-none transition-colors"
+                className="w-full h-[40px] bg-[#0D1117] border border-[#1C2533] focus:border-[#FF3E00] rounded-md px-3 text-[#F8FAFC] text-[13px] outline-none transition-colors"
               />
             </div>
             <button
               type="submit"
-              className="w-full h-[42px] bg-[#7892ff] hover:bg-[#8fa6ff] text-[#0a0b0e] text-[13.5px] font-semibold rounded-lg flex items-center justify-center cursor-pointer transition-all shadow-[0_0_20px_rgba(120,146,255,0.25)] mt-4"
+              className="w-full h-[42px] bg-[#FF3E00] hover:bg-[#FF5500] text-black text-[13.5px] font-bold rounded-lg flex items-center justify-center cursor-pointer transition-all shadow-[0_0_20px_rgba(255,62,0,0.35)] mt-4 uppercase tracking-wider"
             >
               Continue
             </button>
-            <div className="mt-4 text-[12.5px] text-[#8b8e9d] text-center">
+            <div className="mt-4 text-[12.5px] text-[#8E9AA8] text-center">
               <button
                 type="button"
                 onClick={() => setView("login")}
-                className="text-[#7892ff] font-medium hover:underline cursor-pointer"
+                className="text-[#FF3E00] font-medium hover:underline cursor-pointer"
               >
                 ← Back to all options
               </button>
@@ -214,25 +210,25 @@ export default function LoginPage() {
           </form>
         )}
 
-        {/* Turnkey Wordmark (1:1 Proxima Badge) */}
-        <div className="flex items-center gap-1.5 mt-9 text-[11.5px] text-[#8b8e9d]">
+        {/* Turnkey Wordmark Badge */}
+        <div className="flex items-center gap-1.5 mt-9 text-[11.5px] text-[#8E9AA8]">
           <span>Secured by</span>
-          <span className="font-bold text-[#fcfcfc] tracking-tight">turnkey</span>
+          <span className="font-bold text-[#F8FAFC] tracking-tight">turnkey</span>
         </div>
 
         {/* Social Links */}
-        <div className="flex items-center gap-5 mt-6 text-[#565969]">
-          <Link href="/workspace" className="hover:text-[#fcfcfc] transition-colors" title="Workspace Terminal">
+        <div className="flex items-center gap-5 mt-6 text-[#4A5568]">
+          <Link href="/workspace" className="hover:text-[#F8FAFC] transition-colors" title="Workspace Terminal">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" />
             </svg>
           </Link>
-          <a href="https://docs.proxima.tools" target="_blank" rel="noreferrer" className="hover:text-[#fcfcfc] transition-colors" title="Documentation">
+          <Link href="/launch" className="hover:text-[#F8FAFC] transition-colors" title="Launchpad">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
             </svg>
-          </a>
-          <a href="https://x.com" target="_blank" rel="noreferrer" className="hover:text-[#fcfcfc] transition-colors" title="X (Twitter)">
+          </Link>
+          <a href="https://x.com" target="_blank" rel="noreferrer" className="hover:text-[#F8FAFC] transition-colors" title="X (Twitter)">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>
@@ -243,3 +239,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
