@@ -52,152 +52,81 @@ export default function LaunchPage() {
   const [creatorSolPercent, setCreatorSolPercent] = useState(50);
   const [buybackBurnPercent, setBuybackBurnPercent] = useState(50);
 
-  // Chains array
+  // Real Chain Definitions matching 1:1 Proxima screenshot
   const chains = [
-    { id: "solana", name: "Solana", count: "12 LAUNCHPADS", active: true },
-    { id: "bsc", name: "BNB Smart Chain", count: "6 LAUNCHPADS", active: false },
-    { id: "base", name: "Base", count: "5 LAUNCHPADS", active: false },
-    { id: "eth", name: "Ethereum", count: "2 LAUNCHPADS", active: false },
+    {
+      id: "solana",
+      name: "Solana",
+      badge: "12 LAUNCHPADS",
+      badgeColor: "bg-[#103833] text-[#31E3AC] border-[#1C5449]",
+      icon: "/icons/chains/sol.webp",
+      subIcons: ["/icons/dex/pumpfun.webp", "/icons/dex/raydium.webp"],
+    },
+    {
+      id: "robinhood",
+      name: "Robinhood",
+      badge: "18 LAUNCHPADS",
+      badgeColor: "bg-[#181920] text-[#8E9AA8] border-[#22242F]",
+      icon: "/icons/chains/robinhood.webp",
+      subIcons: ["/icons/dex/pangea.webp"],
+    },
+    {
+      id: "bsc",
+      name: "BNB Smart Chain",
+      badge: "6 LAUNCHPADS",
+      badgeColor: "bg-[#181920] text-[#8E9AA8] border-[#22242F]",
+      icon: "/icons/chains/bsc.webp",
+      subIcons: ["/icons/dex/fourmeme.webp"],
+    },
+    {
+      id: "arc",
+      name: "Arc",
+      badge: "5 LAUNCHPADS",
+      tag: "NEW",
+      badgeColor: "bg-[#181920] text-[#8E9AA8] border-[#22242F]",
+      icon: "/icons/chains/arc.webp",
+      subIcons: ["/icons/dex/pangea.webp"],
+    },
+    {
+      id: "eth",
+      name: "Ethereum",
+      badge: "2 LAUNCHPADS",
+      badgeColor: "bg-[#181920] text-[#8E9AA8] border-[#22242F]",
+      icon: "/icons/chains/eth.webp",
+      subIcons: ["/icons/dex/flap.webp"],
+    },
+    {
+      id: "base",
+      name: "Base",
+      badge: "5 LAUNCHPADS",
+      badgeColor: "bg-[#181920] text-[#8E9AA8] border-[#22242F]",
+      icon: "/icons/chains/base.webp",
+      subIcons: ["/icons/dex/clanker.webp"],
+    },
+    {
+      id: "xlayer",
+      name: "X Layer",
+      badge: "1 LAUNCHPADS",
+      badgeColor: "bg-[#181920] text-[#8E9AA8] border-[#22242F]",
+      icon: "/icons/chains/xlayer.webp",
+      subIcons: [],
+    },
   ];
 
-  // 12 Launchpads with realistic custom brand SVGs / Logos
-  const launchpadList: { id: SolanaLaunchpad; name: string; tag: string; icon: React.ReactNode }[] = [
-    {
-      id: "PUMP_FUN",
-      name: "PumpFun",
-      tag: "SOL · USDC",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-          <rect width="24" height="24" rx="12" fill="#10B981" />
-          <path d="M7 14.5L12 9.5L17 14.5" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ),
-    },
-    {
-      id: "METEORA_DBC",
-      name: "Meteora DBC",
-      tag: "SOL · USDC",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" fill="#EF4444" />
-          <path d="M12 6L14 11H19L15 14L16.5 19L12 16L7.5 19L9 14L5 11H10L12 6Z" fill="#FFFFFF" />
-        </svg>
-      ),
-    },
-    {
-      id: "RAYDIUM_LAUNCHLAB",
-      name: "Raydium LaunchLab",
-      tag: "SOL · USD1",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" fill="#3B82F6" />
-          <polygon points="12 4 19 8 19 16 12 20 5 16 5 8" fill="#1D4ED8" stroke="#60A5FA" strokeWidth="1" />
-        </svg>
-      ),
-    },
-    {
-      id: "STONK_FUN",
-      name: "StonkFun",
-      tag: "SOL · USDC",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-          <rect width="24" height="24" rx="6" fill="#0284C7" />
-          <path d="M6 16L11 11L14 14L18 8" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ),
-    },
-    {
-      id: "LETS_BONK",
-      name: "LetsBonk",
-      tag: "SOL · USD1",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" fill="#F97316" />
-          <circle cx="12" cy="12" r="4" fill="#FFFFFF" />
-        </svg>
-      ),
-    },
-    {
-      id: "BAGS",
-      name: "Bags",
-      tag: "SOL",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" fill="#10B981" />
-          <rect x="8" y="9" width="8" height="9" rx="2" fill="#FFFFFF" />
-          <path d="M10 9V7C10 5.89543 10.8954 5 12 5C13.1046 5 14 5.89543 14 7V9" stroke="#FFFFFF" strokeWidth="1.5" />
-        </svg>
-      ),
-    },
-    {
-      id: "PRINTR",
-      name: "Printr",
-      tag: "SOL",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-          <rect width="24" height="24" rx="6" fill="#8B5CF6" />
-          <rect x="6" y="8" width="12" height="8" rx="1" fill="#FFFFFF" />
-        </svg>
-      ),
-    },
-    {
-      id: "ANONCOIN",
-      name: "Anoncoin",
-      tag: "SOL",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" fill="#374151" />
-          <circle cx="9" cy="11" r="1.5" fill="#FFFFFF" />
-          <circle cx="15" cy="11" r="1.5" fill="#FFFFFF" />
-        </svg>
-      ),
-    },
-    {
-      id: "SURGE",
-      name: "Surge",
-      tag: "SOL · USD1",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" fill="#06B6D4" />
-          <path d="M13 3L6 14H12L11 21L18 10H12L13 3Z" fill="#FFFFFF" />
-        </svg>
-      ),
-    },
-    {
-      id: "STOXES",
-      name: "Stoxes",
-      tag: "SOL",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" fill="#EC4899" />
-          <rect x="7" y="11" width="3" height="7" fill="#FFFFFF" />
-          <rect x="11" y="8" width="3" height="10" fill="#FFFFFF" />
-          <rect x="15" y="5" width="3" height="13" fill="#FFFFFF" />
-        </svg>
-      ),
-    },
-    {
-      id: "LESGO",
-      name: "Lesgo",
-      tag: "SOL",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" fill="#EAB308" />
-          <path d="M9 7L16 12L9 17V7Z" fill="#FFFFFF" />
-        </svg>
-      ),
-    },
-    {
-      id: "MEME_FUN",
-      name: "meme.fun",
-      tag: "SOL",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" fill="#F43F5E" />
-          <path d="M8 14C8.5 15.5 10 16.5 12 16.5C14 16.5 15.5 15.5 16 14" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      ),
-    },
+  // Real 12 Launchpads with Official WebP Icons from Proxima
+  const launchpadList: { id: SolanaLaunchpad; name: string; icon: string }[] = [
+    { id: "PUMP_FUN", name: "PumpFun", icon: "/icons/dex/pumpfun.webp" },
+    { id: "METEORA_DBC", name: "Meteora DBC", icon: "/icons/dex/meteoradbc.webp" },
+    { id: "RAYDIUM_LAUNCHLAB", name: "Raydium LaunchLab", icon: "/icons/dex/raydium.webp" },
+    { id: "STONK_FUN", name: "StonkFun", icon: "/icons/dex/stonkfun.webp" },
+    { id: "LETS_BONK", name: "LetsBonk", icon: "/icons/dex/bonkfun.webp" },
+    { id: "BAGS", name: "Bags", icon: "/icons/dex/bags.webp" },
+    { id: "ANONCOIN", name: "Anoncoin", icon: "/icons/dex/anoncoin.webp" },
+    { id: "SURGE", name: "Surge", icon: "/icons/dex/surge.webp" },
+    { id: "PRINTR", name: "Printr", icon: "/icons/dex/printr.webp" },
+    { id: "STOXES", name: "Stoxes", icon: "/icons/dex/stoxes.webp" },
+    { id: "MEME_FUN", name: "meme.fun", icon: "/icons/dex/memefun.webp" },
+    { id: "LESGO", name: "Pangea", icon: "/icons/dex/pangea.webp" },
   ];
 
   return (
@@ -252,41 +181,62 @@ export default function LaunchPage() {
         {activeTab === "chain" && (
           <div className="space-y-8 animate-fadeIn">
             {/* Blockchain Selection */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E9AA8] font-semibold">
                 BLOCKCHAIN
               </span>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {chains.map((c) => (
-                  <button
-                    key={c.id}
-                    onClick={() => setSelectedChain(c.id as any)}
-                    className={`p-3.5 rounded-lg border text-left transition-all ${
-                      selectedChain === c.id
-                        ? "border-[#FF3E00] bg-[#FF3E00]/10 shadow-[0_0_15px_rgba(255,62,0,0.2)]"
-                        : "border-[#1C2533] bg-[#0D1117] hover:border-[#2D3748]"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-1.5">
-                      {c.id === "solana" ? (
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-                          <path d="M4 17.5L7.5 21H20L16.5 17.5H4Z" fill="#31E3AC" />
-                          <path d="M4 10.5L7.5 14H20L16.5 10.5H4Z" fill="#38BDF8" />
-                          <path d="M4 3.5L7.5 7H20L16.5 3.5H4Z" fill="#818CF8" />
-                        </svg>
-                      ) : (
-                        <div className="w-4 h-4 rounded-full bg-[#1C2533]" />
-                      )}
-                      <span className="font-bold text-xs text-[#F8FAFC]">{c.name}</span>
-                    </div>
-                    <div className="text-[9px] font-mono text-[#8E9AA8]">{c.count}</div>
-                  </button>
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {chains.map((c) => {
+                  const isSelected = selectedChain === c.id;
+                  return (
+                    <button
+                      key={c.id}
+                      onClick={() => setSelectedChain(c.id as any)}
+                      className={`p-3 rounded-lg border text-left transition-all relative ${
+                        isSelected
+                          ? "border-[#31E3AC]/60 bg-[#102422]/70 shadow-[0_0_15px_rgba(49,227,172,0.15)] ring-1 ring-[#31E3AC]/40"
+                          : "border-[#1C202B] bg-[#111218] hover:border-[#2D3344] hover:bg-[#14161E]"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={c.icon}
+                            alt={c.name}
+                            className="w-4 h-4 object-contain rounded"
+                          />
+                          <span className="font-semibold text-xs text-[#F8FAFC]">{c.name}</span>
+                        </div>
+                        {c.tag && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#3B82F6]/20 text-[#60A5FA] border border-[#3B82F6]/30">
+                            {c.tag}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-1.5">
+                        <div className="flex -space-x-1">
+                          {c.subIcons.map((sub, i) => (
+                            <img
+                              key={i}
+                              src={sub}
+                              alt=""
+                              className="w-3.5 h-3.5 rounded-full border border-[#111218] object-cover"
+                            />
+                          ))}
+                        </div>
+                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${c.badgeColor}`}>
+                          {c.badge}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Launchpad Selection (With Real SVG Logos) */}
-            <div className="space-y-3">
+            {/* Launchpad Selection (Real Official WebP Logos in 3-Column Grid) */}
+            <div className="space-y-2 pt-2">
               <div className="flex justify-between items-center">
                 <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E9AA8] font-semibold">
                   LAUNCHPAD
@@ -294,24 +244,30 @@ export default function LaunchPage() {
                 <span className="text-[10px] font-mono text-[#FF3E00]">3.5% Platform Fee</span>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {launchpadList.map((lp) => (
-                  <button
-                    key={lp.id}
-                    onClick={() => setLaunchpad(lp.id)}
-                    className={`p-3.5 rounded-lg border text-left flex items-start gap-3 transition-all ${
-                      launchpad === lp.id
-                        ? "border-[#FF3E00] bg-[#121721] shadow-[0_0_15px_rgba(255,62,0,0.25)]"
-                        : "border-[#1C2533] bg-[#0D1117] hover:border-[#2D3748] hover:bg-[#121721]"
-                    }`}
-                  >
-                    <div className="mt-0.5 flex-shrink-0">{lp.icon}</div>
-                    <div className="min-w-0">
-                      <div className="font-bold text-xs text-[#F8FAFC] truncate">{lp.name}</div>
-                      <div className="text-[9px] font-mono text-[#8E9AA8] mt-0.5">{lp.tag}</div>
-                    </div>
-                  </button>
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {launchpadList.map((lp) => {
+                  const isSelected = launchpad === lp.id;
+                  return (
+                    <button
+                      key={lp.id}
+                      onClick={() => setLaunchpad(lp.id)}
+                      className={`h-[48px] px-3.5 rounded-lg border text-left flex items-center gap-3 transition-all ${
+                        isSelected
+                          ? "border-[#FF3E00] bg-[#161B26] shadow-[0_0_15px_rgba(255,62,0,0.25)] ring-1 ring-[#FF3E00]/50"
+                          : "border-[#1C202B] bg-[#111218] hover:border-[#2D3344] hover:bg-[#14161E]"
+                      }`}
+                    >
+                      <img
+                        src={lp.icon}
+                        alt={lp.name}
+                        className="w-5 h-5 object-contain rounded flex-shrink-0"
+                      />
+                      <span className="font-medium text-[13px] text-[#F8FAFC] truncate">
+                        {lp.name}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -393,12 +349,12 @@ export default function LaunchPage() {
               </div>
             )}
 
-            <div className="flex justify-end pt-4 border-t border-[#1C2533]">
+            <div className="flex justify-center pt-8">
               <button
                 onClick={() => setActiveTab("token")}
-                className="px-6 py-2.5 rounded-lg bg-[#FF3E00] hover:bg-[#FF5500] text-black font-bold text-xs uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(255,62,0,0.3)]"
+                className="w-full max-w-[260px] h-[40px] rounded-lg bg-[#181922] hover:bg-[#20222F] border border-[#232532] text-[#8E9AA8] hover:text-[#F8FAFC] font-medium text-xs tracking-wide transition-all shadow-sm"
               >
-                Next: Token Details →
+                Configure Token
               </button>
             </div>
           </div>
