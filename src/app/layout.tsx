@@ -4,8 +4,8 @@ import { WalletButton } from "../components/wallet/WalletButton";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SCRAMJET // Hypersonic Launchpad & Creator Fee Protocol",
-  description: "Next-gen Solana Token Launchpad, MEV Bundle Orchestrator & Warmed Wallet Engine",
+  title: "Proxima Tools // Multi-Chain Launchpad & Automated Operations",
+  description: "One platform. Every token operation. Powered by Scramjet Hypersonic Engine & Turnkey MPC.",
 };
 
 export default function RootLayout({
@@ -15,73 +15,88 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-scram-void text-scram-stark min-h-screen flex flex-col font-mono selection:bg-scram-plasma selection:text-white">
-        {/* Hypersonic Top HUD Bar */}
-        <header className="border-b border-scram-border bg-scram-surface/80 backdrop-blur px-6 py-3 flex items-center justify-between sticky top-0 z-50">
-          <div className="flex items-center space-x-6">
-            <Link href="/" className="flex items-center space-x-2 group">
-              <div className="w-6 h-6 rounded bg-scram-plasma flex items-center justify-center font-bold text-black text-xs group-hover:shadow-plasma transition-all">
-                SJ
+      <body className="bg-[#0e0f13] text-[#fcfcfc] min-h-screen flex flex-col font-sans selection:bg-[#7892ff]/30 selection:text-white">
+        
+        {/* Top 1:1 Navigation Header */}
+        <header className="sticky top-0 z-50 h-[48px] px-4 bg-[#0e0f13]/95 backdrop-blur border-b border-[#22242f] flex items-center justify-between text-xs">
+          <div className="flex items-center gap-6">
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="proxima-constellation transform scale-[0.75]">
+                <div className="constellation-dot dot-top" />
+                <div className="constellation-dot dot-bottom" />
+                <div className="constellation-dot dot-left" />
+                <div className="constellation-dot dot-right" />
+                <div className="constellation-dot dot-center" />
               </div>
-              <span className="font-bold text-sm tracking-widest text-scram-stark group-hover:text-scram-plasma transition-colors">
-                SCRAMJET <span className="text-[10px] text-scram-titanium font-normal">MACH 3.5</span>
+              <span className="font-bold text-[13.5px] tracking-tight text-[#fcfcfc] group-hover:text-[#7892ff] transition-colors">
+                PROXIMA
               </span>
             </Link>
 
-            <nav className="flex items-center space-x-1 text-xs">
-              <Link
-                href="/launch"
-                className="px-3 py-1.5 rounded hover:bg-scram-card hover:text-scram-plasma transition-colors"
-              >
-                Launch
-              </Link>
+            <nav className="flex items-center gap-1 text-[12px] font-medium text-[#8b8e9d]">
               <Link
                 href="/workspace"
-                className="px-3 py-1.5 rounded hover:bg-scram-card hover:text-scram-plasma transition-colors"
+                className="px-2.5 py-1 rounded hover:text-[#fcfcfc] hover:bg-[#1a1b24] transition-colors"
               >
                 Workspace
               </Link>
               <Link
+                href="/launch"
+                className="px-2.5 py-1 rounded hover:text-[#fcfcfc] hover:bg-[#1a1b24] transition-colors"
+              >
+                Launch
+              </Link>
+              <Link
                 href="/marketplace"
-                className="px-3 py-1.5 rounded hover:bg-scram-card hover:text-scram-plasma transition-colors flex items-center space-x-1"
+                className="px-2.5 py-1 rounded hover:text-[#fcfcfc] hover:bg-[#1a1b24] transition-colors flex items-center gap-1.5"
               >
                 <span>Marketplace</span>
-                <span className="text-[9px] bg-scram-plasma/20 text-scram-plasma px-1 rounded font-semibold">
+                <span className="text-[9px] bg-[#7892ff]/20 text-[#7892ff] px-1 py-0.2 rounded font-semibold">
                   NEW
                 </span>
               </Link>
               <Link
                 href="/funder"
-                className="px-3 py-1.5 rounded hover:bg-scram-card hover:text-scram-plasma transition-colors"
+                className="px-2.5 py-1 rounded hover:text-[#fcfcfc] hover:bg-[#1a1b24] transition-colors"
               >
                 Funder
+              </Link>
+              <Link
+                href="/login"
+                className="px-2.5 py-1 rounded text-[#7892ff] hover:bg-[#7892ff]/10 transition-colors"
+              >
+                Auth
               </Link>
             </nav>
           </div>
 
-          <div className="flex items-center space-x-4 text-xs">
-            <div className="flex items-center space-x-2 bg-scram-card px-2.5 py-1 rounded border border-scram-border">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-scram-titanium text-[11px]">SOL $93.85</span>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 bg-[#16171f] px-2.5 py-1 rounded border border-[#22242f] text-[11px] font-mono">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#31e3ac] animate-pulse" />
+              <span className="text-[#8b8e9d]">SOL $93.85</span>
             </div>
-            <div className="flex items-center space-x-2 bg-scram-plasma/10 border border-scram-plasma/30 px-3 py-1 rounded text-scram-plasma text-xs font-semibold">
-              <span>Platform Fee: 3.5%</span>
-              <span className="text-[10px] text-emerald-400 font-mono">(-30% vs Proxima)</span>
-            </div>
-              <WalletButton />
+            <WalletButton />
           </div>
         </header>
 
         <main className="flex-1">{children}</main>
 
-        <footer className="border-t border-scram-border py-4 px-6 text-center text-xs text-scram-titanium flex justify-between items-center bg-scram-surface">
-          <div>SCRAMJET v1.0.0-PROXIMA-KILLER // JITO BLOCK-0 ENGINE</div>
-          <div className="flex space-x-4">
-            <span>5 Block Engines Online</span>
-            <span>Ghost Funder Ready</span>
+        {/* Proxima Bottom Status Bar */}
+        <footer className="h-[32px] px-4 border-t border-[#22242f] bg-[#0e0f13] text-[11px] text-[#8b8e9d] flex items-center justify-between font-mono">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#31e3ac]" />
+              <span>All Services Live · 365ms</span>
+            </span>
+            <span>Fee: 3.5% (Scramjet Engine)</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span>5 Jito Engines Connected</span>
+            <span>Turnkey MPC Active</span>
           </div>
         </footer>
       </body>
     </html>
   );
 }
+

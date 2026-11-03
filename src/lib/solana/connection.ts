@@ -11,6 +11,7 @@ import {
 export const SOLANA_COMMITMENT: Commitment = "confirmed";
 
 /** Public mainnet beta RPC. Used when no provider URL is configured. */
+const PUBLIC_DEVNET_RPC = "https://api.devnet.solana.com";
 const PUBLIC_MAINNET_RPC = "https://api.mainnet-beta.solana.com";
 const DEFAULT_HELIUS_RPC =
   "https://mainnet.helius-rpc.com/?api-key=c6c97d13-8d23-4285-ae19-ceddad65d3ff";
@@ -80,6 +81,27 @@ function uniqueEndpoints(endpoints: Array<string | undefined>): string[] {
  * Public mainnet is always the last fallback.
  */
 export function resolveSolanaRpcEndpoints(): SolanaRpcEndpoints {
+  const isDevnet =
+    process.env.NEXT_PUBLIC_SOLANA_NETWORK === "devnet" ||
+    process.env.SOLANA_NETWORK === "devnet";
+
+  if (isDevnet) {
+    const devnetPrimary =
+      readEnv(process.env.NEXT_PUBLIC_SOLANA_DEVNET_RPC_URL) ??
+      readEnv(process.env.NEXT_PUBLIC_SOLANA_RPC_URL) ??
+      PUBLIC_DEVNET_RPC;
+    const devnetWs =
+      readEnv(process.env.NEXT_PUBLIC_SOLANA_DEVNET_WS_URL) ??
+      toWebSocketUrl(devnetPrimary) ??
+      "wss://api.devnet.solana.com";
+
+    return {
+      primary: devnetPrimary,
+      fallbacks: [PUBLIC_DEVNET_RPC],
+      wsEndpoint: devnetWs,
+    };
+  }
+
   const ordered = uniqueEndpoints([
     readEnv(process.env.NEXT_PUBLIC_SOLANA_RPC_URL),
     readEnv(process.env.SOLANA_RPC_URL),
