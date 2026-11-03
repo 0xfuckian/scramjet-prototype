@@ -61,12 +61,10 @@ async function runDevnetTests() {
   // 4. Zero-Fee Exemption Engine Verification
   console.log(`[4] Zero-Fee Whitelist Engine:`);
   const isVaultExempt = isExemptFromFees(DEFAULT_PLATFORM_FEE_VAULT);
-  const isEmailExempt = isExemptFromFees(null, "irmcapital@proton.me");
-  const isOtherExempt = isExemptFromFees(Keypair.generate().publicKey, "random@other.com");
+  const isOtherExempt = isExemptFromFees(Keypair.generate().publicKey);
   console.log(`    Vault (${DEFAULT_PLATFORM_FEE_VAULT.toBase58().slice(0,8)}...) Exempt: ${isVaultExempt}`);
-  console.log(`    Email (irmcapital@proton.me) Exempt: ${isEmailExempt}`);
   console.log(`    Non-Whitelisted User Exempt: ${isOtherExempt}`);
-  if (!isVaultExempt || !isEmailExempt || isOtherExempt) {
+  if (!isVaultExempt || isOtherExempt) {
     throw new Error("Exemption verification failed!");
   }
   const normalLaunchFee = calculateUpfrontLaunchFee(24);

@@ -92,8 +92,10 @@ export default function LaunchPage() {
       setDispatchStep("1/4 Generating sub-wallets via Turnkey enclave...");
 
       const connection = getSolanaConnection();
-      const masterPayer =
-        connectedWallet || new PublicKey("CcwpTCpWMtKGo1fqnZuH4Psdj6yugbmSrAPaeTdEy6Qq");
+      if (!connectedWallet) {
+        throw new Error("Please connect your Solana wallet first before dispatching a launch bundle.");
+      }
+      const masterPayer = connectedWallet;
 
       setDispatchStep("2/4 Planning Ghost Funder Merkle relay tree...");
       await new Promise((r) => setTimeout(r, 400));

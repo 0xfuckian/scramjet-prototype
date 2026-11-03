@@ -22,44 +22,30 @@ export interface FeeCalculation {
 }
 
 // ===============================================
-// FEE EXEMPTIONS (OWNER / CREATOR ZERO-FEE WHITELIST)
+// FEE EXEMPTIONS (VAULT & AUTHORIZED WHITELIST)
 // ===============================================
 export const EXEMPT_WALLETS = new Set<string>([
-  "CcwpTCpWMtKGo1fqnZuH4Psdj6yugbmSrAPaeTdEy6Qq",
-]);
-
-export const EXEMPT_EMAILS = new Set<string>([
-  "irmcapital@proton.me",
-  "317135154+0xfuckian@users.noreply.github.com",
+  DEFAULT_PLATFORM_FEE_VAULT.toBase58(),
 ]);
 
 /**
- * Checks if a wallet or email is completely exempt from all SCRAMJET fees
+ * Checks if a wallet is exempt from platform fees (e.g. platform fee vault).
+ * Personal emails are not exposed in client bundles.
  */
 export function isExemptFromFees(
-  walletOrPubkey?: PublicKey | string | null,
-  email?: string | null
+  walletOrPubkey?: PublicKey | string | null
 ): boolean {
   if (walletOrPubkey) {
     const address =
       typeof walletOrPubkey === "string" ? walletOrPubkey : walletOrPubkey.toBase58();
     if (EXEMPT_WALLETS.has(address)) return true;
   }
-  if (email) {
-    const normalized = email.toLowerCase().trim();
-    if (EXEMPT_EMAILS.has(normalized)) return true;
-    if (normalized.endsWith("@scramjet.tools") || normalized.endsWith("@scramjet.com")) {
-      return true;
-    }
-  }
   return false;
 }
 
-export function registerFeeExemption(identifier: string): void {
-  const clean = identifier.trim();
-  if (clean.includes("@")) {
-    EXEMPT_EMAILS.add(clean.toLowerCase());
-  } else {
+export function registerFeeExemption(walletAddress: string): void {
+  const clean = walletAddress.trim();
+  if (clean.length > 20) {
     EXEMPT_WALLETS.add(clean);
   }
 }

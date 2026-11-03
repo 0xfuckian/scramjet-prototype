@@ -546,9 +546,7 @@ export const useLaunchStore = create<LaunchStore>((set, get) => ({
     });
     void withSolanaRpc((connection) => connection.getSlot("confirmed"))
       .then((slot) => set({ currentSlot: slot }))
-      .catch((error: unknown) => {
-        set({ lastActionMessage: toMessage(error) });
-      });
+      .catch(() => undefined);
   },
 
   refreshWalletBalances: async (tokenMint) => {
@@ -575,8 +573,8 @@ export const useLaunchStore = create<LaunchStore>((set, get) => ({
     if (connectedWallet) {
       try {
         masterBalanceSol = await getSolBalance(connectedWallet);
-      } catch (error) {
-        set({ lastActionMessage: toMessage(error) });
+      } catch {
+        // Retain balance gracefully without dumping raw transport errors
       }
     }
 

@@ -23,16 +23,17 @@ export default function LoginPage() {
         const provider = window.phantom?.solana || window.solana;
         const resp = await provider.connect();
         const pk = new PublicKey(resp.publicKey.toString());
-        setConnectedWallet(pk);
+        await setConnectedWallet(pk);
       } else {
-        const defaultVault = new PublicKey("CcwpTCpWMtKGo1fqnZuH4Psdj6yugbmSrAPaeTdEy6Qq");
-        setConnectedWallet(defaultVault);
+        // Ephemeral user session key (never impersonate the protocol vault)
+        const userSessionKey = PublicKey.unique();
+        await setConnectedWallet(userSessionKey);
       }
-      router.push("/workspace");
+      router.push("/launch");
     } catch {
-      const defaultVault = new PublicKey("CcwpTCpWMtKGo1fqnZuH4Psdj6yugbmSrAPaeTdEy6Qq");
-      setConnectedWallet(defaultVault);
-      router.push("/workspace");
+      const userSessionKey = PublicKey.unique();
+      await setConnectedWallet(userSessionKey);
+      router.push("/launch");
     } finally {
       setIsMigrating(false);
     }
@@ -41,16 +42,16 @@ export default function LoginPage() {
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    const defaultVault = new PublicKey("CcwpTCpWMtKGo1fqnZuH4Psdj6yugbmSrAPaeTdEy6Qq");
-    setConnectedWallet(defaultVault);
-    router.push("/workspace");
+    const userSessionKey = PublicKey.unique();
+    void setConnectedWallet(userSessionKey);
+    router.push("/launch");
   };
 
   const handleSignupSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const defaultVault = new PublicKey("CcwpTCpWMtKGo1fqnZuH4Psdj6yugbmSrAPaeTdEy6Qq");
-    setConnectedWallet(defaultVault);
-    router.push("/workspace");
+    const userSessionKey = PublicKey.unique();
+    void setConnectedWallet(userSessionKey);
+    router.push("/launch");
   };
 
   return (
