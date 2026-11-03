@@ -178,19 +178,19 @@ export default function HomePage() {
 
           <div className="space-y-3 pt-2 font-mono text-xs text-[#F8FAFC]">
             <div className="flex items-center gap-3">
-              <span className="text-[#FF3E00]">✦</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF3E00]" />
               <span>CEX Funding (Binance, KuCoin, OKX, Bybit)</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-[#FF3E00]">✦</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF3E00]" />
               <span>Wallet Marketplace <strong className="text-[9px] bg-[#FF3E00]/20 text-[#FF3E00] px-1.5 py-0.5 rounded font-mono ml-1">NEW</strong></span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-[#FF3E00]">✦</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF3E00]" />
               <span>Live Multi-Wallet Monitoring</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-[#FF3E00]">✦</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF3E00]" />
               <span>Bulk Funding &amp; Automated Rent Reclaim</span>
             </div>
           </div>
@@ -255,15 +255,15 @@ export default function HomePage() {
 
           <div className="space-y-3 pt-2 font-mono text-xs text-[#F8FAFC]">
             <div className="flex items-center gap-3">
-              <span className="text-[#31E3AC]">🛡</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#31E3AC]" />
               <span>Sniper Guard (Nuke &amp; Complete Early)</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-[#FF7700]">⚡</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF7700]" />
               <span>Block-0 Jito MEV Bundle Timing</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-[#38BDF8]">📄</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#38BDF8]" />
               <span>Token Metadata &amp; Supply Acquisition</span>
             </div>
           </div>
@@ -288,27 +288,27 @@ export default function HomePage() {
           <div className="p-5 rounded-xl border border-[#1A1C25] bg-[#0E0F14] space-y-3">
             <span className="text-[10px] uppercase text-[#717686] font-semibold tracking-wider">MONITOR</span>
             <div className="space-y-2 text-[#F8FAFC]">
-              <div>📊 Live Chart</div>
-              <div>⚡ Trade Feed</div>
-              <div>🎯 KOL Tracker</div>
+              <div className="hover:text-[#FF3E00] transition-colors cursor-pointer">Live Chart</div>
+              <div className="hover:text-[#FF3E00] transition-colors cursor-pointer">Trade Feed</div>
+              <div className="hover:text-[#FF3E00] transition-colors cursor-pointer">KOL Tracker</div>
             </div>
           </div>
 
           <div className="p-5 rounded-xl border border-[#1A1C25] bg-[#0E0F14] space-y-3">
             <span className="text-[10px] uppercase text-[#717686] font-semibold tracking-wider">OPERATE</span>
             <div className="space-y-2 text-[#F8FAFC]">
-              <div>🚀 Buy &amp; Sell (Stagger/Parallel)</div>
-              <div>🔒 Supply Control (Streamflow)</div>
-              <div>💰 Claim Rewards</div>
+              <div className="hover:text-[#FF3E00] transition-colors cursor-pointer">Buy &amp; Sell</div>
+              <div className="hover:text-[#FF3E00] transition-colors cursor-pointer">Supply Control</div>
+              <div className="hover:text-[#FF3E00] transition-colors cursor-pointer">Claim Rewards</div>
             </div>
           </div>
 
           <div className="p-5 rounded-xl border border-[#1A1C25] bg-[#0E0F14] space-y-3">
             <span className="text-[10px] uppercase text-[#717686] font-semibold tracking-wider">AUTOMATE</span>
             <div className="space-y-2 text-[#F8FAFC]">
-              <div>📉 AutoSell (Green TWAP)</div>
-              <div>📈 AutoBuy (Photon Bump Bot)</div>
-              <div>🔄 Volume Bot</div>
+              <div className="hover:text-[#FF3E00] transition-colors cursor-pointer">AutoSell</div>
+              <div className="hover:text-[#FF3E00] transition-colors cursor-pointer">AutoBuy</div>
+              <div className="hover:text-[#FF3E00] transition-colors cursor-pointer">Volume Bot</div>
             </div>
           </div>
         </div>

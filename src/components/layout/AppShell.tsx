@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { WalletButton } from "../wallet/WalletButton";
+import { ScramjetLogo } from "../brand/ScramjetLogo";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,15 +17,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Top Marketing Header */}
         <header className="sticky top-0 z-50 h-[56px] px-6 md:px-12 bg-[#07080B]/90 backdrop-blur-md border-b border-[#14161F] flex items-center justify-between text-xs">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="scramjet-mark transform scale-90">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-              </svg>
-            </div>
-            <span className="font-bold text-sm tracking-tight text-[#F8FAFC] group-hover:text-[#FF3E00] transition-colors">
-              SCRAMJET
-            </span>
-          </Link>
+            <ScramjetLogo size={26} />
+              <span className="font-bold text-sm tracking-tight text-[#F8FAFC] group-hover:text-[#FF3E00] transition-colors">
+                SCRAMJET
+              </span>
+            </Link>
 
           <nav className="hidden md:flex items-center gap-8 text-[13px] text-[#8E9AA8]">
             <Link href="#product" className="hover:text-[#F8FAFC] transition-colors">
@@ -56,15 +53,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between gap-12">
             <div className="space-y-4">
               <div className="flex items-center gap-2.5">
-                <div className="scramjet-mark transform scale-90">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                  </svg>
+                <ScramjetLogo size={24} />
+                  <span className="font-bold text-sm tracking-tight text-[#F8FAFC]">
+                    SCRAMJET
+                  </span>
                 </div>
-                <span className="font-bold text-sm tracking-tight text-[#F8FAFC]">
-                  SCRAMJET
-                </span>
-              </div>
               <p className="text-[12px] text-[#636879] max-w-xs leading-relaxed">
                 Hypersonic Solana token launchpad, Block-0 MEV orchestrator &amp; automated creator fee engine.
               </p>
@@ -116,15 +109,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {/* Header: Brand & Version */}
             <div className="flex items-center justify-between px-1">
               <Link href="/" className="flex items-center gap-2 group">
-                <div className="scramjet-mark transform scale-90">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                  </svg>
-                </div>
-                <span className="font-bold text-xs tracking-tight text-[#F8FAFC] group-hover:text-[#FF3E00] transition-colors">
-                  SCRAMJET <span className="text-[10px] text-[#636879] font-normal font-mono">v1.0</span>
-                </span>
-              </Link>
+                <ScramjetLogo size={24} />
+                  <span className="font-bold text-xs tracking-tight text-[#F8FAFC] group-hover:text-[#FF3E00] transition-colors">
+                    SCRAMJET <span className="text-[10px] text-[#636879] font-normal font-mono">v1.0</span>
+                  </span>
+                </Link>
               <button className="text-[#636879] hover:text-[#F8FAFC] p-1">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M9 3v18" />
@@ -152,11 +141,47 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <div className="text-[10px] font-mono uppercase text-[#4E5364] px-2 font-semibold tracking-wider">
                 Features
               </div>
-              
+
+              {/* Create Launch */}
+                <Link
+                href="/launch"
+                  className={`flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs transition-colors ${
+                    pathname === "/launch"
+                    ? "bg-[#FF3E00]/20 text-[#FF3E00] font-bold border border-[#FF3E00]/40"
+                      : "text-[#F8FAFC] hover:text-[#FF3E00] hover:bg-[#14161E] font-semibold"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                    </svg>
+                  <span>Create Launch</span>
+                </div>
+                <span className="text-[8px] font-bold font-mono px-1 rounded bg-[#31E3AC]/20 text-[#31E3AC]">
+                  12 DEX
+                </span>
+              </Link>
+
+              {/* Live Terminal */}
               <Link
                 href="/workspace"
                 className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs transition-colors ${
                   pathname === "/workspace"
+                    ? "bg-[#161722] text-[#F8FAFC] font-semibold"
+                    : "text-[#8E9AA8] hover:text-[#F8FAFC] hover:bg-[#14161E]"
+                }`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+                <span>Live Terminal</span>
+              </Link>
+              
+              {/* My Wallets (Links to Funder / Wallets) */}
+              <Link
+                href="/funder"
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs transition-colors ${
+                  pathname === "/funder"
                     ? "bg-[#161722] text-[#F8FAFC] font-semibold"
                     : "text-[#8E9AA8] hover:text-[#F8FAFC] hover:bg-[#14161E]"
                 }`}
@@ -283,7 +308,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     : "bg-[#161720] border border-[#22242F] text-[#F8FAFC] hover:border-[#FF3E00]"
                 }`}
               >
-                <span>🚀 Create Launch</span>
+                <span>Create Launch</span>
               </Link>
               <Link
                 href="/workspace"
@@ -293,7 +318,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     : "text-[#8E9AA8] hover:text-[#F8FAFC]"
                 }`}
               >
-                <span>📊 Terminal HUD</span>
+                <span>Live Terminal</span>
               </Link>
               <Link
                 href="/marketplace"
@@ -303,7 +328,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     : "text-[#8E9AA8] hover:text-[#F8FAFC]"
                 }`}
               >
-                <span>🛒 Marketplace</span>
+                <span>Marketplace</span>
               </Link>
               <Link
                 href="/funder"
@@ -313,7 +338,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     : "text-[#8E9AA8] hover:text-[#F8FAFC]"
                 }`}
               >
-                <span>💼 Funder</span>
+                <span>Funder</span>
               </Link>
             </div>
 

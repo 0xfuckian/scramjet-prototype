@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { PublicKey } from "@solana/web3.js";
 import { useLaunchStore } from "../../lib/stores/useLaunchStore";
+import { ScramjetLogo } from "../../components/brand/ScramjetLogo";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -56,11 +57,9 @@ export default function LoginPage() {
     <div className="min-h-[calc(100vh-60px)] flex flex-col items-center justify-center px-4 py-12 bg-[#08090C] text-[#F8FAFC]">
       <div className="w-full max-w-[380px] flex flex-col items-center text-center">
         
-        {/* Scramjet Mark */}
-        <div className="scramjet-mark mb-6">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-          </svg>
+        {/* Official SCRAMJET 3-Blade Logo */}
+        <div className="mb-6">
+          <ScramjetLogo size={42} />
         </div>
 
         {view === "login" && (
