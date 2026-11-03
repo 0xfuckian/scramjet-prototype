@@ -30,7 +30,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link href="#changelog" className="hover:text-[#F8FAFC] transition-colors">
               Changelog
             </Link>
-            <Link href="#docs" className="hover:text-[#F8FAFC] transition-colors">
+            <Link href="/docs" className="hover:text-[#F8FAFC] transition-colors">
               Read the docs
             </Link>
           </nav>
@@ -78,7 +78,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <div className="space-y-3">
                 <span className="font-semibold text-[#F8FAFC]">Learn</span>
                 <ul className="space-y-2">
-                  <li><a href="https://docs.proxima.tools" target="_blank" rel="noreferrer" className="hover:text-[#F8FAFC]">Documentation</a></li>
+                  <li><Link href="/docs" className="hover:text-[#F8FAFC]">Documentation</Link></li>
                   <li><a href="https://x.com" target="_blank" rel="noreferrer" className="hover:text-[#F8FAFC]">X / Twitter</a></li>
                   <li><a href="https://t.me" target="_blank" rel="noreferrer" className="hover:text-[#F8FAFC]">Telegram</a></li>
                 </ul>
@@ -376,7 +376,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="flex items-center gap-4">
           <a href="https://x.com" target="_blank" rel="noreferrer" className="hover:text-[#F8FAFC]">X</a>
           <span className="hover:text-[#F8FAFC] cursor-pointer">News</span>
-          <a href="https://docs.proxima.tools" target="_blank" rel="noreferrer" className="hover:text-[#F8FAFC]">Documentation</a>
+          <Link href="/docs" className="hover:text-[#F8FAFC]">Documentation</Link>
           <span className="hover:text-[#F8FAFC] cursor-pointer">Activity</span>
           <span className="hover:text-[#F8FAFC] cursor-pointer">Settings</span>
         </div>
