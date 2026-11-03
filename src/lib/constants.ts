@@ -43,5 +43,5 @@ export const PROXIMA_FEE_BPS = 500;  // 5.0% = 500 basis points (competitor benc
 
 // Default platform fee collection vault
 export const DEFAULT_PLATFORM_FEE_VAULT = new PublicKey(
-  "77CaVVomNEpWBsD5cQ678yi5vQYc6mp7ipvSD9JLMF3L"
+  "CcwpTCpWMtKGo1fqnZuH4Psdj6yugbmSrAPaeTdEy6Qq"
 );

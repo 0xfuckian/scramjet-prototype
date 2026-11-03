@@ -65,7 +65,7 @@ TURNKEY_API_PRIVATE_KEY="your-turnkey-api-private-key"
 TURNKEY_BASE_URL="https://api.turnkey.com"
 
 # 3. SCRAMJET Protocol Fee Vault
-NEXT_PUBLIC_SCRAMJET_FEE_VAULT="77CaVVomNEpWBsD5cQ678yi5vQYc6mp7ipvSD9JLMF3L"
+NEXT_PUBLIC_SCRAMJET_FEE_VAULT="CcwpTCpWMtKGo1fqnZuH4Psdj6yugbmSrAPaeTdEy6Qq"
 ```
 
 ---
