@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { WalletButton } from "../components/wallet/WalletButton";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -67,6 +68,7 @@ export default function RootLayout({
               <span>Platform Fee: 3.5%</span>
               <span className="text-[10px] text-emerald-400 font-mono">(-30% vs Proxima)</span>
             </div>
+              <WalletButton />
           </div>
         </header>
 
