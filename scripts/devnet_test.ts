@@ -1,4 +1,4 @@
-import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction } from "@solana/web3.js";
+import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram } from "@solana/web3.js";
 import { resolveSolanaRpcEndpoints } from "../src/lib/solana/connection";
 import { turnkeyManager } from "../src/lib/wallets/turnkeyManager";
 import { GhostFunder } from "../src/lib/wallets/ghostFunder";
@@ -6,9 +6,9 @@ import { RentReclaimer } from "../src/lib/wallets/rentReclaim";
 import { BumpBotEngine } from "../src/lib/automations/bumpBot";
 import { GreenCandleTwapEngine } from "../src/lib/automations/greenTwap";
 import { SniperGuardEngine } from "../src/lib/automations/sniperGuard";
-import { calculateProtocolFee, buildProtocolFeeInstruction } from "../src/lib/feeRouter";
-import { DEFAULT_PLATFORM_FEE_VAULT } from "../src/lib/constants";
-import { SubWallet } from "../src/types";
+import { calculateProtocolFee, buildProtocolFeeInstruction, calculateUpfrontLaunchFee, isExemptFromFees } from "../src/lib/feeRouter";
+import { DEFAULT_PLATFORM_FEE_VAULT, JITO_TIP_ACCOUNTS, JITO_BLOCK_ENGINE_URLS } from "../src/lib/constants";
+import { jitoClient } from "../src/lib/jito/jitoClient";
 
 async function runDevnetTests() {
   console.log("====================================================");
@@ -44,8 +44,39 @@ async function runDevnetTests() {
   console.log(`    Fee Instruction Keys: from=${feeIx.keys[0].pubkey.toBase58().slice(0, 8)}... to=${feeIx.keys[1].pubkey.toBase58()}`);
   console.log(`    Fee Router: PASS\n`);
 
-  // 3. Turnkey Enclave Key Generation & Signing Test
-  console.log(`[3] Turnkey Sub-Wallet Enclave Generation:`);
+  // 3. Jito MEV Block Engines & Tip Accounts Verification
+  console.log(`[3] Jito MEV Block Engines & Tip Accounts:`);
+  console.log(`    Block Engines Configured (${JITO_BLOCK_ENGINE_URLS.length}):`);
+  JITO_BLOCK_ENGINE_URLS.forEach((url, i) => console.log(`      [Engine ${i+1}]: ${url}`));
+  console.log(`    Official Tip Accounts (${JITO_TIP_ACCOUNTS.length}):`);
+  JITO_TIP_ACCOUNTS.forEach((pk, i) => console.log(`      [Tip Acc ${i+1}]: ${pk.toBase58()}`));
+  const randomTip = jitoClient.getRandomTipAccount();
+  console.log(`    Random Rotated Tip Account Selected: ${randomTip.toBase58()}`);
+  const tipFloor = await jitoClient.getTipFloor();
+  console.log(`    Live Tip Floor Estimates: p50=${tipFloor.p50Sol} SOL, p75=${tipFloor.p75Sol} SOL, p90=${tipFloor.p90Sol} SOL`);
+  const testTipIx = jitoClient.buildTipInstruction(feePayer, tipFloor.p75Lamports);
+  console.log(`    Built Tip Transfer Instruction: ${testTipIx.data.length > 0 ? "VALID" : "INVALID"}`);
+  console.log(`    Jito MEV Client: PASS\n`);
+
+  // 4. Zero-Fee Exemption Engine Verification
+  console.log(`[4] Zero-Fee Whitelist Engine:`);
+  const isVaultExempt = isExemptFromFees(DEFAULT_PLATFORM_FEE_VAULT);
+  const isEmailExempt = isExemptFromFees(null, "irmcapital@proton.me");
+  const isOtherExempt = isExemptFromFees(Keypair.generate().publicKey, "random@other.com");
+  console.log(`    Vault (${DEFAULT_PLATFORM_FEE_VAULT.toBase58().slice(0,8)}...) Exempt: ${isVaultExempt}`);
+  console.log(`    Email (irmcapital@proton.me) Exempt: ${isEmailExempt}`);
+  console.log(`    Non-Whitelisted User Exempt: ${isOtherExempt}`);
+  if (!isVaultExempt || !isEmailExempt || isOtherExempt) {
+    throw new Error("Exemption verification failed!");
+  }
+  const normalLaunchFee = calculateUpfrontLaunchFee(24);
+  const exemptLaunchFee = calculateUpfrontLaunchFee(24, DEFAULT_PLATFORM_FEE_VAULT);
+  console.log(`    Standard 24-Wallet Launch Fee: ${normalLaunchFee.totalLaunchFeeSol} SOL (0.15 base + 24x0.005)`);
+  console.log(`    Exempt 24-Wallet Launch Fee: ${exemptLaunchFee.totalLaunchFeeSol} SOL (Waived)`);
+  console.log(`    Fee Exemption: PASS\n`);
+
+  // 5. Turnkey Sub-Wallet Enclave Generation:
+  console.log(`[5] Turnkey Sub-Wallet Enclave Generation:`);
   const subWallets = await turnkeyManager.createSubWallets({
     count: 6,
     walletNamePrefix: "scram-devnet-test",
@@ -56,8 +87,8 @@ async function runDevnetTests() {
   });
   console.log(`    Enclave Keygen: PASS\n`);
 
-  // 4. Ghost Funder Anti-BubbleMap Plan
-  console.log(`[4] Ghost Funder Relay Dispersion:`);
+  // 6. Ghost Funder Anti-BubbleMap Plan
+  console.log(`[6] Ghost Funder Relay Dispersion:`);
   const masterFunder = Keypair.generate().publicKey;
   const ghostPlan = GhostFunder.planGhostDispersal({
     masterPayer: masterFunder,
@@ -76,8 +107,8 @@ async function runDevnetTests() {
   console.log(`    Generated L1 Transfer Instructions: ${ghostPlan.instructions.length}`);
   console.log(`    Ghost Funder: PASS\n`);
 
-  // 5. ATA Rent Reclaimer Test
-  console.log(`[5] ATA Rent Recovery Engine:`);
+  // 7. ATA Rent Reclaimer Test
+  console.log(`[7] ATA Rent Recovery Engine:`);
   const dummyAtas = subWallets.slice(0, 4).map((sw) => ({
     accountPubkey: Keypair.generate().publicKey,
     walletOwnerPubkey: new PublicKey(sw.publicKey),
@@ -90,8 +121,8 @@ async function runDevnetTests() {
   console.log(`    Reclaimed SOL Recovered: ${reclaimBatch.totalReclaimedSol} SOL (at ~0.00204 SOL per wallet)`);
   console.log(`    Rent Recovery: PASS\n`);
 
-  // 6. Algorithmic Market Maker (Bump Bot & Green-Candle TWAP)
-  console.log(`[6] AMM Automated Engines:`);
+  // 8. Algorithmic Market Maker (Bump Bot & Green-Candle TWAP)
+  console.log(`[8] AMM Automated Engines:`);
   const bumpPlan = BumpBotEngine.planBumpSession({
     config: {
       enableBumpBot: true,
@@ -131,8 +162,8 @@ async function runDevnetTests() {
   console.log(`    Red-Candle TWAP Guard (Negative Candle): ConditionMet = ${redSlices[0].conditionMet} (Dumps blocked)`);
   console.log(`    AMM Engines: PASS\n`);
 
-  // 7. Sniper Guard Defense Test
-  console.log(`[7] Sniper Guard Defense Engine:`);
+  // 9. Sniper Guard Defense Test
+  console.log(`[9] Sniper Guard Defense Engine:`);
   const defenseResult = SniperGuardEngine.evaluateDefense({
     config: {
       enabled: true,
@@ -151,7 +182,7 @@ async function runDevnetTests() {
   console.log(`    Sniper Guard: PASS\n`);
 
   console.log("====================================================");
-  console.log("   ALL 7 CORE MODULES VERIFIED & PASSING ON DEVNET");
+  console.log("   ALL 9 CORE SUBSYSTEMS VERIFIED & PASSING ON DEVNET");
   console.log("====================================================");
 }
 

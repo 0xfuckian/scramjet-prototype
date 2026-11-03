@@ -37,6 +37,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           <div className="flex items-center gap-3">
             <Link
+              href="/login"
+              className="text-xs font-semibold text-[#8E9AA8] hover:text-[#F8FAFC] px-3 py-1.5 transition-colors"
+            >
+              Log In
+            </Link>
+              <Link
               href="/launch"
               className="h-[36px] px-6 rounded-full bg-[#F8FAFC] hover:bg-[#FFFFFF] text-[#07080B] font-bold text-xs tracking-tight flex items-center justify-center transition-all shadow-[0_0_20px_rgba(255,255,255,0.25)] hover:scale-[1.03] active:scale-[0.98]"
             >
@@ -222,13 +228,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </Link>
 
               <Link
-                href="/launch"
-                className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs text-[#8E9AA8] hover:text-[#F8FAFC] hover:bg-[#14161E] transition-colors"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="21 8 21 21 3 21 3 8" /><rect x="1" y="3" width="22" height="5" /><line x1="10" y1="12" x2="14" y2="12" />
+                href="/login"
+                className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs transition-colors ${
+                    pathname === "/login"
+                      ? "bg-[#161722] text-[#FF3E00] font-semibold"
+                      : "text-[#8E9AA8] hover:text-[#F8FAFC] hover:bg-[#14161E]"
+                }`}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
                 </svg>
-                <span>Archived</span>
+                <span>Sign In</span>
               </Link>
 
               <Link
