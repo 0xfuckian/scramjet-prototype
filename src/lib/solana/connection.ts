@@ -12,6 +12,8 @@ export const SOLANA_COMMITMENT: Commitment = "confirmed";
 
 /** Public mainnet beta RPC. Used when no provider URL is configured. */
 const PUBLIC_MAINNET_RPC = "https://api.mainnet-beta.solana.com";
+const DEFAULT_HELIUS_RPC =
+  "https://mainnet.helius-rpc.com/?api-key=c6c97d13-8d23-4285-ae19-ceddad65d3ff";
 
 export interface SolanaRpcEndpoints {
   /** First endpoint to try. */
@@ -81,6 +83,7 @@ export function resolveSolanaRpcEndpoints(): SolanaRpcEndpoints {
   const ordered = uniqueEndpoints([
     readEnv(process.env.NEXT_PUBLIC_SOLANA_RPC_URL),
     readEnv(process.env.SOLANA_RPC_URL),
+    DEFAULT_HELIUS_RPC,
     readEnv(process.env.NEXT_PUBLIC_HELIUS_RPC_URL),
     readEnv(process.env.HELIUS_RPC_URL),
     readEnv(process.env.NEXT_PUBLIC_TRITON_RPC_URL),
