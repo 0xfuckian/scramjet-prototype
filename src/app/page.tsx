@@ -31,22 +31,33 @@ export default function HomePage() {
           Launch across 12 launchpads. Manage wallets, trade, automate and monitor execution from one place.
         </p>
 
-        {/* Live on & Secured by badges */}
+        {/* Live on Solana & Secured by badges */}
         <div className="flex flex-wrap items-center justify-center gap-6 pt-2 text-xs font-mono text-[#8E9AA8]">
           <div className="flex items-center gap-2">
             <span>Live on</span>
             <div className="flex items-center gap-1.5">
               <img src="/icons/chains/sol.webp" alt="Solana" className="w-4 h-4 object-contain" />
-              <img src="/icons/chains/base.webp" alt="Base" className="w-4 h-4 object-contain" />
-              <img src="/icons/chains/eth.webp" alt="Ethereum" className="w-4 h-4 object-contain" />
-              <img src="/icons/chains/bsc.webp" alt="BNB" className="w-4 h-4 object-contain" />
-              <img src="/icons/chains/arc.webp" alt="Arc" className="w-4 h-4 object-contain" />
+              <span className="text-[#31E3AC] font-bold">Solana</span>
             </div>
           </div>
           <div className="flex items-center gap-1.5 text-[#F8FAFC]">
             <span className="text-[#636879]">Secured by</span>
             <span className="font-bold">turnkey</span>
           </div>
+          <div className="flex items-center gap-1.5 text-[#FF3E00]">
+            <span className="text-[#636879]">Minimum:</span>
+            <span className="font-bold">0.01 SOL</span>
+          </div>
+        </div>
+
+        {/* Direct Action Link to Launch */}
+        <div className="pt-2">
+          <Link
+            href="/launch"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#FF3E00] hover:bg-[#FF5500] text-black font-extrabold text-xs tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(255,62,0,0.4)] hover:scale-105"
+          >
+            <span>Launch a Token on Solana →</span>
+          </Link>
         </div>
 
         {/* Product Terminal Hero Mockup (Screenshot 1) */}

@@ -38,12 +38,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </Link>
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Link
-              href="/workspace"
-              className="h-[34px] px-5 rounded-full bg-[#F8FAFC] hover:bg-[#FFFFFF] text-[#07080B] font-bold text-xs tracking-tight flex items-center justify-center transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-[0.98]"
+              href="/launch"
+              className="h-[36px] px-6 rounded-full bg-[#F8FAFC] hover:bg-[#FFFFFF] text-[#07080B] font-bold text-xs tracking-tight flex items-center justify-center transition-all shadow-[0_0_20px_rgba(255,255,255,0.25)] hover:scale-[1.03] active:scale-[0.98]"
             >
-              Open SCRAMJET
+              Open SCRAMJET →
             </Link>
           </div>
         </header>
@@ -272,12 +272,51 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Right Main Content Stage */}
         <div className="flex-1 flex flex-col overflow-y-auto bg-[#08090C]">
-          {/* Top Minimal Strip with WalletButton */}
+          {/* Top Minimal Strip with Fast Navigation & WalletButton */}
           <div className="h-[44px] px-6 border-b border-[#1C202B] flex items-center justify-between text-xs bg-[#08090C]/90 backdrop-blur z-20 sticky top-0">
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-[11px] text-[#636879]">NETWORK:</span>
-              <span className="font-mono text-[11px] text-[#31E3AC]">SOLANA MAINNET</span>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/launch"
+                className={`px-3 py-1.5 rounded-md font-bold text-xs flex items-center gap-1.5 transition-all ${
+                  pathname === "/launch"
+                    ? "bg-[#FF3E00] text-black shadow-[0_0_15px_rgba(255,62,0,0.35)]"
+                    : "bg-[#161720] border border-[#22242F] text-[#F8FAFC] hover:border-[#FF3E00]"
+                }`}
+              >
+                <span>🚀 Create Launch</span>
+              </Link>
+              <Link
+                href="/workspace"
+                className={`px-3 py-1.5 rounded-md font-medium text-xs flex items-center gap-1.5 transition-all ${
+                  pathname === "/workspace"
+                    ? "bg-[#161722] text-[#F8FAFC] border border-[#31E3AC]"
+                    : "text-[#8E9AA8] hover:text-[#F8FAFC]"
+                }`}
+              >
+                <span>📊 Terminal HUD</span>
+              </Link>
+              <Link
+                href="/marketplace"
+                className={`px-3 py-1.5 rounded-md font-medium text-xs flex items-center gap-1.5 transition-all ${
+                  pathname === "/marketplace"
+                    ? "bg-[#161722] text-[#F8FAFC] border border-[#31E3AC]"
+                    : "text-[#8E9AA8] hover:text-[#F8FAFC]"
+                }`}
+              >
+                <span>🛒 Marketplace</span>
+              </Link>
+              <Link
+                href="/funder"
+                className={`px-3 py-1.5 rounded-md font-medium text-xs flex items-center gap-1.5 transition-all ${
+                  pathname === "/funder"
+                    ? "bg-[#161722] text-[#F8FAFC] border border-[#31E3AC]"
+                    : "text-[#8E9AA8] hover:text-[#F8FAFC]"
+                }`}
+              >
+                <span>💼 Funder</span>
+              </Link>
             </div>
+
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 bg-[#0D1117] px-2.5 py-1 rounded border border-[#1C2533] text-[11px] font-mono">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#31E3AC] animate-pulse" />
