@@ -251,6 +251,136 @@ export interface HarvestRecord {
   status: "SUCCESS" | "FAILED" | "PENDING";
 }
 
+// ==========================================
+// 8. AUTOPILOT "SET & FORGET" & LAUNCH PRESETS
+// ==========================================
+export type AutopilotRiskProfile = "PROVEN_VOLUME" | "AGGRESSIVE_MOONSHOT" | "STEALTH_ACCUMULATION";
+
+export interface AutopilotEasyLaunchConfig {
+  enabled: boolean;
+  totalBudgetSol: number;
+  riskProfile: AutopilotRiskProfile;
+  autoWalletsCount: number;
+  discloseBundle: boolean;
+  scheduledLaunchTimestamp?: number | null;
+}
+
+export interface LaunchTemplate {
+  id: string;
+  name: string;
+  description: string;
+  launchpad: SolanaLaunchpad;
+  preset: BuildPreset;
+  devBuyPercent: number;
+  holdersBuyPercent: number;
+  holderCount: number;
+  backMevTuning: number;
+  jitoTipSol: number;
+  sniperGuardEnabled: boolean;
+  sniperTriggerSol: number;
+  buybackBurnPercent: number;
+  isOfficial?: boolean;
+}
+
+export interface CostBreakdownEstimate {
+  baseLaunchFeeSol: number;
+  subWalletCoordinationFeeSol: number;
+  totalPlatformFeeSol: number;
+  devBuySol: number;
+  subWalletFundingSol: number;
+  accountRentSol: number; // ATA rent per wallet
+  jitoBribeSol: number;
+  totalSolRequired: number;
+  expectedAtaRentRefundSol: number;
+}
+
+export interface SubWalletCsvRow {
+  address: string;
+  allocatedSol: number;
+  role?: string;
+  label?: string;
+}
+
+// ==========================================
+// 9. TEAM ROLES, PERMISSIONS & SAFETY
+// ==========================================
+export type TeamRole = "OWNER" | "OPERATOR" | "VIEWER";
+
+export interface TeamMember {
+  id: string;
+  address: string;
+  name: string;
+  role: TeamRole;
+  addedAt: string;
+}
+
+export interface SpendingLimitConfig {
+  enabled: boolean;
+  maxSolPerLaunch: number;
+  maxDailySol: number;
+  currentDailySpentSol: number;
+  requireTwoFactorForSells: boolean;
+  withdrawalAllowlist: string[];
+}
+
+export interface ExportedWalletKeys {
+  id: string;
+  publicKey: string;
+  privateKeyEncrypted: string;
+  balanceSol: number;
+  role: string;
+}
+
+// ==========================================
+// 10. CREATOR ANALYTICS, ALERTS & BATCH OPS
+// ==========================================
+export interface CreatorTokenAnalytics {
+  tokenMint: string;
+  tokenName: string;
+  tokenSymbol: string;
+  launchpad: SolanaLaunchpad;
+  launchDate: string;
+  holdersCount: number;
+  volume24hSol: number;
+  marketCapUsd: number;
+  totalFeesHarvestedSol: number;
+  unclaimedFeesSol: number;
+  emptyAtasCount: number;
+  reclaimableRentSol: number;
+}
+
+export interface NotificationItem {
+  id: string;
+  type: "LAUNCH_SUCCESS" | "LAUNCH_FAILED" | "RENT_RECLAIMED" | "FEES_AVAILABLE" | "SNIPER_ALERT";
+  title: string;
+  message: string;
+  timestamp: string;
+  read: boolean;
+  actionUrl?: string;
+  data?: any;
+}
+
+// ==========================================
+// 11. DEVELOPER API, WEBHOOKS & CHANGELOG
+// ==========================================
+export interface WebhookConfig {
+  id: string;
+  url: string;
+  events: ("launch.created" | "launch.executed" | "harvest.claimed" | "sniper.triggered")[];
+  secret: string;
+  active: boolean;
+}
+
+export interface ChangelogEntry {
+  version: string;
+  date: string;
+  title: string;
+  changes: {
+    category: "New Feature" | "Improvement" | "Security" | "Fix";
+    description: string;
+  }[];
+}
+
 export interface TelemetryState {
   currentSlot: number;
   machVelocity: number;
