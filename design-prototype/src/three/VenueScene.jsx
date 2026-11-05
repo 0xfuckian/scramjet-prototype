@@ -5,8 +5,7 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 import { usePerf } from "../perf/PerfProvider.jsx";
 
 // ===========================================================================
-// SHARED PBR LUXURY AEROSPACE MATERIALS
-// Realistic physical materials that react dynamically to RoomEnvironment softboxes
+// LUXURY AEROSPACE PBR MATERIALS
 // ===========================================================================
 const MAT_GOLD = {
   color: "#F59E0B",
@@ -61,45 +60,45 @@ const MAT_EMERALD = {
 };
 
 // ===========================================================================
-// 0. PUMP.FUN: 3D Mint & White Capsule Pill (User Favorite!)
+// 0. PUMP.FUN: 3D Mint & White Capsule Pill
 // ===========================================================================
 function PumpFunPill() {
   const group = useRef(null);
   useFrame((state) => {
     if (!group.current) return;
-    group.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.9) * 0.22;
-    group.current.position.y = Math.sin(state.clock.elapsedTime * 1.6) * 0.035;
+    group.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.9) * 0.20;
+    group.current.position.y = Math.sin(state.clock.elapsedTime * 1.6) * 0.03;
   });
 
   return (
-    <group ref={group} rotation={[0.22, 0.15, -Math.PI / 4.2]}>
+    <group ref={group} rotation={[0.20, 0.12, -Math.PI / 4.2]}>
       {/* Lower Half - Mint Green */}
-      <mesh position={[0, -0.09, 0]}>
-        <cylinderGeometry args={[0.18, 0.18, 0.18, 32]} />
+      <mesh position={[0, -0.07, 0]}>
+        <cylinderGeometry args={[0.14, 0.14, 0.14, 32]} />
         <meshPhysicalMaterial {...MAT_EMERALD} />
       </mesh>
-      <mesh position={[0, -0.18, 0]}>
-        <sphereGeometry args={[0.18, 32, 16, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2]} />
+      <mesh position={[0, -0.14, 0]}>
+        <sphereGeometry args={[0.14, 32, 16, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2]} />
         <meshPhysicalMaterial {...MAT_EMERALD} />
       </mesh>
 
       {/* Upper Half - Porcelain White */}
-      <mesh position={[0, 0.09, 0]}>
-        <cylinderGeometry args={[0.18, 0.18, 0.18, 32]} />
+      <mesh position={[0, 0.07, 0]}>
+        <cylinderGeometry args={[0.14, 0.14, 0.14, 32]} />
         <meshPhysicalMaterial
           color="#FFFFFF"
           roughness={0.12}
-          metalness={0.06}
+          metalness={0.05}
           clearcoat={1.0}
           clearcoatRoughness={0.06}
         />
       </mesh>
-      <mesh position={[0, 0.18, 0]}>
-        <sphereGeometry args={[0.18, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+      <mesh position={[0, 0.14, 0]}>
+        <sphereGeometry args={[0.14, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <meshPhysicalMaterial
           color="#FFFFFF"
           roughness={0.12}
-          metalness={0.06}
+          metalness={0.05}
           clearcoat={1.0}
           clearcoatRoughness={0.06}
         />
@@ -107,14 +106,20 @@ function PumpFunPill() {
 
       {/* Recessed Dividing Seam Ring */}
       <mesh position={[0, 0, 0]}>
-        <torusGeometry args={[0.183, 0.012, 12, 32]} />
+        <torusGeometry args={[0.143, 0.010, 12, 32]} />
         <meshStandardMaterial color="#0A0E14" roughness={0.4} />
       </mesh>
 
+      {/* 24k Gold Center Brand Ring */}
+      <mesh position={[0, 0, 0]}>
+        <torusGeometry args={[0.141, 0.005, 12, 32]} />
+        <meshPhysicalMaterial {...MAT_GOLD} />
+      </mesh>
+
       {/* Specular Glint Stripe */}
-      <mesh position={[0.12, 0.06, 0.12]} rotation={[0, 0, -0.2]}>
-        <capsuleGeometry args={[0.018, 0.08, 8, 16]} />
-        <meshBasicMaterial color="#FFFFFF" opacity={0.6} transparent />
+      <mesh position={[0.09, 0.05, 0.09]} rotation={[0, 0, -0.2]}>
+        <capsuleGeometry args={[0.014, 0.06, 8, 16]} />
+        <meshBasicMaterial color="#FFFFFF" opacity={0.65} transparent />
       </mesh>
     </group>
   );
@@ -122,7 +127,6 @@ function PumpFunPill() {
 
 // ===========================================================================
 // 1. METEORA DBC: 3D Hypersonic Meteor Dart & Plasma Slipstream
-// Razor-sharp beveled supersonic dart in 24k gold and titanium with plasma ring
 // ===========================================================================
 function MeteoraMeteor() {
   const group = useRef(null);
@@ -172,19 +176,23 @@ function MeteoraMeteor() {
 
 // ===========================================================================
 // 2. RAYDIUM: 3D Faceted Diamond Crystal & Gyroscopic Cyan Prism
-// Crystalline faceted jewel-cut core with refraction inside a precision cyan ring
 // ===========================================================================
 function RaydiumCrystal() {
   const group = useRef(null);
   const ringRef = useRef(null);
+  const ring2Ref = useRef(null);
 
   useFrame((state) => {
     if (!group.current) return;
-    group.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.85 + 2) * 0.22;
-    group.current.position.y = Math.sin(state.clock.elapsedTime * 1.4 + 2) * 0.035;
+    group.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.85 + 2) * 0.20;
+    group.current.position.y = Math.sin(state.clock.elapsedTime * 1.4 + 2) * 0.03;
     if (ringRef.current) {
       ringRef.current.rotation.x += 0.012;
-      ringRef.current.rotation.y += 0.016;
+      ringRef.current.rotation.y += 0.015;
+    }
+    if (ring2Ref.current) {
+      ring2Ref.current.rotation.x -= 0.015;
+      ring2Ref.current.rotation.z += 0.012;
     }
   });
 
@@ -193,29 +201,37 @@ function RaydiumCrystal() {
       {/* Outer Cyan Gyroscope Ring */}
       <group ref={ringRef}>
         <mesh rotation={[0.45, 0.3, 0]}>
-          <torusGeometry args={[0.34, 0.016, 16, 48]} />
+          <torusGeometry args={[0.26, 0.012, 16, 48]} />
           <meshPhysicalMaterial {...MAT_CYAN} />
         </mesh>
       </group>
 
-      {/* Central Faceted Jewel-Cut Diamond Shard (Octahedron with bevel-like facets) */}
+      {/* Inner Gold Counter-Rotating Gyroscope Ring */}
+      <group ref={ring2Ref}>
+        <mesh rotation={[-0.4, 0.5, 0.3]}>
+          <torusGeometry args={[0.21, 0.009, 14, 36]} />
+          <meshPhysicalMaterial {...MAT_GOLD} />
+        </mesh>
+      </group>
+
+      {/* Central Faceted Jewel-Cut Diamond Shard */}
       <mesh position={[0, 0, 0]} rotation={[0.2, 0.4, 0]}>
-        <octahedronGeometry args={[0.20, 0]} />
+        <octahedronGeometry args={[0.15, 0]} />
         <meshPhysicalMaterial
           color="#E0F2FE"
           emissive="#38BDF8"
           emissiveIntensity={0.35}
-          transmission={0.7}
-          roughness={0.06}
-          metalness={0.15}
-          ior={1.6}
+          transmission={0.75}
+          roughness={0.05}
+          metalness={0.12}
+          ior={1.65}
           clearcoat={1.0}
         />
       </mesh>
 
-      {/* Inset Gold Energy Core */}
+      {/* Inset Gold Core */}
       <mesh position={[0, 0, 0]}>
-        <sphereGeometry args={[0.06, 16, 16]} />
+        <sphereGeometry args={[0.045, 16, 16]} />
         <meshPhysicalMaterial {...MAT_GOLD} />
       </mesh>
     </group>
@@ -223,131 +239,135 @@ function RaydiumCrystal() {
 }
 
 // ===========================================================================
-// 3. BAGS: AUTHENTIC 3D MONEY BAG (Sculpted Cloth Sack via LatheGeometry)
-// Plump saddle-canvas burlap sack, tied gold cord, 24k '$' emblem, spilling coins
+// 3. BAGS: AUTHENTIC 3D MONEY BAG 💰
+// Plump teardrop sack, pinched waist, tied gold rope, ruffled crown, gold coins, '$' medallion
 // ===========================================================================
 function BagsMoneyBag() {
   const group = useRef(null);
 
-  // Smooth 2D silhouette curve for a true plump money sack:
-  // Flat-ish bottom, bulging belly, cinched neck, wide ruffled open mouth
-  const bagGeometry = useMemo(() => {
-    const points = [];
-    const segments = 32;
-    for (let i = 0; i <= segments; i++) {
-      const v = i / segments;
-      const y = (v - 0.45) * 0.54; // Range from y = -0.24 to +0.30
-      let r = 0;
-      if (v < 0.12) {
-        // Base resting on floor
-        r = 0.06 + (v / 0.12) * 0.14;
-      } else if (v < 0.65) {
-        // Plump bulging belly
-        const bellyV = (v - 0.12) / 0.53;
-        r = 0.20 + Math.sin(bellyV * Math.PI) * 0.13;
-      } else if (v < 0.82) {
-        // Cinched neck where golden rope ties tightly
-        const neckV = (v - 0.65) / 0.17;
-        r = 0.24 - neckV * 0.14; // Reaches tight waist r = 0.10
-      } else {
-        // Flared ruffled cloth lip at the open mouth
-        const lipV = (v - 0.82) / 0.18;
-        r = 0.10 + Math.pow(lipV, 0.8) * 0.09; // Flares out to r = 0.19
-      }
-      points.push(new THREE.Vector2(Math.max(0.01, r), y));
-    }
-    return new THREE.LatheGeometry(points, 36);
-  }, []);
-
   useFrame((state) => {
     if (!group.current) return;
-    group.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.85 + 3) * 0.22;
-    group.current.position.y = Math.sin(state.clock.elapsedTime * 1.5 + 3) * 0.035;
+    group.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.85) * 0.18;
+    group.current.position.y = Math.sin(state.clock.elapsedTime * 1.5) * 0.03;
   });
 
   return (
     <group ref={group}>
-      {/* 1. Plump Sculpted Canvas Money Sack */}
-      <mesh geometry={bagGeometry}>
+      {/* 1. Plump Teardrop Cloth Sack Body */}
+      {/* Lower Belly - Wide plump base */}
+      <mesh position={[0, -0.06, 0]} scale={[1.1, 0.9, 1.05]}>
+        <sphereGeometry args={[0.20, 32, 24]} />
         <meshPhysicalMaterial
-          color="#C5A059" // Rich warm saddle-canvas / golden burlap
-          roughness={0.72} // Authentic woven fabric matte texture
-          metalness={0.06}
-          clearcoat={0.15}
+          color="#C6923C" // Warm golden saddle burlap canvas
+          roughness={0.72} // Natural cloth texture
+          metalness={0.05}
+          clearcoat={0.12}
+        />
+      </mesh>
+
+      {/* Tapered Waist up to Cinch */}
+      <mesh position={[0, 0.06, 0]}>
+        <cylinderGeometry args={[0.085, 0.18, 0.14, 32]} />
+        <meshPhysicalMaterial
+          color="#C6923C"
+          roughness={0.72}
+          metalness={0.05}
+          clearcoat={0.12}
+        />
+      </mesh>
+
+      {/* 2. Tied 24k Gold Braided Cord around Cinch */}
+      <mesh position={[0, 0.12, 0]}>
+        <torusGeometry args={[0.088, 0.016, 16, 36]} />
+        <meshPhysicalMaterial {...MAT_GOLD} />
+      </mesh>
+
+      {/* Front Knot */}
+      <mesh position={[0, 0.12, 0.095]}>
+        <sphereGeometry args={[0.022, 16, 16]} />
+        <meshPhysicalMaterial {...MAT_GOLD} />
+      </mesh>
+
+      {/* Dual Hanging Gold Rope Tassels */}
+      <mesh position={[-0.024, 0.05, 0.095]} rotation={[0, 0, 0.3]}>
+        <cylinderGeometry args={[0.006, 0.010, 0.12, 8]} />
+        <meshPhysicalMaterial {...MAT_GOLD} />
+      </mesh>
+      <mesh position={[0.024, 0.05, 0.095]} rotation={[0, 0, -0.3]}>
+        <cylinderGeometry args={[0.006, 0.010, 0.12, 8]} />
+        <meshPhysicalMaterial {...MAT_GOLD} />
+      </mesh>
+
+      {/* 3. Flared Pleated Cloth Crown / Ruffled Mouth */}
+      <mesh position={[0, 0.17, 0]} rotation={[Math.PI, 0, 0]}>
+        <coneGeometry args={[0.13, 0.09, 20, 1, true]} />
+        <meshPhysicalMaterial
+          color="#C6923C"
+          roughness={0.72}
+          metalness={0.05}
           side={THREE.DoubleSide}
         />
       </mesh>
 
-      {/* 2. Bold Embossed 24k Gold '$' Medallion on the Belly */}
-      <group position={[0, -0.04, 0.24]}>
-        {/* Gold medallion backing disk */}
-        <mesh rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.08, 0.08, 0.015, 32]} />
+      {/* Pleat Creases on Crown Lip */}
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => {
+        const rad = (deg * Math.PI) / 180;
+        const px = Math.cos(rad) * 0.105;
+        const pz = Math.sin(rad) * 0.105;
+        return (
+          <mesh key={i} position={[px, 0.20, pz]}>
+            <sphereGeometry args={[0.016, 8, 8]} />
+            <meshPhysicalMaterial color="#B5812B" roughness={0.75} />
+          </mesh>
+        );
+      })}
+
+      {/* 4. Overflowing 24k Gold Bullion Coins in Mouth */}
+      <group position={[0, 0.16, 0]}>
+        <mesh position={[0, 0, 0]}>
+          <cylinderGeometry args={[0.075, 0.075, 0.03, 20]} />
           <meshPhysicalMaterial {...MAT_GOLD} />
         </mesh>
-        {/* Recessed bezel ring */}
-        <mesh position={[0, 0, 0.009]}>
-          <ringGeometry args={[0.068, 0.078, 32]} />
-          <meshStandardMaterial color="#78350F" roughness={0.4} />
-        </mesh>
-        {/* High-relief '$' Symbol */}
-        <mesh position={[0, 0, 0.012]}>
-          <boxGeometry args={[0.018, 0.105, 0.01]} />
+        <mesh position={[0.03, 0.03, 0.02]} rotation={[0.3, 0.3, 0.1]}>
+          <cylinderGeometry args={[0.035, 0.035, 0.012, 20]} />
           <meshPhysicalMaterial {...MAT_GOLD} emissiveIntensity={0.5} />
         </mesh>
-        <mesh position={[0, 0.022, 0.012]}>
-          <torusGeometry args={[0.026, 0.008, 8, 16, Math.PI * 1.5]} />
+        <mesh position={[-0.03, 0.04, -0.01]} rotation={[-0.2, -0.3, -0.2]}>
+          <cylinderGeometry args={[0.033, 0.033, 0.012, 20]} />
           <meshPhysicalMaterial {...MAT_GOLD} emissiveIntensity={0.5} />
         </mesh>
-        <mesh position={[0, -0.022, 0.012]}>
-          <torusGeometry args={[0.026, 0.008, 8, 16, Math.PI * 1.5]} />
+        <mesh position={[0.01, 0.05, -0.02]} rotation={[0.1, 0.2, 0.4]}>
+          <cylinderGeometry args={[0.032, 0.032, 0.012, 20]} />
           <meshPhysicalMaterial {...MAT_GOLD} emissiveIntensity={0.5} />
         </mesh>
       </group>
 
-      {/* 3. Golden Braided Tie Rope Around Cinched Waist */}
-      <mesh position={[0, 0.10, 0]}>
-        <torusGeometry args={[0.105, 0.018, 16, 36]} />
-        <meshPhysicalMaterial {...MAT_GOLD} />
-      </mesh>
-
-      {/* 4. Tied Rope Knot & Hanging Cord Tassels */}
-      <mesh position={[0, 0.10, 0.115]}>
-        <sphereGeometry args={[0.024, 16, 16]} />
-        <meshPhysicalMaterial {...MAT_GOLD} />
-      </mesh>
-      <mesh position={[-0.026, 0.035, 0.115]} rotation={[0, 0, 0.25]}>
-        <cylinderGeometry args={[0.007, 0.009, 0.12, 8]} />
-        <meshPhysicalMaterial {...MAT_GOLD} />
-      </mesh>
-      <mesh position={[0.026, 0.035, 0.115]} rotation={[0, 0, -0.25]}>
-        <cylinderGeometry args={[0.007, 0.009, 0.12, 8]} />
-        <meshPhysicalMaterial {...MAT_GOLD} />
-      </mesh>
-
-      {/* 5. Overflowing 24k Bullion Gold Coins in the Open Top */}
-      <group position={[0, 0.18, 0]}>
-        {/* Center coin pile base */}
-        <mesh position={[0, -0.02, 0]}>
-          <cylinderGeometry args={[0.08, 0.08, 0.03, 16]} />
-          <meshPhysicalMaterial {...MAT_GOLD} />
+      {/* 5. Bold Embossed 24k Gold '$' Medallion on Front Belly */}
+      <group position={[0, -0.04, 0.205]}>
+        {/* Medallion disk */}
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.072, 0.072, 0.014, 32]} />
+          <meshPhysicalMaterial {...MAT_GOLD} emissiveIntensity={0.35} />
         </mesh>
-        {/* Individual spilling minted coins with milled edges */}
-        <mesh position={[0.03, 0.04, 0.02]} rotation={[0.3, 0.4, 0.2]}>
-          <cylinderGeometry args={[0.048, 0.048, 0.014, 24]} />
-          <meshPhysicalMaterial {...MAT_GOLD} emissiveIntensity={0.4} />
+        {/* Bezel Ring */}
+        <mesh position={[0, 0, 0.008]}>
+          <ringGeometry args={[0.060, 0.070, 32]} />
+          <meshStandardMaterial color="#78350F" roughness={0.35} />
         </mesh>
-        <mesh position={[-0.04, 0.05, -0.01]} rotation={[-0.2, -0.3, -0.1]}>
-          <cylinderGeometry args={[0.045, 0.045, 0.014, 24]} />
-          <meshPhysicalMaterial {...MAT_GOLD} emissiveIntensity={0.4} />
+        {/* '$' Vertical spine */}
+        <mesh position={[0, 0, 0.012]}>
+          <boxGeometry args={[0.016, 0.095, 0.008]} />
+          <meshPhysicalMaterial {...MAT_GOLD} emissiveIntensity={0.6} />
         </mesh>
-        <mesh position={[0.01, 0.07, -0.02]} rotation={[0.1, 0.1, 0.4]}>
-          <cylinderGeometry args={[0.042, 0.042, 0.014, 24]} />
-          <meshPhysicalMaterial {...MAT_GOLD} emissiveIntensity={0.4} />
+        {/* Top 'S' loop */}
+        <mesh position={[0, 0.020, 0.012]}>
+          <torusGeometry args={[0.024, 0.007, 8, 16, Math.PI * 1.5]} />
+          <meshPhysicalMaterial {...MAT_GOLD} emissiveIntensity={0.6} />
         </mesh>
-        <mesh position={[-0.02, 0.03, 0.04]} rotation={[0.4, -0.2, 0.3]}>
-          <cylinderGeometry args={[0.044, 0.044, 0.014, 24]} />
-          <meshPhysicalMaterial {...MAT_GOLD} emissiveIntensity={0.4} />
+        {/* Bottom 'S' loop */}
+        <mesh position={[0, -0.020, 0.012]}>
+          <torusGeometry args={[0.024, 0.007, 8, 16, Math.PI * 1.5]} />
+          <meshPhysicalMaterial {...MAT_GOLD} emissiveIntensity={0.6} />
         </mesh>
       </group>
     </group>
@@ -356,55 +376,60 @@ function BagsMoneyBag() {
 
 // ===========================================================================
 // 4. LETSBONK: 3D Solid 24k Gold Bonk Sledgehammer of Velocity
-// Faceted chamfered hammerhead, strike faceplates, knurled titanium shaft
 // ===========================================================================
 function LetsBonkHammer() {
   const group = useRef(null);
   useFrame((state) => {
     if (!group.current) return;
-    group.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.9 + 4) * 0.25;
-    group.current.position.y = Math.sin(state.clock.elapsedTime * 1.5 + 4) * 0.035;
+    group.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.9 + 4) * 0.22;
+    group.current.position.y = Math.sin(state.clock.elapsedTime * 1.5 + 4) * 0.03;
   });
 
   return (
-    <group ref={group} rotation={[0.2, 0.1, -0.35]}>
+    <group ref={group} rotation={[0.15, 0.1, -0.20]}>
       {/* Knurled Aerospace Titanium Shaft */}
-      <mesh position={[0, -0.12, 0]}>
-        <cylinderGeometry args={[0.025, 0.025, 0.44, 24]} />
+      <mesh position={[0, -0.06, 0]}>
+        <cylinderGeometry args={[0.022, 0.022, 0.36, 24]} />
         <meshPhysicalMaterial {...MAT_TITANIUM} />
       </mesh>
 
       {/* Gold Pommel Counterweight */}
-      <mesh position={[0, -0.34, 0]}>
-        <cylinderGeometry args={[0.038, 0.028, 0.04, 24]} />
+      <mesh position={[0, -0.24, 0]}>
+        <cylinderGeometry args={[0.034, 0.026, 0.035, 24]} />
         <meshPhysicalMaterial {...MAT_GOLD} />
       </mesh>
 
       {/* Gold Shaft Collar Rings */}
-      <mesh position={[0, 0.06, 0]}>
-        <torusGeometry args={[0.034, 0.012, 12, 24]} />
+      <mesh position={[0, 0.08, 0]}>
+        <torusGeometry args={[0.030, 0.010, 12, 24]} />
         <meshPhysicalMaterial {...MAT_GOLD} />
       </mesh>
 
       {/* Solid 24k Gold Sledgehammer Head */}
-      <mesh position={[0, 0.16, 0]}>
-        <boxGeometry args={[0.34, 0.18, 0.18]} />
+      <mesh position={[0, 0.14, 0]}>
+        <boxGeometry args={[0.30, 0.15, 0.15]} />
         <meshPhysicalMaterial {...MAT_GOLD} />
       </mesh>
 
       {/* Mirror-Polished Strike Faceplates */}
-      <mesh position={[-0.175, 0.16, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <cylinderGeometry args={[0.082, 0.082, 0.015, 32]} />
+      <mesh position={[-0.155, 0.14, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <cylinderGeometry args={[0.068, 0.068, 0.014, 32]} />
         <meshPhysicalMaterial {...MAT_CHROME} />
       </mesh>
-      <mesh position={[0.175, 0.16, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <cylinderGeometry args={[0.082, 0.082, 0.015, 32]} />
+      <mesh position={[0.155, 0.14, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <cylinderGeometry args={[0.068, 0.068, 0.014, 32]} />
         <meshPhysicalMaterial {...MAT_CHROME} />
       </mesh>
 
+      {/* Cyan Plasma Energy Conduit */}
+      <mesh position={[0, 0.14, 0.078]}>
+        <boxGeometry args={[0.22, 0.020, 0.006]} />
+        <meshPhysicalMaterial {...MAT_CYAN} emissiveIntensity={0.8} />
+      </mesh>
+
       {/* Floating Gold Impact Star Sparks */}
-      <mesh position={[0.22, 0.28, 0.08]} rotation={[0, 0, Math.PI / 4]}>
-        <octahedronGeometry args={[0.042, 0]} />
+      <mesh position={[0.20, 0.24, 0.06]} rotation={[0, 0, Math.PI / 4]}>
+        <octahedronGeometry args={[0.035, 0]} />
         <meshBasicMaterial color="#FDE047" />
       </mesh>
     </group>
@@ -413,7 +438,6 @@ function LetsBonkHammer() {
 
 // ===========================================================================
 // 5. STONKFUN: 3D Emerald Stonks Ascension Monolith
-// Architectural green tiered pedestal + rocketing 3D emerald arrowhead
 // ===========================================================================
 function StonkFunRocket() {
   const group = useRef(null);
@@ -425,7 +449,7 @@ function StonkFunRocket() {
 
   return (
     <group ref={group}>
-      {/* Stepped Architectural Monolith Pedestal (Green Staircase of Gains) */}
+      {/* Stepped Architectural Monolith Pedestal */}
       <mesh position={[-0.14, -0.16, 0]}>
         <boxGeometry args={[0.10, 0.12, 0.14]} />
         <meshPhysicalMaterial {...MAT_SLATE} />
@@ -439,7 +463,7 @@ function StonkFunRocket() {
         <meshPhysicalMaterial {...MAT_SLATE} />
       </mesh>
 
-      {/* Slashing 3D Emerald Breakout Arrow (Bottom-Left to Top-Right) */}
+      {/* Slashing 3D Emerald Breakout Arrow */}
       <mesh position={[0.02, 0.08, 0.08]} rotation={[0, 0, -Math.PI / 4]}>
         <boxGeometry args={[0.065, 0.42, 0.065]} />
         <meshPhysicalMaterial {...MAT_EMERALD} />
@@ -456,7 +480,6 @@ function StonkFunRocket() {
 
 // ===========================================================================
 // 6. PRINTR: 3D High-Speed Currency Minting Press
-// Gunmetal chassis + dual mirror chrome rollers + flowing holographic cash ribbon
 // ===========================================================================
 function PrintrMachine() {
   const group = useRef(null);
@@ -512,7 +535,6 @@ function PrintrMachine() {
 
 // ===========================================================================
 // 7. ANONCOIN: 3D Stealth Carbon-Titanium Operative Mask
-// Faceted stealth cowl + electric cyan laser visor + orbiting cipher ring
 // ===========================================================================
 function AnoncoinMask() {
   const group = useRef(null);
@@ -550,7 +572,6 @@ function AnoncoinMask() {
 
 // ===========================================================================
 // 8. SURGE: 3D Continuous Crystalline Lightning Bolt & Confinement Ring
-// Sharp multi-segment crystal bolt + plasma confinement reactor
 // ===========================================================================
 function SurgeLightning() {
   const group = useRef(null);
@@ -599,7 +620,6 @@ function SurgeLightning() {
 
 // ===========================================================================
 // 9. CLANKER: 3D Brushed Titanium Retro-Futuristic AI Terminal
-// Chamfered chassis + curved CRT monitor with friendly eyes + brass knobs
 // ===========================================================================
 function ClankerRobot() {
   const group = useRef(null);
@@ -672,7 +692,6 @@ function ClankerRobot() {
 
 // ===========================================================================
 // 10. FOURMEME: 3D 24k Gold Lucky Quad-Amulet & Inset Emerald Gems
-// Beveled gold '4' monogram + 4 faceted emerald baguette cabochons
 // ===========================================================================
 function FourMemeEmblem() {
   const group = useRef(null);
@@ -716,7 +735,6 @@ function FourMemeEmblem() {
 
 // ===========================================================================
 // 11. FLAP: 3D Supersonic Articulated Delta Wings & Turbine Core
-// Swept delta wing blades in matte obsidian and 24k gold + Mach intake ring
 // ===========================================================================
 function FlapCyberWings() {
   const group = useRef(null);
@@ -764,8 +782,9 @@ function FlapCyberWings() {
 }
 
 // ===========================================================================
-// 12-VENUE CAROUSEL RIG
-// Cohesive aerospace color accents: Mint (#22C55E), Gold (#F59E0B), Cyan (#38BDF8)
+// 12-VENUE HERO CAROUSEL RIG
+// Hero spotlight architecture: The focused venue is prominently centered at full scale.
+// The other venues orbit at a clean wider radius with gentle depth fade.
 // ===========================================================================
 const VENUE_ACCENTS = [
   "#22C55E", // 0. Pump.fun (Mint)
@@ -784,6 +803,24 @@ const VENUE_ACCENTS = [
 
 const TOTAL_VENUES = 12;
 
+function VenueModel({ index }) {
+  switch (index) {
+    case 0: return <PumpFunPill />;
+    case 1: return <MeteoraMeteor />;
+    case 2: return <RaydiumCrystal />;
+    case 3: return <BagsMoneyBag />;
+    case 4: return <LetsBonkHammer />;
+    case 5: return <StonkFunRocket />;
+    case 6: return <PrintrMachine />;
+    case 7: return <AnoncoinMask />;
+    case 8: return <SurgeLightning />;
+    case 9: return <ClankerRobot />;
+    case 10: return <FourMemeEmblem />;
+    case 11: return <FlapCyberWings />;
+    default: return <PumpFunPill />;
+  }
+}
+
 function Rig({ focus }) {
   const group = useRef(null);
   const target = useRef(0);
@@ -796,43 +833,55 @@ function Rig({ focus }) {
   useFrame((state) => {
     const node = group.current;
     if (!node) return;
-    node.rotation.y += (target.current - node.rotation.y) * 0.10;
+    node.rotation.y += (target.current - node.rotation.y) * 0.12;
     node.rotation.x = state.pointer.y * 0.08;
     if (low) state.invalidate();
   });
 
   return (
     <group ref={group}>
+      {/* Aerospace Turntable Stage Floor */}
+      <mesh position={[0, -0.40, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[3.4, 64]} />
+        <meshStandardMaterial
+          color="#0B0F17"
+          roughness={0.65}
+          metalness={0.35}
+        />
+      </mesh>
+      {/* Subtle Orbital Guide Track */}
+      <mesh position={[0, -0.395, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[2.36, 2.40, 64]} />
+        <meshBasicMaterial color="#1E293B" transparent opacity={0.5} />
+      </mesh>
+
       {Array.from({ length: TOTAL_VENUES }).map((_, index) => {
         const angle = (index / TOTAL_VENUES) * Math.PI * 2;
-        const radius = 1.45;
+        // Generous, wide gallery radius so models never crowd or collide
+        const radius = 2.4;
         const x = Math.sin(angle) * radius;
         const z = Math.cos(angle) * radius;
         const accent = VENUE_ACCENTS[index];
+        const isFocused = index === focus;
 
         return (
-          <group key={index} position={[x, 0, z]}>
-            {/* 3D Model */}
-            {index === 0 && <PumpFunPill />}
-            {index === 1 && <MeteoraMeteor />}
-            {index === 2 && <RaydiumCrystal />}
-            {index === 3 && <BagsMoneyBag />}
-            {index === 4 && <LetsBonkHammer />}
-            {index === 5 && <StonkFunRocket />}
-            {index === 6 && <PrintrMachine />}
-            {index === 7 && <AnoncoinMask />}
-            {index === 8 && <SurgeLightning />}
-            {index === 9 && <ClankerRobot />}
-            {index === 10 && <FourMemeEmblem />}
-            {index === 11 && <FlapCyberWings />}
+          <group
+            key={index}
+            position={[x, 0, z]}
+            // Crucial: Rotate each model around Y so its front face ALWAYS faces outward toward the camera!
+            rotation={[0, angle, 0]}
+          >
+            <group scale={isFocused ? 1.0 : 0.54}>
+              <VenueModel index={index} />
+            </group>
 
-            {/* Glowing Studio Turntable Ring */}
-            <mesh position={[0, -0.46, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-              <ringGeometry args={[0.24, 0.30, 32]} />
+            {/* Glowing Studio Turntable Ring under each model */}
+            <mesh position={[0, -0.38, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <ringGeometry args={[0.22, 0.28, 32]} />
               <meshBasicMaterial
                 color={accent}
                 transparent
-                opacity={focus === index ? 0.8 : 0.12}
+                opacity={isFocused ? 0.95 : 0.15}
               />
             </mesh>
           </group>
@@ -854,7 +903,7 @@ export default function VenueScene({ onReady, focus = 0 }) {
         alpha: true,
         powerPreference: "high-performance",
       }}
-      camera={{ position: [0, 0.38, 3.3], fov: 40 }}
+      camera={{ position: [0, 0.52, 4.0], fov: 36 }}
       onCreated={({ gl, scene, invalidate }) => {
         gl.setClearColor("#08090C", 1);
         gl.toneMapping = THREE.ACESFilmicToneMapping;
@@ -871,13 +920,13 @@ export default function VenueScene({ onReady, focus = 0 }) {
       }}
     >
       {/* Studio 3-Point Lighting Setup */}
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={0.55} />
       {/* Key Light: Crisp warm directional spotlight from top-right */}
-      <directionalLight position={[4, 5, 4]} intensity={2.5} color="#FFFDF7" />
+      <directionalLight position={[4, 5, 4]} intensity={2.6} color="#FFFDF7" />
       {/* Fill Light: Cool slate fill from top-left */}
       <directionalLight position={[-4, 2, 1]} intensity={0.8} color="#94A3B8" />
-      {/* Rim / Silhouette Light: Intense aerospace mint rim light from behind */}
-      <spotLight position={[0, 4, -3]} intensity={2.8} color="#22C55E" angle={0.8} />
+      {/* Rim / Silhouette Light: Crisp edge backlight */}
+      <spotLight position={[0, 4, -3]} intensity={2.6} color="#22C55E" angle={0.8} />
 
       <Rig focus={focus} />
     </Canvas>
