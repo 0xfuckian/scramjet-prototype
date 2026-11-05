@@ -9,19 +9,22 @@ function Block({ id, children }) {
   const { enabled, toggle, openElement } = usePrototype();
   const on = enabled[id];
 
-  if (!item) return null;
+  if (!item || !on) return null;
 
   return (
-    <section className={`proposal ${on ? "is-active" : "is-inactive"}`} id={id}>
-      <header className="proposal-head">
-        <div className="proposal-title">
-          <p className="eyebrow">
-            {item.cost} cost · {item.original ? "original" : "benchmark"}
-          </p>
-          <h2>{item.name}</h2>
-          <p className="purpose">{item.purpose}</p>
-        </div>
-        <div className="proposal-tools">
+    <section className="block" id={id}>
+      <div className="block-copy">
+        <p className="eyebrow">
+          <span className="proposal-badge">PROPOSAL {item.numStr}</span>
+          <span className="eyebrow-sep">·</span>
+          <span>{item.cost ? item.cost.toUpperCase() : "MEDIUM"} COST · {item.original ? "ORIGINAL" : "BENCHMARK"}</span>
+        </p>
+        <h2 id={`${id}-title`}>
+          <span className="proposal-heading-num">{item.numStr}</span> {item.name}
+        </h2>
+        <p>{item.purpose}</p>
+        {item.fit ? <p className="fit">{item.fit}</p> : null}
+        <div className="control-row" style={{ marginTop: "1rem" }}>
           <button
             type="button"
             aria-pressed={on}
@@ -39,8 +42,14 @@ function Block({ id, children }) {
             </a>
           ) : null}
         </div>
-      </header>
-      <div className="proposal-body">{children}</div>
+      </div>
+      <div className="block-stage" style={{ marginTop: "1.4rem" }}>{children}</div>
+      <footer className="meta">
+        <span className="meta-num">{item.numStr}</span>
+        <span>Cost {item.cost}</span>
+        <span>{item.original ? "Original" : "Technique reference"}</span>
+        {item.fit ? <span>{item.fit}</span> : null}
+      </footer>
     </section>
   );
 }
@@ -97,10 +106,10 @@ export function MempoolIntercept() {
             <circle cx="0" cy="0" r="115" fill="#0B0F17" stroke="#1E293B" strokeWidth="1.5" />
             
             {/* Concentric Range Rings */}
-            <circle cx="0" cy="0" r="30" fill="none" stroke="#22C55E" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.4" />
-            <circle cx="0" cy="0" r="60" fill="none" stroke="#22C55E" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.4" />
-            <circle cx="0" cy="0" r="90" fill="none" stroke="#22C55E" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.4" />
-            <circle cx="0" cy="0" r="115" fill="none" stroke="#22C55E" strokeWidth="1.2" opacity="0.7" />
+            <circle cx="0" cy="0" r="30" fill="none" stroke="#FF7700" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.4" />
+            <circle cx="0" cy="0" r="60" fill="none" stroke="#FF7700" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.4" />
+            <circle cx="0" cy="0" r="90" fill="none" stroke="#FF7700" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.4" />
+            <circle cx="0" cy="0" r="115" fill="none" stroke="#FF7700" strokeWidth="1.2" opacity="0.7" />
 
             {/* Crosshairs */}
             <line x1="-115" y1="0" x2="115" y2="0" stroke="#1E293B" strokeWidth="1" />
@@ -108,21 +117,21 @@ export function MempoolIntercept() {
 
             {/* 360 Radar Sweep Line */}
             <g transform={`rotate(${angle})`}>
-              <line x1="0" y1="0" x2="0" y2="-115" stroke="#31E3AC" strokeWidth="2" opacity="0.9" />
+              <line x1="0" y1="0" x2="0" y2="-115" stroke="#FF7700" strokeWidth="2" opacity="0.9" />
               <polygon points="0,0 -40,-115 0,-115" fill="url(#radarSweepGlow)" opacity="0.25" />
             </g>
 
             {/* Gradient definition for sweep trail */}
             <defs>
               <linearGradient id="radarSweepGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#31E3AC" stopOpacity="0" />
-                <stop offset="100%" stopColor="#31E3AC" stopOpacity="0.4" />
+                <stop offset="0%" stopColor="#FF7700" stopOpacity="0" />
+                <stop offset="100%" stopColor="#FF7700" stopOpacity="0.4" />
               </linearGradient>
             </defs>
 
             {/* Center Scramjet Core */}
-            <circle cx="0" cy="0" r="5" fill="#31E3AC" />
-            <circle cx="0" cy="0" r="8" fill="none" stroke="#31E3AC" strokeWidth="1" opacity="0.7" />
+            <circle cx="0" cy="0" r="5" fill="#FF7700" />
+            <circle cx="0" cy="0" r="8" fill="none" stroke="#FF7700" strokeWidth="1" opacity="0.7" />
 
             {/* Plotted Blips */}
             {visibleBlips.map((blip) => {
@@ -131,7 +140,7 @@ export function MempoolIntercept() {
               const bx = Math.cos(rad) * r;
               const by = Math.sin(rad) * r;
               const isDanger = blip.type === "neutralized";
-              const color = isDanger ? "#EF4444" : "#22C55E";
+              const color = isDanger ? "#EF4444" : "#FF7700";
 
               return (
                 <g key={blip.id} transform={`translate(${bx}, ${by})`} className="radar-blip">
@@ -325,7 +334,7 @@ export function CandleSurge() {
               type="button"
               className={`tab-btn ${throttle > 80 ? "active" : ""}`}
               onClick={() => setThrottle(100)}
-              style={{ fontSize: "0.68rem", padding: "0.35rem 0.4rem", borderColor: "var(--mint)", color: "var(--mint)" }}
+              style={{ fontSize: "0.68rem", padding: "0.35rem 0.4rem", borderColor: "var(--flare)", color: "var(--flare)" }}
             >
               Mach 10.0 (5X Apex)
             </button>
@@ -359,7 +368,7 @@ export function CandleSurge() {
                     y1={lvl.y}
                     x2="384"
                     y2={lvl.y}
-                    stroke={breached ? "#31E3AC" : "#1E293B"}
+                    stroke={breached ? "#FF7700" : "#1E293B"}
                     strokeDasharray={`${sf * 3.5} ${sf * 2.5}`}
                     strokeWidth={breached ? sf * 1.5 : sf * 0.9}
                     opacity={breached ? 0.9 : 0.35}
@@ -368,7 +377,7 @@ export function CandleSurge() {
                   <text
                     x="20"
                     y={lvl.y - sf * 3.5}
-                    fill={breached ? "#31E3AC" : "#64748B"}
+                    fill={breached ? "#FF7700" : "#64748B"}
                     fontSize={sf * 4.5}
                     fontFamily="JetBrains Mono"
                     fontWeight={breached ? "600" : "400"}
@@ -381,7 +390,7 @@ export function CandleSurge() {
                     x="380"
                     y={lvl.y - sf * 3.5}
                     textAnchor="end"
-                    fill={breached ? "#31E3AC" : "#475569"}
+                    fill={breached ? "#FF7700" : "#475569"}
                     fontSize={sf * 4.5}
                     fontFamily="JetBrains Mono"
                     fontWeight={breached ? "600" : "400"}
@@ -436,7 +445,7 @@ export function CandleSurge() {
                   y1={candleTopY}
                   x2="384"
                   y2={candleTopY}
-                  stroke="#31E3AC"
+                  stroke="#FF7700"
                   strokeWidth={(viewHeight / 340) * 1.2}
                   strokeDasharray={`${(viewHeight / 340) * 4} ${(viewHeight / 340) * 2}`}
                   opacity="0.85"
@@ -448,7 +457,7 @@ export function CandleSurge() {
                   y1={candleTopY}
                   x2={226 + shockSpread * (viewHeight / 340)}
                   y2={candleTopY}
-                  stroke="#86EFAC"
+                  stroke="#FF7700"
                   strokeWidth={(viewHeight / 340) * 2.2}
                   strokeLinecap="square"
                 />
@@ -471,11 +480,11 @@ export function CandleSurge() {
                   strokeWidth={(viewHeight / 340) * 1.5}
                 />
 
-                {/* Live Hypersonic Telemetry Badge at Flat Apex */}
+                {/* Live Hypersonic Telemetry Badge at Flat Apex in Scramjet Orange */}
                 <text
                   x="234"
                   y={candleTopY - (viewHeight / 340) * 4}
-                  fill="#31E3AC"
+                  fill="#FF7700"
                   fontSize={(viewHeight / 340) * 5.2}
                   fontFamily="JetBrains Mono"
                   fontWeight="bold"
@@ -568,12 +577,12 @@ export function AntiMevShield() {
                   points="0,-85 73,-42 73,42 0,85 -73,42 -73,-42"
                   fill="#06B6D4"
                   fillOpacity="0.08"
-                  stroke="#22C55E"
+                  stroke="#FF7700"
                   strokeWidth="2"
                   strokeDasharray="6 3"
                 />
                 {/* Secondary Buffer Ring */}
-                <circle cx="0" cy="0" r="58" fill="none" stroke="#31E3AC" strokeWidth="1" strokeDasharray="4 4" opacity="0.6" />
+                <circle cx="0" cy="0" r="58" fill="none" stroke="#FF3E00" strokeWidth="1" strokeDasharray="4 4" opacity="0.6" />
                 {/* Deflected Beam Indicators */}
                 <line x1="-130" y1="-80" x2="-65" y2="-40" stroke="#EF4444" strokeWidth="2" strokeDasharray="3 3" />
                 <line x1="-65" y1="-40" x2="-120" y2="0" stroke="#F59E0B" strokeWidth="1.5" />
@@ -670,7 +679,7 @@ export function SonicScrubber() {
                 <path
                   d={`M 30,80 Q 180,80 230,20 L 230,140 Q 280,80 470,80`}
                   fill="none"
-                  stroke="#31E3AC"
+                  stroke="#FF7700"
                   strokeWidth="3"
                 />
                 {/* Supersonic Shock Angle Wings */}
@@ -680,7 +689,7 @@ export function SonicScrubber() {
                 {/* Condensation Vapor Cone Fill */}
                 <polygon
                   points={`230,80 ${230 - mach * 45},10 ${230 - mach * 45},150`}
-                  fill="#31E3AC"
+                  fill="#FF7700"
                   fillOpacity="0.12"
                 />
               </g>
@@ -966,7 +975,7 @@ export function LiquidityManifold() {
 
             {/* Dynamic Curve Path */}
             {curveType === "exponential" && (
-              <path d="M 40,170 Q 300,165 420,30" fill="none" stroke="#22C55E" strokeWidth="3" />
+              <path d="M 40,170 Q 300,165 420,30" fill="none" stroke="#FF7700" strokeWidth="3" />
             )}
             {curveType === "dynamic" && (
               <path d="M 40,170 C 180,160 260,80 420,30" fill="none" stroke="#38BDF8" strokeWidth="3" />
@@ -985,7 +994,7 @@ export function LiquidityManifold() {
               return (
                 <g transform={`translate(${px}, ${py})`}>
                   <circle cx="0" cy="0" r="6" fill="#FFFFFF" />
-                  <circle cx="0" cy="0" r="12" fill="none" stroke="#22C55E" strokeWidth="1.5" opacity="0.6" />
+                  <circle cx="0" cy="0" r="12" fill="none" stroke="#FF7700" strokeWidth="1.5" opacity="0.6" />
                   <text x="14" y="4" fill="#F8FAFC" fontSize="10" fontFamily="JetBrains Mono" fontWeight="bold">
                     {solIn} SOL
                   </text>
@@ -1059,32 +1068,32 @@ export function CockpitHud() {
             {/* Horizon Pitch Ladder tilting with mouse */}
             <g transform={`translate(${coords.x * 0.4}, ${coords.y * 0.4}) rotate(${coords.x * 0.3})`}>
               {/* Center boresight */}
-              <circle cx="0" cy="0" r="3" fill="#22C55E" />
-              <path d="M -15,0 L -5,0 M 5,0 L 15,0 M 0,-15 L 0,-5 M 0,5 L 0,15" stroke="#22C55E" strokeWidth="1.2" />
+              <circle cx="0" cy="0" r="3" fill="#FF7700" />
+              <path d="M -15,0 L -5,0 M 5,0 L 15,0 M 0,-15 L 0,-5 M 0,5 L 0,15" stroke="#FF7700" strokeWidth="1.2" />
 
               {/* +10 Degree Pitch Line */}
-              <line x1="-35" y1="-30" x2="35" y2="-30" stroke="#22C55E" strokeWidth="1" strokeDasharray="6 3" />
-              <text x="40" y="-28" fill="#22C55E" fontSize="7" fontFamily="JetBrains Mono">+10</text>
+              <line x1="-35" y1="-30" x2="35" y2="-30" stroke="#FF7700" strokeWidth="1" strokeDasharray="6 3" />
+              <text x="40" y="-28" fill="#FF7700" fontSize="7" fontFamily="JetBrains Mono">+10</text>
 
               {/* -10 Degree Pitch Line */}
-              <line x1="-35" y1="30" x2="35" y2="30" stroke="#22C55E" strokeWidth="1" strokeDasharray="6 3" />
-              <text x="40" y="32" fill="#22C55E" fontSize="7" fontFamily="JetBrains Mono">-10</text>
+              <line x1="-35" y1="30" x2="35" y2="30" stroke="#FF7700" strokeWidth="1" strokeDasharray="6 3" />
+              <text x="40" y="32" fill="#FF7700" fontSize="7" fontFamily="JetBrains Mono">-10</text>
             </g>
 
             {/* Mach Airspeed Tape (Left) */}
             <g transform="translate(-115, -60)">
-              <rect width="25" height="120" fill="#0B0F17" stroke="#22C55E" strokeWidth="1" opacity="0.6" />
-              <text x="12" y="20" textAnchor="middle" fill="#22C55E" fontSize="8" fontFamily="JetBrains Mono">M3.8</text>
+              <rect width="25" height="120" fill="#0B0F17" stroke="#FF7700" strokeWidth="1" opacity="0.6" />
+              <text x="12" y="20" textAnchor="middle" fill="#FF7700" fontSize="8" fontFamily="JetBrains Mono">M3.8</text>
               <text x="12" y="60" textAnchor="middle" fill="#FFFFFF" fontSize="9" fontFamily="JetBrains Mono" fontWeight="bold">M3.5</text>
-              <text x="12" y="100" textAnchor="middle" fill="#22C55E" fontSize="8" fontFamily="JetBrains Mono">M3.2</text>
+              <text x="12" y="100" textAnchor="middle" fill="#FF7700" fontSize="8" fontFamily="JetBrains Mono">M3.2</text>
             </g>
 
             {/* Solana Slot Altitude Tape (Right) */}
             <g transform="translate(90, -60)">
-              <rect width="32" height="120" fill="#0B0F17" stroke="#22C55E" strokeWidth="1" opacity="0.6" />
-              <text x="16" y="20" textAnchor="middle" fill="#22C55E" fontSize="6" fontFamily="JetBrains Mono">SLOT 492k</text>
+              <rect width="32" height="120" fill="#0B0F17" stroke="#FF7700" strokeWidth="1" opacity="0.6" />
+              <text x="16" y="20" textAnchor="middle" fill="#FF7700" fontSize="6" fontFamily="JetBrains Mono">SLOT 492k</text>
               <text x="16" y="60" textAnchor="middle" fill="#FFFFFF" fontSize="7" fontFamily="JetBrains Mono" fontWeight="bold">318,492</text>
-              <text x="16" y="100" textAnchor="middle" fill="#22C55E" fontSize="6" fontFamily="JetBrains Mono">SLOT 491k</text>
+              <text x="16" y="100" textAnchor="middle" fill="#FF7700" fontSize="6" fontFamily="JetBrains Mono">SLOT 491k</text>
             </g>
 
             {/* Dynamic Target Box tracking pointer */}
@@ -1095,11 +1104,11 @@ export function CockpitHud() {
                 width="36"
                 height="36"
                 fill="none"
-                stroke={locked ? "#EF4444" : "#31E3AC"}
+                stroke={locked ? "#EF4444" : "#FF7700"}
                 strokeWidth="1.5"
                 strokeDasharray="4 2"
               />
-              <text x="0" y="26" textAnchor="middle" fill={locked ? "#EF4444" : "#31E3AC"} fontSize="7" fontFamily="JetBrains Mono">
+              <text x="0" y="26" textAnchor="middle" fill={locked ? "#EF4444" : "#FF7700"} fontSize="7" fontFamily="JetBrains Mono">
                 {locked ? "LOCKED: SOLANA LEADER" : "TRACKING"}
               </text>
             </g>
@@ -1118,7 +1127,7 @@ export function TokenomicsCentrifuge() {
   const [activeSlice, setActiveSlice] = useState(0);
 
   const SLICES = [
-    { title: "Public Bonding Curve", pct: 80.0, color: "#22C55E", note: "Fair launch for public liquidity on bonding curve" },
+    { title: "Public Bonding Curve", pct: 80.0, color: "#FF7700", note: "Fair launch for public liquidity on bonding curve" },
     { title: "Creator Allocation", pct: 10.0, color: "#38BDF8", note: "Vested token share for founder & contributors" },
     { title: "AMM Migration Pool", pct: 6.5, color: "#F59E0B", note: "Seed liquidity reserved for Raydium/Meteora pool" },
     { title: "SCRAMJET Protocol Fee", pct: 3.5, color: "#FF3E00", note: "Fixed platform execution & anti-MEV guarantee" },
@@ -1139,7 +1148,7 @@ export function TokenomicsCentrifuge() {
             <path
               d="M 0,-65 A 65,65 0 1,1 -61.8,20.0"
               fill="none"
-              stroke="#22C55E"
+              stroke="#FF7700"
               strokeWidth={activeSlice === 0 ? "14" : "10"}
               className="rotor-arc"
               onClick={() => setActiveSlice(0)}
@@ -1250,7 +1259,7 @@ export function ComputeTachometer() {
             <path
               d="M -74,74 A 105,105 0 1,1 74,74"
               fill="none"
-              stroke="#22C55E"
+              stroke="#FF7700"
               strokeWidth="6"
               strokeDasharray="4 2"
               opacity="0.8"
@@ -1418,7 +1427,7 @@ export function PlasmaNozzle() {
             {/* Supersonic Exhaust Plume expanding out from x=220 */}
             <polygon
               points={`220,40 480,10 480,150 220,120`}
-              fill="#31E3AC"
+              fill="#FF7700"
               fillOpacity={throttle / 400}
             />
 
@@ -1430,7 +1439,7 @@ export function PlasmaNozzle() {
                   key={i}
                   points={`${dx},80 ${dx + 18},65 ${dx + 36},80 ${dx + 18},95`}
                   fill="#FFFFFF"
-                  stroke="#31E3AC"
+                  stroke="#FF7700"
                   strokeWidth="1.5"
                   className="shock-diamond"
                 />

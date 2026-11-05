@@ -47,12 +47,12 @@ function ChartGridLines({ candleHeight }) {
   const levels = [
     { y: -1.02, label: "GROUND ACCUMULATION ($0.01)", color: "#334155" },
     { y: -0.64, label: "BREAKOUT BASELINE ($0.10)", color: "#475569" },
-    { y: 0.60,  label: "RESISTANCE 1 ($1.00) [SHATTERED]", color: "#059669" },
-    { y: 1.80,  label: "RESISTANCE 2 ($10.0) [SHATTERED]", color: "#10B981" },
-    { y: 3.50,  label: "RESISTANCE 3 ($100.0) [SHATTERED]", color: "#31E3AC" },
-    { y: 6.00,  label: "STRATOSPHERE ATH ($1,000.0) [SHATTERED]", color: "#34D399" },
-    { y: 8.80,  label: "MESOSPHERE ESCAPE ($10,000.0) [SHATTERED]", color: "#6EE7B7" },
-    { y: 11.50, label: "IONOSPHERE ORBIT ($50,000.0) [SHATTERED]", color: "#A7F3D0" },
+    { y: 0.60,  label: "RESISTANCE 1 ($1.00) [SHATTERED]", color: "#FF3E00" },
+    { y: 1.80,  label: "RESISTANCE 2 ($10.0) [SHATTERED]", color: "#FF5500" },
+    { y: 3.50,  label: "RESISTANCE 3 ($100.0) [SHATTERED]", color: "#FF7700" },
+    { y: 6.00,  label: "STRATOSPHERE ATH ($1,000.0) [SHATTERED]", color: "#FF9900" },
+    { y: 8.80,  label: "MESOSPHERE ESCAPE ($10,000.0) [SHATTERED]", color: "#FFB700" },
+    { y: 11.50, label: "IONOSPHERE ORBIT ($50,000.0) [SHATTERED]", color: "#FFD000" },
     { y: 13.50, label: "INTERGALACTIC GOD CANDLE ($100,000.0+)", color: "#FFFFFF" },
   ];
 
@@ -171,10 +171,10 @@ function FloatingHudBadge({ position, gainPct, isVisible }) {
     ctx.fill();
 
     ctx.lineWidth = 3.0;
-    ctx.strokeStyle = GREEN_COLOR;
+    ctx.strokeStyle = "#FF7700";
     ctx.stroke();
 
-    ctx.fillStyle = GREEN_COLOR;
+    ctx.fillStyle = "#FF7700";
     ctx.font = "900 36px monospace";
     ctx.fillText(`▲ +${gainPct}%`, 16, 46);
 
@@ -476,7 +476,7 @@ function CinematicGodCandle() {
             rotation={[-Math.PI / 2, 0, 0]}
           >
             <planeGeometry args={[CANDLE_WIDTH * 2.2, CANDLE_DEPTH * 2.2]} />
-            <meshBasicMaterial color="#31E3AC" transparent opacity={0.65} wireframe />
+            <meshBasicMaterial color="#FF7700" transparent opacity={0.65} wireframe />
           </mesh>
 
           {/* Standard Volume Bar Underneath (Width 0.28, Depth 0.20, sitting cleanly on floor) */}

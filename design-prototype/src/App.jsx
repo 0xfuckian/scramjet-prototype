@@ -98,7 +98,10 @@ function Controls() {
         <ul id="proposal-index">
         {PROPOSALS.map((item) => (
           <li key={item.id}>
-            <a href={`#${item.id}`}>{item.name}</a>
+            <a href={`#${item.id}`}>
+              <span className="idx-num">{item.numStr}</span>
+              {item.name}
+            </a>
             <button
               type="button"
               aria-pressed={enabled[item.id]}
@@ -138,10 +141,23 @@ function Home() {
             <p className="eyebrow">Design prototype · not the production site</p>
             <h1>Proposed elements for SCRAMJET</h1>
             <p className="lede">
-              Thirty-one working sections and interactive animations for a hypersonic Solana launch platform. Switch any of them off,
+              Thirty-two working sections and interactive animations for a hypersonic Solana launch platform. Switch any of them off,
               or open one on its own to review and approve animations.
             </p>
           </header>
+
+          {/* Quick Selection Matrix (All 32 Numbered Proposals #01 - #32) */}
+          <div className="proposal-matrix-grid" aria-label="Quick Proposal Selection Matrix">
+            {PROPOSALS.map((p) => (
+              <a key={p.id} href={`#${p.id}`} className="matrix-item">
+                <div className="matrix-item-left">
+                  <span className="matrix-num">{p.numStr}</span>
+                  <span className="matrix-name">{p.name}</span>
+                </div>
+                <span className="matrix-arrow" aria-hidden="true">↓</span>
+              </a>
+            ))}
+          </div>
           {/* Section 1: Hero & Market Speed */}
           <KineticWordmark />
           <IntakeHero />
@@ -212,8 +228,11 @@ function ElementRoute() {
       <p className="solo-back">
         <Link to={`/#${item.id}`}>All proposals</Link>
       </p>
-      <p className="eyebrow">Single element</p>
-      <h1 id="solo-title">{item.name}</h1>
+      <p className="eyebrow">Proposal {item.numStr} · Single Element</p>
+      <h1 id="solo-title">
+        <span className="solo-num">{item.numStr}</span>
+        {item.name}
+      </h1>
       <p className="lede">{item.purpose}</p>
       <ElementBody id={item.id} />
     </main>

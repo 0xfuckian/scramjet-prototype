@@ -74,6 +74,7 @@ function Meta({ id }) {
   const item = PROPOSAL_MAP[id];
   return (
     <footer className="meta">
+      <span className="meta-num">{item.numStr}</span>
       <span>{item.three ? "3D" : "No 3D"}</span>
       <span>Cost {item.cost}</span>
       <span>{item.original ? "Original" : "Technique reference"}</span>
@@ -97,8 +98,16 @@ function Block({ id, children, className = "" }) {
   return (
     <section id={id} className={`block ${className}`} aria-labelledby={headingId}>
       <div className="block-copy">
-        <p className="eyebrow">{item.three ? "3D proposal" : "Lightweight proposal"}</p>
-        {solo === id ? null : <h2 id={`${id}-title`}>{item.name}</h2>}
+        <p className="eyebrow">
+          <span className="proposal-badge">PROPOSAL {item.numStr}</span>
+          <span className="eyebrow-sep">·</span>
+          <span>{item.three ? "3D PROPOSAL" : "LIGHTWEIGHT PROPOSAL"}</span>
+        </p>
+        {solo === id ? null : (
+          <h2 id={`${id}-title`}>
+            <span className="proposal-heading-num">{item.numStr}</span> {item.name}
+          </h2>
+        )}
         <p>{item.purpose}</p>
         <p className="fit">{item.fit}</p>
         <p className="fallback">
@@ -875,9 +884,9 @@ export function SavingsSimulator() {
           </div>
 
           <div className="savings-card savings">
-            <span className="title mint">Direct Creator Savings</span>
-            <div className="sol-amt mint">+{userSavingsSol.toFixed(3)} SOL</div>
-            <div className="usd-amt mint">+${userSavingsUsd} USD Saved</div>
+            <span className="title flare">Direct Creator Savings</span>
+            <div className="sol-amt flare">+{userSavingsSol.toFixed(3)} SOL</div>
+            <div className="usd-amt flare">+${userSavingsUsd} USD Saved</div>
           </div>
         </div>
       </div>
@@ -929,7 +938,7 @@ export function ArchitectureBento() {
               <div className="tx-step active">
                 <span className="step-num highlight">2</span>
                 <span className="step-txt highlight">Dev & Sub-Wallet Buys (Zero Slippage)</span>
-                <span className="step-tag mint">Confirmed</span>
+                <span className="step-tag flare">Confirmed</span>
               </div>
               <div className="tx-step">
                 <span className="step-num">3</span>
@@ -942,7 +951,7 @@ export function ArchitectureBento() {
           {/* Card 2: Ghost Funder */}
           <div className="bento-card col-span-5">
             <div className="card-top">
-              <span className="tag mint">ANTI-BUBBLEMAP</span>
+              <span className="tag flare">ANTI-BUBBLEMAP</span>
               <span className="sub">Ghost Funder</span>
             </div>
             <h4>Zero-Cluster Wallet Graph</h4>
@@ -951,7 +960,7 @@ export function ArchitectureBento() {
             </p>
             <div className="cluster-readout">
               <span className="label">BUBBLEMAPS DETECTION RISK</span>
-              <strong className="risk mint">0.0% CLUSTER</strong>
+              <strong className="risk flare">0.0% CLUSTER</strong>
               <span className="note">Organic independent wallet graph</span>
             </div>
           </div>
@@ -973,7 +982,7 @@ export function ArchitectureBento() {
               </div>
               <div className="comp-box highlight">
                 <span className="comp-lbl highlight">SCRAMJET</span>
-                <span className="comp-val mint">0.01 SOL / w</span>
+                <span className="comp-val flare">0.01 SOL / w</span>
               </div>
             </div>
           </div>
@@ -993,7 +1002,7 @@ export function ArchitectureBento() {
               <span className="flow-arrow">→</span>
               <div className="flow-step highlight">Curve Market Buy</div>
               <span className="flow-arrow">→</span>
-              <div className="flow-step mint">SPL Supply Burned 🔥</div>
+              <div className="flow-step flare">SPL Supply Burned 🔥</div>
             </div>
           </div>
         </div>
