@@ -17,7 +17,7 @@ const CANDLE_DEPTH = 0.20;
 const CANDLE_STEP = 0.52;
 const BASELINE_OPEN_Y = -0.74; // Anchor bottom of the breakout candle body
 const INITIAL_BODY_HEIGHT = 0.16; // Normal candlestick size at first appearance
-const GOD_MAX_HEIGHT = 2.75; // Peak breakout height
+const GOD_MAX_HEIGHT = 13.8; // Monumental 5x stratospheric breakout height!
 
 // Exact matching colors for all green candles
 const GREEN_COLOR = "#22C55E";
@@ -37,14 +37,6 @@ const CONSOLIDATION_SERIES = [
   { open: -0.78, close: -0.74, high: -0.66, low: -0.84, green: true,  vol: 0.28 },
 ];
 
-// 7 candles total (indices 0 to 6). Symmetrically centered around x = 0!
-// Candle 0: x = -1.56
-// Candle 1: x = -1.04
-// Candle 2: x = -0.52
-// Candle 3: x =  0.00
-// Candle 4: x = +0.52
-// Candle 5: x = +1.04
-// God Candle (6): x = +1.56 (Distance to Candle 5 is 0.52, leaving a clean 0.24 air gap!)
 const START_X = -1.56;
 const GOD_CANDLE_X = START_X + CONSOLIDATION_SERIES.length * CANDLE_STEP; // x = +1.56
 
@@ -55,10 +47,13 @@ function ChartGridLines({ candleHeight }) {
   const levels = [
     { y: -1.02, label: "GROUND ACCUMULATION ($0.01)", color: "#334155" },
     { y: -0.64, label: "BREAKOUT BASELINE ($0.10)", color: "#475569" },
-    { y: 0.22,  label: "RESISTANCE 1 ($1.00) [SHATTERED]", color: "#059669" },
-    { y: 1.05,  label: "RESISTANCE 2 ($10.0) [SHATTERED]", color: "#10B981" },
-    { y: 1.85,  label: "STRATOSPHERE ATH ($100.0) [BROKEN]", color: "#31E3AC" },
-    { y: 2.50,  label: "ORBITAL ESCAPE ($1000.0+)", color: "#86EFAC" },
+    { y: 0.60,  label: "RESISTANCE 1 ($1.00) [SHATTERED]", color: "#059669" },
+    { y: 1.80,  label: "RESISTANCE 2 ($10.0) [SHATTERED]", color: "#10B981" },
+    { y: 3.50,  label: "RESISTANCE 3 ($100.0) [SHATTERED]", color: "#31E3AC" },
+    { y: 6.00,  label: "STRATOSPHERE ATH ($1,000.0) [SHATTERED]", color: "#34D399" },
+    { y: 8.80,  label: "MESOSPHERE ESCAPE ($10,000.0) [SHATTERED]", color: "#6EE7B7" },
+    { y: 11.50, label: "IONOSPHERE ORBIT ($50,000.0) [SHATTERED]", color: "#A7F3D0" },
+    { y: 13.50, label: "INTERGALACTIC GOD CANDLE ($100,000.0+)", color: "#FFFFFF" },
   ];
 
   return (
@@ -68,11 +63,11 @@ function ChartGridLines({ candleHeight }) {
         return (
           <group key={idx} position={[0, lvl.y, 0]}>
             <mesh>
-              <boxGeometry args={[11.5, 0.012, 0.012]} />
+              <boxGeometry args={[32.0, 0.018, 0.018]} />
               <meshBasicMaterial
                 color={breached ? lvl.color : "#1E293B"}
                 transparent
-                opacity={breached ? 0.9 : 0.2}
+                opacity={breached ? 0.85 : 0.18}
               />
             </mesh>
           </group>
@@ -81,10 +76,10 @@ function ChartGridLines({ candleHeight }) {
 
       {/* Deep Ground Grid Base */}
       <mesh position={[0, -1.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[12.0, 4.0]} />
+        <planeGeometry args={[36.0, 18.0]} />
         <meshBasicMaterial color="#05070B" />
       </mesh>
-      <gridHelper args={[12.0, 24, "#1E293B", "#0B1019"]} position={[0, -1.045, 0]} />
+      <gridHelper args={[36.0, 36, "#1E293B", "#0B1019"]} position={[0, -1.045, 0]} />
     </group>
   );
 }
@@ -217,6 +212,7 @@ function CinematicGodCandle() {
   const group = useRef(null);
   const candleMesh = useRef(null);
   const shockRingRef = useRef(null);
+  const flatCapRef = useRef(null);
 
   // Timing
   const animTime = useRef(0);
@@ -228,7 +224,11 @@ function CinematicGodCandle() {
   const currentHeight = useRef(INITIAL_BODY_HEIGHT);
   const targetHeight = useRef(INITIAL_BODY_HEIGHT);
 
-  const CYCLE_DURATION = 12.0;
+  // Smooth critically damped camera tracking
+  const currentCam = useRef({ x: 0.0, y: -0.22, z: 4.2 });
+  const currentLook = useRef({ x: 0.0, y: -0.45 });
+
+  const CYCLE_DURATION = 13.5;
 
   useFrame((state, delta) => {
     animTime.current += delta;
@@ -237,7 +237,7 @@ function CinematicGodCandle() {
     // Centered camera target
     let targetCamX = 0.0;
     let targetCamY = -0.22;
-    let targetCamZ = 4.1;
+    let targetCamZ = 4.2;
     let targetLookX = 0.0;
     let targetLookY = -0.45;
 
@@ -256,11 +256,10 @@ function CinematicGodCandle() {
 
       targetCamX = 0.0;
       targetCamY = -0.22;
-      targetCamZ = 4.1;
+      targetCamZ = 4.2;
       targetLookY = -0.45;
     }
     // Phase 2: Candle 7 (God Candle) appears at SAME EXACT WIDTH & COLOR (2.2s - 2.5s)
-    // Starts as a normal candlestick: height = 0.16, width = 0.28, green = #22C55E
     else if (t >= 2.2 && t < 2.5) {
       setVisibleCandles(CONSOLIDATION_SERIES.length);
       setShowGodCandle(true);
@@ -269,65 +268,77 @@ function CinematicGodCandle() {
       setGain(280);
 
       targetCamX = 0.0;
-      targetCamY = -0.20;
-      targetCamZ = 4.1;
-      targetLookY = -0.42;
-    }
-    // Phase 3: THE GOD CANDLE ERUPTS TALLER ONLY (2.5s - 7.0s)
-    // WIDTH (0.28) NEVER CHANGES! DEPTH (0.20) NEVER CHANGES! COLOR STAYS GREEN (#22C55E)!
-    // ONLY HEIGHT GROWS!
-    else if (t >= 2.5 && t < 7.0) {
-      setVisibleCandles(CONSOLIDATION_SERIES.length);
-      setShowGodCandle(true);
-      setErupting(true);
-
-      const pumpProgress = Math.min(1, (t - 2.5) / 3.6);
-      const pumpCurve = 1 - Math.pow(1 - pumpProgress, 3.6);
-
-      // Shoots straight up from INITIAL_BODY_HEIGHT up to GOD_MAX_HEIGHT
-      targetHeight.current = INITIAL_BODY_HEIGHT + pumpCurve * (GOD_MAX_HEIGHT - INITIAL_BODY_HEIGHT);
-      setGain(Math.floor(280 + Math.pow(pumpProgress, 2.7) * 48200));
-
-      // As candle shoots upward, smoothly zoom camera back so the entire chart remains in view
-      targetCamX = 0.0;
-      targetCamY = 0.35;
-      targetCamZ = 5.6;
-      targetLookY = 0.35;
-    }
-    // Phase 4: Stratosphere ATH Apex Hold (7.0s - 11.2s)
-    else if (t >= 7.0 && t < 11.2) {
-      setVisibleCandles(CONSOLIDATION_SERIES.length);
-      setShowGodCandle(true);
-      setErupting(true);
-      targetHeight.current = GOD_MAX_HEIGHT + Math.sin(t * 3.2) * 0.06;
-
-      targetCamX = 0.0;
-      targetCamY = 0.35;
-      targetCamZ = 5.6;
-      targetLookY = 0.35;
-    }
-    // Phase 5: Loop reset (11.2s - 12.0s)
-    else {
-      targetHeight.current = INITIAL_BODY_HEIGHT;
-      setShowGodCandle(false);
-      targetCamX = 0.0;
       targetCamY = -0.22;
-      targetCamZ = 4.1;
+      targetCamZ = 4.2;
       targetLookY = -0.45;
     }
+    // Phase 3: THE GOD CANDLE ERUPTS 5X TALLER (2.5s - 8.2s)
+    // Towering ascent from 0.16 up to 13.8 with smooth continuous camera pullback
+    else if (t >= 2.5 && t < 8.2) {
+      setVisibleCandles(CONSOLIDATION_SERIES.length);
+      setShowGodCandle(true);
+      setErupting(true);
 
-    // Camera smoothing with interactive mouse parallax
-    const mouseX = state.pointer.x * 0.08;
-    const mouseY = state.pointer.y * 0.05;
+      const p = Math.min(1, (t - 2.5) / 5.7);
+      // Smootherstep (Ken Perlin C2-continuous ease): 0 velocity & acceleration at start and end
+      const pumpCurve = p * p * p * (p * (p * 6 - 15) + 10);
 
-    state.camera.position.x += (targetCamX + mouseX - state.camera.position.x) * 0.08;
-    state.camera.position.y += (targetCamY + mouseY - state.camera.position.y) * 0.08;
-    state.camera.position.z += (targetCamZ - state.camera.position.z) * 0.08;
+      // Shoots straight up from INITIAL_BODY_HEIGHT up to GOD_MAX_HEIGHT (13.8)
+      targetHeight.current = INITIAL_BODY_HEIGHT + pumpCurve * (GOD_MAX_HEIGHT - INITIAL_BODY_HEIGHT);
+      setGain(Math.floor(280 + Math.pow(p, 2.5) * 482000));
 
-    state.camera.lookAt(targetLookX, targetLookY, 0);
+      // As candle shoots upward, camera smoothly zooms out to 22.5 and pans up to frame entire 13.8 column
+      targetCamX = 0.0;
+      targetCamY = -0.22 + pumpCurve * 6.42; // Reaches 6.20
+      targetCamZ = 4.2 + pumpCurve * 18.3; // Reaches 22.5
+      targetLookY = -0.45 + pumpCurve * 6.45; // Centers at 6.0
+    }
+    // Phase 4: Stratosphere ATH Apex Hold (8.2s - 11.8s)
+    else if (t >= 8.2 && t < 11.8) {
+      setVisibleCandles(CONSOLIDATION_SERIES.length);
+      setShowGodCandle(true);
+      setErupting(true);
+      targetHeight.current = GOD_MAX_HEIGHT + Math.sin(t * 1.8) * 0.15;
+
+      targetCamX = 0.0;
+      targetCamY = 6.2;
+      targetCamZ = 22.5;
+      targetLookY = 6.0;
+    }
+    // Phase 5: Smooth cinematic loop reset ease (11.8s - 13.5s)
+    else {
+      const resetP = (t - 11.8) / 1.7;
+      const resetCurve = resetP * resetP * (3 - 2 * resetP);
+
+      targetHeight.current = GOD_MAX_HEIGHT + (INITIAL_BODY_HEIGHT - GOD_MAX_HEIGHT) * resetCurve;
+      targetCamX = 0.0;
+      targetCamY = 6.2 + (-0.22 - 6.2) * resetCurve;
+      targetCamZ = 22.5 + (4.2 - 22.5) * resetCurve;
+      targetLookY = 6.0 + (-0.45 - 6.0) * resetCurve;
+
+      if (resetP > 0.88) {
+        setShowGodCandle(false);
+      }
+    }
+
+    // Interactive mouse parallax offset
+    const mouseX = state.pointer.x * 0.12;
+    const mouseY = state.pointer.y * 0.08;
+
+    // Critically damped frame-rate independent camera smoothing
+    const dampSpeed = 3.2;
+    currentCam.current.x = THREE.MathUtils.damp(currentCam.current.x, targetCamX + mouseX, dampSpeed, delta);
+    currentCam.current.y = THREE.MathUtils.damp(currentCam.current.y, targetCamY + mouseY, dampSpeed, delta);
+    currentCam.current.z = THREE.MathUtils.damp(currentCam.current.z, targetCamZ, dampSpeed, delta);
+
+    currentLook.current.x = THREE.MathUtils.damp(currentLook.current.x, targetLookX, dampSpeed, delta);
+    currentLook.current.y = THREE.MathUtils.damp(currentLook.current.y, targetLookY, dampSpeed, delta);
+
+    state.camera.position.set(currentCam.current.x, currentCam.current.y, currentCam.current.z);
+    state.camera.lookAt(currentLook.current.x, currentLook.current.y, 0);
 
     // Responsive height-only growth lerp
-    currentHeight.current += (targetHeight.current - currentHeight.current) * 0.16;
+    currentHeight.current += (targetHeight.current - currentHeight.current) * (delta * 8.0);
     const h = Math.max(INITIAL_BODY_HEIGHT, currentHeight.current);
 
     // ONLY h (HEIGHT) IS SCALED! WIDTH (x=1) AND DEPTH (z=1) NEVER CHANGE!
@@ -336,18 +347,23 @@ function CinematicGodCandle() {
       candleMesh.current.position.y = BASELINE_OPEN_Y + h / 2;
     }
 
-    // Shockwave ring at tip
+    // Lock flat top cap and planar shockwave to exact flat apex on every frame
+    const candleApexY = BASELINE_OPEN_Y + h;
+    if (flatCapRef.current) {
+      flatCapRef.current.position.y = candleApexY;
+    }
     if (shockRingRef.current) {
+      shockRingRef.current.position.y = candleApexY;
       if (erupting && h > 0.8) {
-        shockRingRef.current.scale.x += delta * 4.0;
-        shockRingRef.current.scale.y += delta * 4.0;
+        shockRingRef.current.scale.x += delta * 3.5;
+        shockRingRef.current.scale.y += delta * 3.5;
         shockRingRef.current.material.opacity = Math.max(
           0,
-          shockRingRef.current.material.opacity - delta * 1.5
+          shockRingRef.current.material.opacity - delta * 1.2
         );
       } else {
-        shockRingRef.current.scale.set(0.1, 0.1, 0.1);
-        shockRingRef.current.material.opacity = 0.8;
+        shockRingRef.current.scale.set(0.2, 0.2, 0.2);
+        shockRingRef.current.material.opacity = 0.75;
       }
     }
 
@@ -443,32 +459,24 @@ function CinematicGodCandle() {
             />
           </mesh>
 
-          {/* Proportional Upper Wick on top of the surging candle */}
-          <mesh position={[0, candleTopY + 0.10, 0]}>
-            <cylinderGeometry args={[0.012, 0.012, 0.20, 8]} />
-            <meshStandardMaterial
-              color={GREEN_COLOR}
-              emissive={GREEN_EMISSIVE}
-              emissiveIntensity={0.6}
-            />
+          {/* 100% Flat Razor Apex Cap (Zero curves, perfectly planar top face) */}
+          <mesh
+            ref={flatCapRef}
+            position={[0, candleTopY, 0]}
+            rotation={[-Math.PI / 2, 0, 0]}
+          >
+            <planeGeometry args={[CANDLE_WIDTH * 1.01, CANDLE_DEPTH * 1.01]} />
+            <meshBasicMaterial color="#FFFFFF" />
           </mesh>
 
-          {/* Apex Star Diamond Flare right at the top of the upper wick */}
-          <group position={[0, candleTopY + 0.20, 0]}>
-            <mesh rotation={[0, 0, Math.PI / 4]}>
-              <octahedronGeometry args={[0.065, 0]} />
-              <meshBasicMaterial color="#FFFFFF" />
-            </mesh>
-          </group>
-
-          {/* Breakthrough Shockwave Ring */}
+          {/* Planar Rectangular Supersonic Shockwave Grid (Zero circles, razor planar geometry) */}
           <mesh
             ref={shockRingRef}
             position={[0, candleTopY, 0]}
             rotation={[-Math.PI / 2, 0, 0]}
           >
-            <ringGeometry args={[0.20, 0.26, 32]} />
-            <meshBasicMaterial color={GREEN_COLOR} transparent opacity={0.7} />
+            <planeGeometry args={[CANDLE_WIDTH * 2.2, CANDLE_DEPTH * 2.2]} />
+            <meshBasicMaterial color="#31E3AC" transparent opacity={0.65} wireframe />
           </mesh>
 
           {/* Standard Volume Bar Underneath (Width 0.28, Depth 0.20, sitting cleanly on floor) */}

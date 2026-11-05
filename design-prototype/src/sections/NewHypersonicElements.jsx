@@ -213,15 +213,58 @@ export function MempoolIntercept() {
 // Tactile aerospace throttle pushing market cap from $100K to $100M+
 // ===========================================================================
 export function CandleSurge() {
-  const [throttle, setThrottle] = useState(65); // 0 to 100%
-  const mcap = useMemo(() => {
-    const val = 100000 * Math.pow(1000, throttle / 100);
-    if (val >= 1000000) return `$${(val / 1000000).toFixed(2)}M`;
-    return `$${Math.round(val / 1000)}K`;
+  const [throttle, setThrottle] = useState(70); // 5 to 100%
+  const [smoothThrottle, setSmoothThrottle] = useState(70);
+
+  // Smooth critically damped animation towards target throttle
+  useEffect(() => {
+    let animId;
+    const animate = () => {
+      setSmoothThrottle((prev) => {
+        const diff = throttle - prev;
+        if (Math.abs(diff) < 0.15) return throttle;
+        return prev + diff * 0.14;
+      });
+      animId = requestAnimationFrame(animate);
+    };
+    animId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animId);
   }, [throttle]);
 
-  const mach = (1.0 + (throttle / 100) * 9.0).toFixed(1);
-  const candleHeight = 40 + (throttle / 100) * 220;
+  const mcap = useMemo(() => {
+    const val = 100000 * Math.pow(1000, smoothThrottle / 100);
+    if (val >= 1000000) return `$${(val / 1000000).toFixed(2)}M`;
+    return `$${Math.round(val / 1000)}K`;
+  }, [smoothThrottle]);
+
+  const mach = (1.0 + (smoothThrottle / 100) * 9.0).toFixed(1);
+
+  // MONUMENTAL 5X VERTICAL SCALE
+  // In the original, max candleHeight was 220px. Here it reaches 1,060px (~4.8x taller)
+  const BASE_Y = 1140;
+  const candleHeight = 35 + (smoothThrottle / 100) * 1050;
+  const candleTopY = BASE_Y - candleHeight;
+
+  // SMOOTH DYNAMIC CAMERA ZOOM OUT
+  // As throttle opens, the SVG viewport smoothly dollies out from a close-up (340px)
+  // to a monumental wide-angle view (1,180px) capturing the full stratospheric column
+  const zoomP = smoothThrottle / 100;
+  const viewHeight = 340 + zoomP * 840;
+  const viewY = (BASE_Y + 30) - viewHeight;
+
+  // 8 Stratospheric Resistance Thresholds
+  const levels = [
+    { y: 1050, label: "R1: ACCUMULATION", val: "$100K" },
+    { y: 920, label: "R2: MACH 1 BOOM", val: "$350K" },
+    { y: 790, label: "R3: TROPOSPHERE", val: "$1.2M" },
+    { y: 650, label: "R4: STRATOSPHERE", val: "$4.5M" },
+    { y: 510, label: "R5: MESOSPHERE", val: "$12.0M" },
+    { y: 360, label: "R6: KARMAN ORBIT", val: "$30.0M" },
+    { y: 210, label: "R7: THERMOSPHERE", val: "$65.0M" },
+    { y: 80, label: "R8: GOD CANDLE", val: "$100M+" },
+  ];
+
+  const shockSpread = Math.min(35, (smoothThrottle / 100) * 45);
 
   return (
     <Block id="candle-surge">
@@ -249,70 +292,198 @@ export function CandleSurge() {
           </div>
           <div className="throttle-readout">
             <span className="mach-badge">MACH {mach}</span>
-            <span className="throttle-pct">{throttle}% POWER</span>
+            <span className="throttle-pct">{Math.round(smoothThrottle)}% POWER</span>
+          </div>
+
+          {/* Quick Throttle Presets */}
+          <div className="throttle-presets" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.4rem", marginTop: "1rem" }}>
+            <button
+              type="button"
+              className={`tab-btn ${throttle <= 20 ? "active" : ""}`}
+              onClick={() => setThrottle(10)}
+              style={{ fontSize: "0.68rem", padding: "0.35rem 0.4rem" }}
+            >
+              Mach 1.0 (Base)
+            </button>
+            <button
+              type="button"
+              className={`tab-btn ${throttle > 20 && throttle <= 50 ? "active" : ""}`}
+              onClick={() => setThrottle(45)}
+              style={{ fontSize: "0.68rem", padding: "0.35rem 0.4rem" }}
+            >
+              Mach 5.0 (Escape)
+            </button>
+            <button
+              type="button"
+              className={`tab-btn ${throttle > 50 && throttle <= 80 ? "active" : ""}`}
+              onClick={() => setThrottle(75)}
+              style={{ fontSize: "0.68rem", padding: "0.35rem 0.4rem" }}
+            >
+              Mach 7.5 (Stratosphere)
+            </button>
+            <button
+              type="button"
+              className={`tab-btn ${throttle > 80 ? "active" : ""}`}
+              onClick={() => setThrottle(100)}
+              style={{ fontSize: "0.68rem", padding: "0.35rem 0.4rem", borderColor: "var(--mint)", color: "var(--mint)" }}
+            >
+              Mach 10.0 (5X Apex)
+            </button>
           </div>
         </div>
 
-        {/* Surging Volumetric God Candle */}
+        {/* Surging Volumetric God Candle with Smooth Camera Zoom */}
         <div className="candle-stage">
-          <svg viewBox="0 0 260 300" className="candle-svg" aria-label="Surging God Candle">
-            {/* Grid Resistance Lines */}
-            {[60, 120, 180, 240].map((y) => (
-              <g key={y}>
-                <line x1="20" y1={y} x2="240" y2={y} stroke="#1E293B" strokeDasharray="3 3" strokeWidth="1" />
-                <text x="25" y={y - 4} fill="#64748B" fontSize="8" fontFamily="JetBrains Mono">
-                  RESISTANCE #{4 - Math.floor(y / 60)}
-                </text>
-              </g>
-            ))}
-
-            {/* Candle Wick Line */}
-            <line
-              x1="130"
-              y1={280 - candleHeight - 25}
-              x2="130"
-              y2={280}
-              stroke="#22C55E"
-              strokeWidth="2.5"
-            />
-
-            {/* Volumetric Emerald God Candle Body */}
-            <rect
-              x="105"
-              y={280 - candleHeight}
-              width="50"
-              height={candleHeight}
-              rx="4"
-              fill="url(#godCandleGrad)"
-              stroke="#86EFAC"
-              strokeWidth="1.5"
-            />
-
-            {/* Glowing Apex Cap */}
-            <ellipse
-              cx="130"
-              cy={280 - candleHeight}
-              rx="25"
-              ry="5"
-              fill="#FFFFFF"
-              opacity="0.8"
-            />
-
-            {/* Supersonic Shockwave Ring emitted at apex */}
-            {throttle > 40 && (
-              <g className="shockwave-ring" transform={`translate(130, ${280 - candleHeight})`}>
-                <ellipse rx="38" ry="8" fill="none" stroke="#31E3AC" strokeWidth="1.5" opacity="0.7" />
-                <ellipse rx="52" ry="12" fill="none" stroke="#22C55E" strokeWidth="1" opacity="0.4" />
-              </g>
-            )}
-
+          <svg
+            viewBox={`0 ${viewY} 400 ${viewHeight}`}
+            className="candle-svg"
+            aria-label="Surging 5X Flat-Top God Candle"
+            preserveAspectRatio="xMidYMid meet"
+          >
             <defs>
-              <linearGradient id="godCandleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <linearGradient id="godCandleGrad5X" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#15803D" />
                 <stop offset="50%" stopColor="#22C55E" />
                 <stop offset="100%" stopColor="#166534" />
               </linearGradient>
             </defs>
+
+            {/* Stratospheric Resistance Grid Lines */}
+            {levels.map((lvl) => {
+              const breached = candleTopY <= lvl.y;
+              const sf = viewHeight / 340;
+              return (
+                <g key={lvl.y}>
+                  <line
+                    x1="16"
+                    y1={lvl.y}
+                    x2="384"
+                    y2={lvl.y}
+                    stroke={breached ? "#31E3AC" : "#1E293B"}
+                    strokeDasharray={`${sf * 3.5} ${sf * 2.5}`}
+                    strokeWidth={breached ? sf * 1.5 : sf * 0.9}
+                    opacity={breached ? 0.9 : 0.35}
+                  />
+                  {/* Left Label */}
+                  <text
+                    x="20"
+                    y={lvl.y - sf * 3.5}
+                    fill={breached ? "#31E3AC" : "#64748B"}
+                    fontSize={sf * 4.5}
+                    fontFamily="JetBrains Mono"
+                    fontWeight={breached ? "600" : "400"}
+                  >
+                    {lvl.label}
+                  </text>
+
+                  {/* Right Valuation & Status */}
+                  <text
+                    x="380"
+                    y={lvl.y - sf * 3.5}
+                    textAnchor="end"
+                    fill={breached ? "#31E3AC" : "#475569"}
+                    fontSize={sf * 4.5}
+                    fontFamily="JetBrains Mono"
+                    fontWeight={breached ? "600" : "400"}
+                  >
+                    {lvl.val} {breached ? "✓" : ""}
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* Candle Lower Wick */}
+            <line
+              x1="200"
+              y1={BASE_Y}
+              x2="200"
+              y2={BASE_Y + (viewHeight / 340) * 25}
+              stroke="#22C55E"
+              strokeWidth={(viewHeight / 340) * 2.5}
+              strokeLinecap="square"
+            />
+
+            {/* Monumental Emerald God Candle Body (100% Flat Top: rx=0, ry=0) */}
+            <rect
+              x="174"
+              y={candleTopY}
+              width="52"
+              height={candleHeight}
+              rx="0"
+              ry="0"
+              fill="url(#godCandleGrad5X)"
+              stroke="#4ADE80"
+              strokeWidth={(viewHeight / 340) * 1.8}
+            />
+
+            {/* Razor-sharp Flat Apex Threshold (Zero curves, crisp flat laser edge) */}
+            <line
+              x1="174"
+              y1={candleTopY}
+              x2="226"
+              y2={candleTopY}
+              stroke="#FFFFFF"
+              strokeWidth={(viewHeight / 340) * 3.5}
+              strokeLinecap="square"
+            />
+
+            {/* Flat Supersonic Planar Shockwave & Laser HUD */}
+            {smoothThrottle > 20 && (
+              <g className="flat-shockwave">
+                {/* Horizontal laser beam across the entire chart at candle apex */}
+                <line
+                  x1="16"
+                  y1={candleTopY}
+                  x2="384"
+                  y2={candleTopY}
+                  stroke="#31E3AC"
+                  strokeWidth={(viewHeight / 340) * 1.2}
+                  strokeDasharray={`${(viewHeight / 340) * 4} ${(viewHeight / 340) * 2}`}
+                  opacity="0.85"
+                />
+
+                {/* Flat supersonic planar crossbar extensions */}
+                <line
+                  x1={174 - shockSpread * (viewHeight / 340)}
+                  y1={candleTopY}
+                  x2={226 + shockSpread * (viewHeight / 340)}
+                  y2={candleTopY}
+                  stroke="#86EFAC"
+                  strokeWidth={(viewHeight / 340) * 2.2}
+                  strokeLinecap="square"
+                />
+
+                {/* Flat corner boundary brackets */}
+                <line
+                  x1="174"
+                  y1={candleTopY - (viewHeight / 340) * 6}
+                  x2="174"
+                  y2={candleTopY + (viewHeight / 340) * 6}
+                  stroke="#FFFFFF"
+                  strokeWidth={(viewHeight / 340) * 1.5}
+                />
+                <line
+                  x1="226"
+                  y1={candleTopY - (viewHeight / 340) * 6}
+                  x2="226"
+                  y2={candleTopY + (viewHeight / 340) * 6}
+                  stroke="#FFFFFF"
+                  strokeWidth={(viewHeight / 340) * 1.5}
+                />
+
+                {/* Live Hypersonic Telemetry Badge at Flat Apex */}
+                <text
+                  x="234"
+                  y={candleTopY - (viewHeight / 340) * 4}
+                  fill="#31E3AC"
+                  fontSize={(viewHeight / 340) * 5.2}
+                  fontFamily="JetBrains Mono"
+                  fontWeight="bold"
+                >
+                  ▲ {mcap} [M{mach}]
+                </text>
+              </g>
+            )}
           </svg>
 
           <div className="candle-metrics">
@@ -321,12 +492,16 @@ export function CandleSurge() {
               <span className="m-val highlight">{mcap}</span>
             </div>
             <div className="m-item">
+              <span className="m-label">CANDLE HEIGHT</span>
+              <span className="m-val highlight">{Math.round(candleHeight)} px (5.2X)</span>
+            </div>
+            <div className="m-item">
               <span className="m-label">INFLOW VELOCITY</span>
-              <span className="m-val">{(throttle * 14.2).toFixed(0)} SOL/sec</span>
+              <span className="m-val">{(smoothThrottle * 14.2).toFixed(0)} SOL/s</span>
             </div>
             <div className="m-item">
               <span className="m-label">ESCAPE VELOCITY</span>
-              <span className="m-val">{throttle >= 85 ? "CONFIRMED" : "CHARGING"}</span>
+              <span className="m-val">{smoothThrottle >= 80 ? "CONFIRMED (HYPERSONIC)" : "CHARGING"}</span>
             </div>
           </div>
         </div>
