@@ -42,7 +42,7 @@ Rejected for a first release, with reasons:
 
 ## Proposals
 
-Thirteen elements. Five use 3D. The instrument dial is the only original idea. Fields in full are also on the prototype page.
+Seventeen elements. Five use 3D. The instrument dial, hypersonic stream, telemetry radar, savings simulator, and architecture bento are original to the prototype. Fields in full are also on the prototype page.
 
 | Element | Reference | Technique | 3D | Cost | Priority |
 | --- | --- | --- | --- | --- | --- |
@@ -59,6 +59,10 @@ Thirteen elements. Five use 3D. The instrument dial is the only original idea. F
 | Mach Ribbon | EDOLUS, Shader studio | Fragment shader | Yes | Medium | Later, or as CSS |
 | Shock Field | Oryzo particles | Pointer point cloud | Yes | Medium | Cut for v1 |
 | Cascade Chamber | Why Zero narrative scroll | Scrubbed 3D chapter camera | Yes | High | Cut if the rail ships |
+| Hypersonic Stream | Anime.js, EDOLUS flow lines | 2D HTML5 Canvas stream & reactive coordinate grid | No | Low | Ship |
+| Telemetry Radar | Terminal Industries, Forge HUD | Radial Mach speedometer, slot ticker, 5-engine latency | No | Low | Ship |
+| Savings Simulator | Grids comparison | Real-time commitment volume slider & net savings math | No | Low | Ship |
+| Architecture Bento | MECHA, Ascension column layout | 4-card architectural bento & 12-protocol matrix | No | Low | Ship |
 
 ## Recommended combination
 

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480">
+  <rect width="800" height="480" fill="#08090C"/>
+  <defs>
+    <linearGradient id="candleGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#052e16"/>
+      <stop offset="40%" stop-color="#16a34a"/>
+      <stop offset="80%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#31E3AC"/>
+    </linearGradient>
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Horizontal Price Levels / Resistance lines -->
+  <g stroke="#1C2533" stroke-width="1" stroke-dasharray="4 6">
+    <line x1="80" y1="380" x2="720" y2="380"/>
+    <line x1="80" y1="300" x2="720" y2="300"/>
+    <line x1="80" y1="220" x2="720" y2="220"/>
+    <line x1="80" y1="140" x2="720" y2="140"/>
+    <line x1="80" y1="60" x2="720" y2="60"/>
+  </g>
+
+  <!-- Level labels -->
+  <g fill="#64748B" font-family="monospace" font-size="11">
+    <text x="730" y="384">0.01 SOL</text>
+    <text x="730" y="304">0.10 SOL</text>
+    <text x="730" y="224">1.00 SOL</text>
+    <text x="730" y="144">10.0 SOL [BROKEN]</text>
+    <text x="730" y="64" fill="#31E3AC">100.0 SOL [ATH]</text>
+  </g>
+
+  <!-- Lower Wick -->
+  <line x1="400" y1="410" x2="400" y2="380" stroke="#22C55E" stroke-width="3"/>
+
+  <!-- Towering God Candle Body with Neon Glow -->
+  <rect x="360" y="70" width="80" height="310" rx="4" fill="url(#candleGrad)" filter="url(#neonGlow)"/>
+  <rect x="360" y="70" width="80" height="310" rx="4" fill="none" stroke="#86EFAC" stroke-width="2"/>
+
+  <!-- Upper Wick -->
+  <line x1="400" y1="70" x2="400" y2="25" stroke="#31E3AC" stroke-width="3" filter="url(#neonGlow)"/>
+
+  <!-- Apex Spark Orb -->
+  <circle cx="400" cy="25" r="7" fill="#FFFFFF" filter="url(#neonGlow)"/>
+  <circle cx="400" cy="25" r="3" fill="#31E3AC"/>
+
+  <!-- Market Surge Label -->
+  <g font-family="monospace" font-weight="bold">
+    <rect x="220" y="80" width="120" height="28" rx="4" fill="#0D1117" stroke="#31E3AC" stroke-width="1.5"/>
+    <text x="235" y="99" fill="#31E3AC" font-size="12">+4,269% GOD</text>
+  </g>
+</svg>

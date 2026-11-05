@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480">
+  <rect width="800" height="480" fill="#08090C"/>
+  <defs>
+    <linearGradient id="streak" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF3E00" stop-opacity="0"/>
+      <stop offset="70%" stop-color="#FF7700" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="1"/>
+    </linearGradient>
+  </defs>
+  <g fill="#1C2533" opacity="0.6">
+    <circle cx="100" cy="80" r="1.5"/><circle cx="200" cy="80" r="1.5"/><circle cx="300" cy="80" r="1.5"/><circle cx="400" cy="80" r="1.5"/><circle cx="500" cy="80" r="1.5"/><circle cx="600" cy="80" r="1.5"/><circle cx="700" cy="80" r="1.5"/>
+    <circle cx="100" cy="160" r="1.5"/><circle cx="200" cy="160" r="1.5"/><circle cx="300" cy="160" r="1.5"/><circle cx="400" cy="160" r="1.5"/><circle cx="500" cy="160" r="1.5"/><circle cx="600" cy="160" r="1.5"/><circle cx="700" cy="160" r="1.5"/>
+    <circle cx="100" cy="240" r="1.5"/><circle cx="200" cy="240" r="1.5"/><circle cx="300" cy="240" r="1.5"/><circle cx="400" cy="240" r="1.5"/><circle cx="500" cy="240" r="1.5"/><circle cx="600" cy="240" r="1.5"/><circle cx="700" cy="240" r="1.5"/>
+    <circle cx="100" cy="320" r="1.5"/><circle cx="200" cy="320" r="1.5"/><circle cx="300" cy="320" r="1.5"/><circle cx="400" cy="320" r="1.5"/><circle cx="500" cy="320" r="1.5"/><circle cx="600" cy="320" r="1.5"/><circle cx="700" cy="320" r="1.5"/>
+    <circle cx="100" cy="400" r="1.5"/><circle cx="200" cy="400" r="1.5"/><circle cx="300" cy="400" r="1.5"/><circle cx="400" cy="400" r="1.5"/><circle cx="500" cy="400" r="1.5"/><circle cx="600" cy="400" r="1.5"/><circle cx="700" cy="400" r="1.5"/>
+  </g>
+  <line x1="120" y1="140" x2="340" y2="140" stroke="url(#streak)" stroke-width="2"/>
+  <line x1="280" y1="210" x2="580" y2="210" stroke="url(#streak)" stroke-width="2.5"/>
+  <line x1="80" y1="280" x2="420" y2="280" stroke="url(#streak)" stroke-width="1.8"/>
+  <line x1="390" y1="360" x2="680" y2="360" stroke="url(#streak)" stroke-width="2"/>
+</svg>

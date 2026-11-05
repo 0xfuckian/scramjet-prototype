@@ -5,19 +5,23 @@ import { usePerf } from "./perf/PerfProvider.jsx";
 import { SmoothScroll } from "./scroll/SmoothScroll.jsx";
 import { PrototypeProvider, usePrototype } from "./prototype/PrototypeContext.jsx";
 import {
+  ArchitectureBento,
   CascadeChamber,
   ChapterRail,
   ElementBody,
   FeeLockup,
   HoverShear,
+  HypersonicStream,
   InstrumentDial,
   IntakeHero,
   KineticWordmark,
   MachRibbon,
   MagneticIgnition,
   ProtocolStrip,
+  SavingsSimulator,
   SectionVeil,
   ShockField,
+  TelemetryRadar,
   VenueViewer,
 } from "./sections/Elements.jsx";
 import brief from "../DESIGN_BRIEF.md?raw";
@@ -118,16 +122,20 @@ function Home() {
             <p className="eyebrow">Design prototype · not the production site</p>
             <h1>Proposed elements for SCRAMJET</h1>
             <p className="lede">
-              Thirteen working sections for a hypersonic Solana launch platform. Switch any of them off,
+              Seventeen working sections for a hypersonic Solana launch platform. Switch any of them off,
               or open one on its own. 3D loads only when it is on screen.
             </p>
           </header>
           <KineticWordmark />
           <IntakeHero />
+          <HypersonicStream />
+          <TelemetryRadar />
           <FeeLockup />
+          <SavingsSimulator />
           <ChapterRail />
           <CascadeChamber />
           <VenueViewer />
+          <ArchitectureBento />
           <ProtocolStrip />
           <MachRibbon />
           <ShockField />

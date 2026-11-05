@@ -16,7 +16,15 @@ const VENUES = [
   { name: "Pump.fun", note: "Bonding curve" },
   { name: "Meteora DBC", note: "Dynamic fee" },
   { name: "Raydium", note: "LaunchLab" },
-  { name: "Bags", note: "Public sale" },
+  { name: "Bags", note: "Creator share" },
+  { name: "LetsBonk", note: "Bonk native" },
+  { name: "StonkFun", note: "Token-2022" },
+  { name: "Printr", note: "Supply scaler" },
+  { name: "Anoncoin", note: "Privacy curve" },
+  { name: "Surge", note: "Instant AMM" },
+  { name: "Clanker", note: "AI autonomous" },
+  { name: "FourMeme", note: "Fast bonding" },
+  { name: "Flap", note: "Fair launch" },
 ];
 
 const CHAPTERS = [
@@ -71,7 +79,13 @@ function Block({ id, children, className = "" }) {
 export function IntakeHero() {
   return (
     <Block id="intake-hero">
-      <LazyStage scene={IntakeScene} fallback="/fallbacks/intake.svg" label="Intake hero" />
+      <div className="god-candle-wrap">
+        <LazyStage scene={IntakeScene} fallback="/fallbacks/godcandle.svg" label="God candle hero" />
+        <div className="candle-hint">
+          <span className="live-dot" />
+          <span>Click / tap the 3D candle to trigger a Mega Pump surge</span>
+        </div>
+      </div>
     </Block>
   );
 }
@@ -498,6 +512,516 @@ export function InstrumentDial() {
   );
 }
 
+export function HypersonicStream() {
+  const containerRef = useRef(null);
+  const canvasRef = useRef(null);
+  const { low, motionOff } = usePerf();
+  const { isActive } = usePrototype();
+  const active = isActive("hypersonic-stream");
+
+  useEffect(() => {
+    if (!active || motionOff) return undefined;
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return undefined;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return undefined;
+
+    let width = 0;
+    let height = 0;
+    let animId = 0;
+    const streakCount = low ? 25 : 65;
+    const gridSpacing = 44;
+
+    const streaks = [];
+    function initStreaks() {
+      streaks.length = 0;
+      for (let i = 0; i < streakCount; i++) {
+        streaks.push({
+          x: Math.random() * (width || 600),
+          y: Math.random() * (height || 360),
+          length: 40 + Math.random() * 110,
+          speed: (low ? 2 : 4) + Math.random() * (low ? 3 : 7),
+          opacity: 0.2 + Math.random() * 0.5,
+          width: 0.8 + Math.random() * 1.5,
+          hue: Math.random() > 0.75 ? "#FF7700" : "#FF3E00",
+        });
+      }
+    }
+
+    const resize = () => {
+      const rect = container.getBoundingClientRect();
+      const dpr = low ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+      width = rect.width || 600;
+      height = Math.max(340, rect.height || 340);
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (streaks.length === 0) initStreaks();
+    };
+
+    resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(container);
+
+    let mouseX = width / 2;
+    let mouseY = height / 2;
+    let targetX = mouseX;
+    let targetY = mouseY;
+
+    const onPointerMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      targetX = e.clientX - rect.left;
+      targetY = e.clientY - rect.top;
+    };
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+
+    const render = () => {
+      mouseX += (targetX - mouseX) * 0.08;
+      mouseY += (targetY - mouseY) * 0.08;
+
+      ctx.fillStyle = "rgba(8, 9, 12, 0.45)";
+      ctx.fillRect(0, 0, width, height);
+
+      // Coordinate Grid Dots
+      const cols = Math.ceil(width / gridSpacing);
+      const rows = Math.ceil(height / gridSpacing);
+      const maxProximity = low ? 120 : 180;
+
+      for (let c = 0; c <= cols; c++) {
+        const x = c * gridSpacing;
+        for (let r = 0; r <= rows; r++) {
+          const y = r * gridSpacing;
+          const dist = Math.hypot(x - mouseX, y - mouseY);
+
+          if (dist < maxProximity) {
+            const glow = (1 - dist / maxProximity) * 0.65;
+            ctx.fillStyle = `rgba(255, 62, 0, ${glow})`;
+            ctx.beginPath();
+            ctx.arc(x, y, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            ctx.fillStyle = "rgba(28, 37, 51, 0.4)";
+            ctx.fillRect(x, y, 1, 1);
+          }
+        }
+      }
+
+      // Supersonic particle streaks
+      for (let i = 0; i < streaks.length; i++) {
+        const s = streaks[i];
+        s.x += s.speed;
+        if (s.x > width + s.length) {
+          s.x = -s.length;
+          s.y = Math.random() * height;
+        }
+
+        const grad = ctx.createLinearGradient(s.x, s.y, s.x + s.length, s.y);
+        grad.addColorStop(0, "rgba(255, 62, 0, 0)");
+        grad.addColorStop(0.7, s.hue);
+        grad.addColorStop(1, "#FFFFFF");
+
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = s.width;
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x + s.length, s.y);
+        ctx.stroke();
+      }
+
+      animId = requestAnimationFrame(render);
+    };
+
+    animId = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      observer.disconnect();
+      window.removeEventListener("pointermove", onPointerMove);
+    };
+  }, [active, low, motionOff]);
+
+  return (
+    <Block id="hypersonic-stream">
+      <div ref={containerRef} className="hypersonic-stream-stage">
+        {motionOff ? (
+          <img
+            src="/fallbacks/hypersonic.svg"
+            alt="Hypersonic stream static fallback"
+            className="stream-fallback"
+          />
+        ) : (
+          <canvas ref={canvasRef} className="stream-canvas" aria-hidden="true" />
+        )}
+        <div className="stream-overlay">
+          <span className="badge">MACH HYPERSONIC FLOW</span>
+          <p>Cursor proximity warps grid coordinate lattice; particle velocity throttles to power profile.</p>
+        </div>
+      </div>
+    </Block>
+  );
+}
+
+export function TelemetryRadar() {
+  const [slot, setSlot] = useState(318492810);
+  const [machPreset, setMachPreset] = useState("3.5");
+  const [machValue, setMachValue] = useState(3.52);
+  const [activeEngine, setActiveEngine] = useState(0);
+  const { motionOff } = usePerf();
+  const { isActive } = usePrototype();
+  const active = isActive("telemetry-radar");
+
+  const engines = [
+    { code: "FRA", city: "Frankfurt", ping: 12, status: "OPT" },
+    { code: "AMS", city: "Amsterdam", ping: 14, status: "OPT" },
+    { code: "NYC", city: "New York", ping: 8, status: "OPT" },
+    { code: "TYO", city: "Tokyo", ping: 22, status: "OPT" },
+    { code: "SLC", city: "Salt Lake", ping: 6, status: "OPT" },
+  ];
+
+  const [pings, setPings] = useState(() => engines.map((e) => e.ping));
+
+  useEffect(() => {
+    if (!active || motionOff) return undefined;
+    const interval = setInterval(() => {
+      setSlot((s) => s + Math.floor(1 + Math.random() * 2));
+      const base = Number(machPreset);
+      setMachValue(Number((base + (Math.random() - 0.5) * 0.08).toFixed(2)));
+      setPings((prev) =>
+        prev.map((p) => Math.max(4, p + Math.floor((Math.random() - 0.5) * 3)))
+      );
+    }, 450);
+    return () => clearInterval(interval);
+  }, [active, motionOff, machPreset]);
+
+  const targetMach = Number(machPreset);
+  const strokeOffset = Math.max(0, 251.2 - (targetMach / 12) * 251.2);
+
+  return (
+    <Block id="telemetry-radar">
+      <div className="radar-console">
+        <div className="radar-header">
+          <div className="radar-live">
+            <span className="ping-beacon" />
+            <span className="live-label">Telemetry Feed // Block-0 Radar</span>
+          </div>
+          <div className="radar-slot">
+            <span>SOLANA SLOT:</span>
+            <strong>{slot.toLocaleString()}</strong>
+          </div>
+        </div>
+
+        <div className="radar-body">
+          <div className="radar-dial-wrap">
+            <svg className="radar-dial-svg" viewBox="0 0 100 100" aria-hidden="true">
+              <circle cx="50" cy="50" r="40" className="track" />
+              <circle
+                cx="50"
+                cy="50"
+                r="40"
+                className="indicator"
+                strokeDasharray="251.2"
+                strokeDashoffset={strokeOffset}
+              />
+            </svg>
+            <div className="radar-dial-center">
+              <span className="cap">VELOCITY</span>
+              <span className="num">{motionOff ? machPreset : machValue.toFixed(2)}</span>
+              <span className="unit">MACH</span>
+            </div>
+          </div>
+
+          <div className="radar-info">
+            <div className="status-badge">HYPERSONIC STATUS: CASCADE ACTIVE</div>
+            <p className="status-desc">
+              Atomic Block-0 bundling guarantees sub-wallet placement ahead of public mempool snipers.
+            </p>
+            <div className="mach-presets" role="group" aria-label="Mach velocity presets">
+              {[
+                { label: "Mach 3.5 (Cruise)", val: "3.5" },
+                { label: "Mach 6.2 (Ramjet)", val: "6.2" },
+                { label: "Mach 10.4 (Max)", val: "10.4" },
+              ].map((m) => (
+                <button
+                  key={m.val}
+                  type="button"
+                  aria-pressed={machPreset === m.val}
+                  onClick={() => setMachPreset(m.val)}
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="engine-matrix">
+          <div className="engine-matrix-head">
+            <span>REGIONAL JITO BLOCK ENGINES</span>
+            <span className="engine-status-tag">5/5 ONLINE</span>
+          </div>
+          <div className="engine-grid">
+            {engines.map((eng, idx) => (
+              <button
+                key={eng.code}
+                type="button"
+                className={`engine-card ${activeEngine === idx ? "is-selected" : ""}`}
+                onClick={() => setActiveEngine(idx)}
+              >
+                <span className="code">{eng.code}</span>
+                <span className="city">{eng.city}</span>
+                <strong className="ping">{pings[idx]}ms</strong>
+                <span className="status">{eng.status}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Block>
+  );
+}
+
+export function SavingsSimulator() {
+  const [volume, setVolume] = useState(15);
+  const [cohortMode, setCohortMode] = useState(false);
+  const SOL_PRICE = 93.85;
+
+  const effectiveVolume = cohortMode ? volume * 10 : volume;
+  const scramjetFeeSol = effectiveVolume * 0.035;
+  const proximaFeeSol = effectiveVolume * 0.050;
+  const userSavingsSol = proximaFeeSol - scramjetFeeSol;
+
+  const scramjetFeeUsd = (scramjetFeeSol * SOL_PRICE).toFixed(2);
+  const proximaFeeUsd = (proximaFeeSol * SOL_PRICE).toFixed(2);
+  const userSavingsUsd = (userSavingsSol * SOL_PRICE).toFixed(2);
+
+  return (
+    <Block id="savings-simulator">
+      <div className="savings-panel">
+        <div className="savings-header">
+          <div>
+            <span className="badge">INTERACTIVE FEE BENCHMARK</span>
+            <h3>SCRAMJET vs Proxima Savings Simulator</h3>
+          </div>
+          <div className="savings-discount-tag">
+            30% LOWER PLATFORM FEES
+          </div>
+        </div>
+
+        <div className="savings-controls">
+          <div className="slider-row">
+            <span className="slider-label">
+              Launch Commitment: <strong>{volume} SOL</strong>
+              {cohortMode && <span className="cohort-note"> (10-Launch Cohort = {effectiveVolume} SOL)</span>}
+            </span>
+            <div className="preset-buttons">
+              {[5, 15, 50, 100].map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  aria-pressed={volume === v}
+                  onClick={() => setVolume(v)}
+                >
+                  {v} SOL
+                </button>
+              ))}
+              <button
+                type="button"
+                aria-pressed={cohortMode}
+                onClick={() => setCohortMode((c) => !c)}
+              >
+                {cohortMode ? "Cohort x10 Active" : "10x Cohort Mode"}
+              </button>
+            </div>
+          </div>
+
+          <input
+            type="range"
+            min="1"
+            max="100"
+            step="1"
+            value={volume}
+            onChange={(e) => setVolume(Number(e.target.value))}
+            className="volume-slider"
+            aria-label="Simulated Launch Volume in SOL"
+          />
+        </div>
+
+        <div className="savings-cards">
+          <div className="savings-card proxima">
+            <span className="title">Proxima Fee (5.0%)</span>
+            <div className="sol-amt">{proximaFeeSol.toFixed(3)} SOL</div>
+            <div className="usd-amt">≈ ${proximaFeeUsd} USD</div>
+          </div>
+
+          <div className="savings-card scramjet">
+            <span className="title highlight">SCRAMJET Fee (3.5%)</span>
+            <div className="sol-amt highlight">{scramjetFeeSol.toFixed(3)} SOL</div>
+            <div className="usd-amt highlight">≈ ${scramjetFeeUsd} USD</div>
+          </div>
+
+          <div className="savings-card savings">
+            <span className="title mint">Direct Creator Savings</span>
+            <div className="sol-amt mint">+{userSavingsSol.toFixed(3)} SOL</div>
+            <div className="usd-amt mint">+${userSavingsUsd} USD Saved</div>
+          </div>
+        </div>
+      </div>
+    </Block>
+  );
+}
+
+export function ArchitectureBento() {
+  const [tab, setTab] = useState("ALL");
+
+  const protocols = [
+    { name: "Meteora DBC", type: "Dynamic Curve", cat: "DYNAMIC", feature: "0.15% - 5.0% Dynamic Fee Pool + DLMM LP" },
+    { name: "Pump.fun", type: "Bonding Curve", cat: "CURVES", feature: "Off-Chain Create + 0.5% Creator Fee Claim" },
+    { name: "Raydium LaunchLab", type: "CPMM / AMM", cat: "DYNAMIC", feature: "Platform Configs + Automated LP Lock" },
+    { name: "Bags", type: "Meme Ecosystem", cat: "CURVES", feature: "Multi-Recipient % Creator Fee Share" },
+    { name: "LetsBonk", type: "Bonk Native", cat: "CURVES", feature: "Custom Bonding Curve + Bonk Rewards" },
+    { name: "StonkFun", type: "Token-2022", cat: "CURVES", feature: "Transfer Fee Extensions + Auto Liquidity" },
+    { name: "Printr", type: "Supply Scaler", cat: "CURVES", feature: "100M / 1B / 10B Curve Supply Models" },
+    { name: "Anoncoin", type: "Privacy Curve", cat: "CURVES", feature: "Anon API key masked deployment" },
+    { name: "Surge", type: "Instant AMM", cat: "DYNAMIC", feature: "Atomic single-slot liquidity routing" },
+    { name: "Clanker", type: "Autonomous", cat: "DYNAMIC", feature: "AI autonomous agent deploy triggers" },
+    { name: "FourMeme", type: "Fast Bonding", cat: "CURVES", feature: "Ultra-fast bonding curve migration" },
+    { name: "Flap", type: "Fair Launch", cat: "CURVES", feature: "Anti-sniper fair launch distribution" },
+  ];
+
+  const filtered = tab === "ALL" ? protocols : protocols.filter((p) => p.cat === tab);
+
+  return (
+    <Block id="architecture-bento" className="is-wide">
+      <div className="bento-container">
+        <div className="bento-grid">
+          {/* Card 1: Jito Block-0 */}
+          <div className="bento-card col-span-7">
+            <div className="card-top">
+              <span className="tag plasma">JITO ATOMIC BLOCK-0</span>
+              <span className="sub">5 Global Engines</span>
+            </div>
+            <h4>Sub-Wallet Front-Running Defense</h4>
+            <p>
+              Bundles your token creation, developer buy, and sub-wallet entries into a single atomic Block-0 transaction. 
+              Zero public mempool visibility protects launches from predatory sandwich bots.
+            </p>
+            <div className="tx-sequence">
+              <div className="tx-step">
+                <span className="step-num">1</span>
+                <span className="step-txt">Deploy Token & Bonding Curve</span>
+                <span className="step-tag">Slot +0</span>
+              </div>
+              <div className="tx-step active">
+                <span className="step-num highlight">2</span>
+                <span className="step-txt highlight">Dev & Sub-Wallet Buys (Zero Slippage)</span>
+                <span className="step-tag mint">Confirmed</span>
+              </div>
+              <div className="tx-step">
+                <span className="step-num">3</span>
+                <span className="step-txt">Jito Priority Tip Leader Transfer</span>
+                <span className="step-tag">Leader Tip</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Ghost Funder */}
+          <div className="bento-card col-span-5">
+            <div className="card-top">
+              <span className="tag mint">ANTI-BUBBLEMAP</span>
+              <span className="sub">Ghost Funder</span>
+            </div>
+            <h4>Zero-Cluster Wallet Graph</h4>
+            <p>
+              Bypasses BubbleMaps and Photon cluster warnings via multi-hop Merkle relays, randomized funding intervals, and clean unlinked root trees.
+            </p>
+            <div className="cluster-readout">
+              <span className="label">BUBBLEMAPS DETECTION RISK</span>
+              <strong className="risk mint">0.0% CLUSTER</strong>
+              <span className="note">Organic independent wallet graph</span>
+            </div>
+          </div>
+
+          {/* Card 3: 0.01 SOL Micro-Bundles */}
+          <div className="bento-card col-span-5">
+            <div className="card-top">
+              <span className="tag flare">MICRO-BUNDLING</span>
+              <span className="sub">Rent Reclaim</span>
+            </div>
+            <h4>0.01 SOL Entry vs Proxima 0.10</h4>
+            <p>
+              Never lock up 2.0+ SOL across 20 sub-wallets. SCRAMJET lowers the barrier to 0.01 SOL and automatically batch-sweeps ~0.00204 SOL ATA rent back post-sale.
+            </p>
+            <div className="comparison-row">
+              <div className="comp-box">
+                <span className="comp-lbl">PROXIMA LOCKUP</span>
+                <span className="comp-val danger">0.10 SOL / w</span>
+              </div>
+              <div className="comp-box highlight">
+                <span className="comp-lbl highlight">SCRAMJET</span>
+                <span className="comp-val mint">0.01 SOL / w</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 4: Deflationary Flywheel */}
+          <div className="bento-card col-span-7">
+            <div className="card-top">
+              <span className="tag plasma">DEFLATIONARY FLYWHEEL</span>
+              <span className="sub">Auto-Burn Loop</span>
+            </div>
+            <h4>Creator Fee Buyback & Burn</h4>
+            <p>
+              Automatically route 25%–100% of harvested fees into bonding curve market buys, instantly executing SPL token burns to generate upward momentum.
+            </p>
+            <div className="flywheel-flow">
+              <div className="flow-step">Trading Volume Fees</div>
+              <span className="flow-arrow">→</span>
+              <div className="flow-step highlight">Curve Market Buy</div>
+              <span className="flow-arrow">→</span>
+              <div className="flow-step mint">SPL Supply Burned 🔥</div>
+            </div>
+          </div>
+        </div>
+
+        {/* 12-Protocol Supported Matrix */}
+        <div className="protocols-section">
+          <div className="protocols-head">
+            <div>
+              <h5>12 Solana Launchpad Protocols Supported</h5>
+              <p>Deploy across any bonding curve, dynamic fee tier, or AMM with native instruction builders.</p>
+            </div>
+            <div className="filter-tabs" role="tablist">
+              {["ALL", "CURVES", "DYNAMIC"].map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  aria-pressed={tab === t}
+                  onClick={() => setTab(t)}
+                >
+                  {t === "ALL" ? "All (12)" : t === "CURVES" ? "Bonding Curves" : "AMM / Dynamic"}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="protocols-grid">
+            {filtered.map((item) => (
+              <div key={item.name} className="proto-card">
+                <div className="proto-name">{item.name}</div>
+                <div className="proto-type">{item.type}</div>
+                <div className="proto-feat">{item.feature}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Block>
+  );
+}
+
 export function ElementBody({ id }) {
   switch (id) {
     case "intake-hero":
@@ -526,6 +1050,14 @@ export function ElementBody({ id }) {
       return <SectionVeil />;
     case "instrument-dial":
       return <InstrumentDial />;
+    case "hypersonic-stream":
+      return <HypersonicStream />;
+    case "telemetry-radar":
+      return <TelemetryRadar />;
+    case "savings-simulator":
+      return <SavingsSimulator />;
+    case "architecture-bento":
+      return <ArchitectureBento />;
     default:
       return null;
   }
