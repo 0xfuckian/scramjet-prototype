@@ -8,9 +8,45 @@ import { usePrototype } from "../prototype/PrototypeContext.jsx";
 
 const IntakeScene = lazy(() => import("../three/IntakeScene.jsx"));
 const RibbonScene = lazy(() => import("../three/RibbonScene.jsx"));
-const VenueScene = lazy(() => import("../three/VenueScene.jsx"));
 const CascadeScene = lazy(() => import("../three/CascadeScene.jsx"));
 const ShockScene = lazy(() => import("../three/ShockScene.jsx"));
+const VenueScene = lazy(() => import("../three/VenueScene.jsx"));
+
+import {
+  MempoolIntercept,
+  CandleSurge,
+  AntiMevShield,
+  SonicScrubber,
+  TerminalMatrix,
+  BundleOrchestrator,
+  LiquidityManifold,
+  CockpitHud,
+  TokenomicsCentrifuge,
+  ComputeTachometer,
+  AtomicClock,
+  PlasmaNozzle,
+  StealthPayload,
+  VenueRouter,
+  AblationShield,
+} from "./NewHypersonicElements.jsx";
+
+export {
+  MempoolIntercept,
+  CandleSurge,
+  AntiMevShield,
+  SonicScrubber,
+  TerminalMatrix,
+  BundleOrchestrator,
+  LiquidityManifold,
+  CockpitHud,
+  TokenomicsCentrifuge,
+  ComputeTachometer,
+  AtomicClock,
+  PlasmaNozzle,
+  StealthPayload,
+  VenueRouter,
+  AblationShield,
+};
 
 const VENUES = [
   { name: "Pump.fun", note: "Bonding curve" },
@@ -98,59 +134,34 @@ export function MachRibbon() {
   );
 }
 
-export function VenueViewer() {
+export function VenueMedallions() {
   const [focus, setFocus] = useState(0);
-  const [dragging, setDragging] = useState(false);
-  const drag = useRef(null);
-
-  function onPointerDown(event) {
-    drag.current = { x: event.clientX, focus };
-    setDragging(true);
-    event.currentTarget.setPointerCapture(event.pointerId);
-  }
-
-  function onPointerMove(event) {
-    if (!drag.current) return;
-    const delta = Math.round((event.clientX - drag.current.x) / 80);
-    const next = (drag.current.focus + delta + VENUES.length) % VENUES.length;
-    setFocus(next);
-  }
-
-  function onPointerUp() {
-    drag.current = null;
-    setDragging(false);
-  }
 
   return (
-    <Block id="venue-viewer">
-      <div className="venue">
-        <div
-          className="venue-stage"
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-        >
+    <Block id="venue-medallions">
+      <div className="venue-medallions-wrap">
+        <div className="medallions-stage">
           <LazyStage
             scene={VenueScene}
             fallback="/fallbacks/venues.svg"
-            label="Venue viewer"
+            label="Machined Titanium Medallions"
             sceneProps={{ focus }}
           />
         </div>
-        <div className="venue-controls" role="group" aria-label="Launch venues">
+        <div className="venue-controls" role="group" aria-label="Machined Titanium Medallions">
           {VENUES.map((venue, index) => (
             <button
               key={venue.name}
               type="button"
+              className={`venue-btn ${focus === index ? "active" : ""}`}
               aria-pressed={focus === index}
               onClick={() => setFocus(index)}
             >
-              <span>{venue.name}</span>
-              <small>{venue.note}</small>
+              <span className="v-name">{venue.name}</span>
+              <span className="v-note">{venue.note}</span>
             </button>
           ))}
         </div>
-        <p className="hint">{dragging ? "Dragging the object." : "Drag the object or use the buttons."}</p>
       </div>
     </Block>
   );
@@ -1028,8 +1039,6 @@ export function ElementBody({ id }) {
       return <IntakeHero />;
     case "mach-ribbon":
       return <MachRibbon />;
-    case "venue-viewer":
-      return <VenueViewer />;
     case "cascade-chamber":
       return <CascadeChamber />;
     case "shock-field":
@@ -1058,6 +1067,39 @@ export function ElementBody({ id }) {
       return <SavingsSimulator />;
     case "architecture-bento":
       return <ArchitectureBento />;
+    case "venue-medallions":
+      return <VenueMedallions />;
+    // 15 New Hypersonic Interactive Components
+    case "mempool-intercept":
+      return <MempoolIntercept />;
+    case "candle-surge":
+      return <CandleSurge />;
+    case "anti-mev-shield":
+      return <AntiMevShield />;
+    case "sonic-scrubber":
+      return <SonicScrubber />;
+    case "terminal-matrix":
+      return <TerminalMatrix />;
+    case "bundle-orchestrator":
+      return <BundleOrchestrator />;
+    case "liquidity-manifold":
+      return <LiquidityManifold />;
+    case "cockpit-hud":
+      return <CockpitHud />;
+    case "tokenomics-centrifuge":
+      return <TokenomicsCentrifuge />;
+    case "compute-tachometer":
+      return <ComputeTachometer />;
+    case "atomic-clock":
+      return <AtomicClock />;
+    case "plasma-nozzle":
+      return <PlasmaNozzle />;
+    case "stealth-payload":
+      return <StealthPayload />;
+    case "venue-router":
+      return <VenueRouter />;
+    case "ablation-shield":
+      return <AblationShield />;
     default:
       return null;
   }

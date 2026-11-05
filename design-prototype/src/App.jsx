@@ -22,7 +22,23 @@ import {
   SectionVeil,
   ShockField,
   TelemetryRadar,
-  VenueViewer,
+  VenueMedallions,
+  // 15 New Hypersonic Animation Proposals
+  MempoolIntercept,
+  CandleSurge,
+  AntiMevShield,
+  SonicScrubber,
+  TerminalMatrix,
+  BundleOrchestrator,
+  LiquidityManifold,
+  CockpitHud,
+  TokenomicsCentrifuge,
+  ComputeTachometer,
+  AtomicClock,
+  PlasmaNozzle,
+  StealthPayload,
+  VenueRouter,
+  AblationShield,
 } from "./sections/Elements.jsx";
 import brief from "../DESIGN_BRIEF.md?raw";
 
@@ -122,21 +138,45 @@ function Home() {
             <p className="eyebrow">Design prototype · not the production site</p>
             <h1>Proposed elements for SCRAMJET</h1>
             <p className="lede">
-              Seventeen working sections for a hypersonic Solana launch platform. Switch any of them off,
-              or open one on its own. 3D loads only when it is on screen.
+              Thirty-one working sections and interactive animations for a hypersonic Solana launch platform. Switch any of them off,
+              or open one on its own to review and approve animations.
             </p>
           </header>
+          {/* Section 1: Hero & Market Speed */}
           <KineticWordmark />
           <IntakeHero />
+          <CandleSurge />
           <HypersonicStream />
+          <SonicScrubber />
+          <CockpitHud />
+
+          {/* Section 2: Mempool, MEV & Atomic Bundles */}
+          <MempoolIntercept />
+          <AntiMevShield />
+          <BundleOrchestrator />
+          <StealthPayload />
+          <AtomicClock />
+
+          {/* Section 3: Telemetry, Compute & Economics */}
           <TelemetryRadar />
+          <ComputeTachometer />
           <FeeLockup />
           <SavingsSimulator />
-          <ChapterRail />
-          <CascadeChamber />
-          <VenueViewer />
+          <LiquidityManifold />
+          <TokenomicsCentrifuge />
+
+          {/* Section 4: Engine Diagnostics & Multi-Venue Routing */}
+          <PlasmaNozzle />
+          <VenueMedallions />
+          <VenueRouter />
           <ArchitectureBento />
           <ProtocolStrip />
+          <TerminalMatrix />
+
+          {/* Section 5: Transition Systems, Shaders & Aerodynamics */}
+          <AblationShield />
+          <ChapterRail />
+          <CascadeChamber />
           <MachRibbon />
           <ShockField />
           <HoverShear />
